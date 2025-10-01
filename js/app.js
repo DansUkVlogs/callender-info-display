@@ -3119,8 +3119,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Test if all required elements exist
     const requiredElements = [
-        'editModeBtn', 'settingsBtn', 'themeToggle', 'settingsModal',
-        'closeSettings', 'exitEditMode', 'addTile', 'resetLayout'
+        'layoutEditorBtn', 'configManagerBtn', 'settingsBtn', 'themeToggle', 
+        'settingsModal', 'closeSettings'
     ];
     
     requiredElements.forEach(id => {

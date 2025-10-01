@@ -495,7 +495,7 @@ class CountdownTile {
     }
 
     updateNextEventCountdown() {
-        this.renderNextEventCountdown();
+        this.renderCustomCountdown();
     }
 
     update() {
