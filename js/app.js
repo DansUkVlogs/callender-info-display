@@ -118,7 +118,22 @@ class SmartDisplayHub {
                     e.preventDefault();
                     e.stopPropagation();
                     console.log('Settings button clicked - attempting to open modal');
-                    this.openSettings();
+                    console.log('this context:', this);
+                    
+                    // Try direct modal manipulation as fallback
+                    try {
+                        this.openSettings();
+                    } catch (error) {
+                        console.error('Error calling this.openSettings():', error);
+                        // Fallback: directly show modal
+                        const modal = document.getElementById('settingsModal');
+                        if (modal) {
+                            modal.classList.remove('hidden');
+                            modal.style.display = 'flex';
+                            modal.classList.add('show');
+                            console.log('Modal opened via fallback method');
+                        }
+                    }
                 });
                 console.log('Settings button listener added successfully');
             } else {

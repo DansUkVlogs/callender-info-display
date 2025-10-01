@@ -1,5 +1,5 @@
 // Service Worker for Smart Display Hub
-const CACHE_NAME = 'smart-display-hub-v5';
+const CACHE_NAME = 'smart-display-hub-v6';
 const CACHE_ASSETS = [
     '/',
     '/index.html',
@@ -54,7 +54,6 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - serve cached content when offline
 self.addEventListener('fetch', (event) => {
-    console.log('Service Worker: Fetching', event.request.url);
     
     // Skip non-GET requests
     if (event.request.method !== 'GET') return;
