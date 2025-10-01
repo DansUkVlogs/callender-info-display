@@ -112,12 +112,15 @@ class SmartDisplayHub {
             }
 
             const settingsBtn = document.getElementById('settingsBtn');
+            console.log('Settings button element:', settingsBtn);
             if (settingsBtn) {
-                settingsBtn.addEventListener('click', () => {
-                    console.log('Settings button clicked');
+                settingsBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Settings button clicked - attempting to open modal');
                     this.openSettings();
                 });
-                console.log('Settings button listener added');
+                console.log('Settings button listener added successfully');
             } else {
                 console.warn('Settings button not found');
             }
@@ -2796,13 +2799,29 @@ class SmartDisplayHub {
     }
 
     openSettings() {
+        console.log('openSettings() method called');
         const modal = document.getElementById('settingsModal');
-        modal.classList.remove('hidden');
-        modal.style.display = 'flex';
-        modal.classList.add('show');
+        console.log('Settings modal element:', modal);
         
-        // API settings now hardcoded in tile classes - no inputs to populate
-        document.getElementById('layoutProfile').value = this.currentLayout;
+        if (modal) {
+            console.log('Modal classes before:', modal.className);
+            console.log('Modal display before:', modal.style.display);
+            
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+            modal.classList.add('show');
+            
+            console.log('Modal classes after:', modal.className);
+            console.log('Modal display after:', modal.style.display);
+            
+            // API settings now hardcoded in tile classes - no inputs to populate
+            const layoutProfile = document.getElementById('layoutProfile');
+            if (layoutProfile) {
+                layoutProfile.value = this.currentLayout;
+            }
+        } else {
+            console.error('Settings modal not found!');
+        }
     }
 
     closeSettings() {
