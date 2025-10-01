@@ -18,8 +18,8 @@ class SmartDisplayHub {
             // Load saved layout first
             this.loadSavedLayout();
             
-            // Load startup profile layout
-            this.loadStartupProfile();
+            // Load startup layout
+            this.loadStartupLayout();
             
             this.startUpdateCycle();
             
@@ -193,31 +193,18 @@ class SmartDisplayHub {
             });
             console.log('Theme button listeners added:', themeButtons.length);
 
-            // Startup Profile Layout handlers
-            const startupProfile = document.getElementById('startupProfile');
-            const saveCurrentAsProfile = document.getElementById('saveCurrentAsProfile');
-            const previewProfile = document.getElementById('previewProfile');
+            // Startup Layout handlers
+            const startupLayout = document.getElementById('startupLayout');
+            const saveStartupLayout = document.getElementById('saveStartupLayout');
 
-            if (startupProfile) {
-                startupProfile.addEventListener('change', (e) => {
-                    this.setStartupProfile(e.target.value);
+            if (startupLayout && saveStartupLayout) {
+                saveStartupLayout.addEventListener('click', () => {
+                    const selectedLayout = startupLayout.value;
+                    this.setStartupLayout(selectedLayout);
                 });
             }
 
-            if (saveCurrentAsProfile) {
-                saveCurrentAsProfile.addEventListener('click', () => {
-                    this.saveCurrentLayoutAsProfile();
-                });
-            }
-
-            if (previewProfile) {
-                previewProfile.addEventListener('click', () => {
-                    const selectedProfile = startupProfile.value;
-                    this.previewLayoutProfile(selectedProfile);
-                });
-            }
-
-            console.log('Startup profile listeners added');
+            console.log('Startup layout listeners added');
 
             // Keyboard shortcuts
             document.addEventListener('keydown', (e) => {
@@ -2863,8 +2850,12 @@ class SmartDisplayHub {
                 }
             });
             
-            // Populate startup profile selector
-            this.populateStartupProfileSelect();
+            // Set current startup layout in dropdown
+            const startupLayoutSelect = document.getElementById('startupLayout');
+            if (startupLayoutSelect) {
+                const currentStartupLayout = this.settings.startupLayout || 'default';
+                startupLayoutSelect.value = currentStartupLayout;
+            }
         } else {
             console.error('Settings modal not found!');
         }
@@ -2964,13 +2955,13 @@ class SmartDisplayHub {
         try {
             const settings = JSON.parse(localStorage.getItem('smartDisplayHub_settings')) || {};
             // Set default values for new settings
-            if (!settings.startupProfile) {
-                settings.startupProfile = 'default';
+            if (!settings.startupLayout) {
+                settings.startupLayout = 'default';
             }
             return settings;
         } catch (e) {
             console.warn('Failed to load settings:', e);
-            return { startupProfile: 'default' };
+            return { startupLayout: 'default' };
         }
     }
 
@@ -2982,106 +2973,31 @@ class SmartDisplayHub {
         }
     }
 
-    // Startup Profile Layout Methods
-    setStartupProfile(profileName) {
-        this.settings.startupProfile = profileName;
+    // Startup Layout Methods
+    setStartupLayout(layoutName) {
+        this.settings.startupLayout = layoutName;
         this.saveSettings();
-        console.log('Startup profile set to:', profileName);
+        console.log('Startup layout set to:', layoutName);
+        
+        // Show confirmation
+        const button = document.getElementById('saveStartupLayout');
+        const originalText = button.textContent;
+        button.textContent = '✅ Saved!';
+        button.style.background = '#4caf50';
+        
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.style.background = '';
+        }, 2000);
     }
 
-    saveCurrentLayoutAsProfile() {
-        const profileName = prompt('Enter a name for this layout profile:');
-        if (!profileName || profileName.trim() === '') return;
+    loadStartupLayout() {
+        const startupLayout = this.settings.startupLayout || 'default';
         
-        const sanitizedName = profileName.trim().toLowerCase().replace(/[^a-z0-9]/g, '-');
-        const currentLayout = this.getCurrentLayout();
+        console.log('Loading startup layout:', startupLayout);
         
-        // Save the profile
-        const savedProfiles = this.getSavedProfiles();
-        savedProfiles[sanitizedName] = {
-            name: profileName.trim(),
-            layout: currentLayout,
-            savedAt: new Date().toISOString()
-        };
-        
-        try {
-            localStorage.setItem('smartDisplayHub_savedProfiles', JSON.stringify(savedProfiles));
-            this.populateStartupProfileSelect();
-            
-            // Set this as the new startup profile
-            this.setStartupProfile(sanitizedName);
-            document.getElementById('startupProfile').value = sanitizedName;
-            
-            alert(`Layout saved as "${profileName}"!`);
-        } catch (e) {
-            console.error('Failed to save profile:', e);
-            alert('Failed to save layout profile');
-        }
-    }
-
-    previewLayoutProfile(profileName) {
-        if (profileName === 'default') {
-            this.resetLayout();
-            return;
-        }
-        
-        const savedProfiles = this.getSavedProfiles();
-        const profile = savedProfiles[profileName];
-        
-        if (profile && profile.layout) {
-            this.applyLayout(profile.layout);
-            console.log('Previewing layout profile:', profileName);
-        } else {
-            console.warn('Profile not found:', profileName);
-        }
-    }
-
-    getSavedProfiles() {
-        try {
-            return JSON.parse(localStorage.getItem('smartDisplayHub_savedProfiles')) || {};
-        } catch (e) {
-            console.warn('Failed to load saved profiles:', e);
-            return {};
-        }
-    }
-
-    populateStartupProfileSelect() {
-        const select = document.getElementById('startupProfile');
-        if (!select) return;
-        
-        // Clear existing options except default
-        select.innerHTML = '<option value="default">Default Layout</option>';
-        
-        const savedProfiles = this.getSavedProfiles();
-        Object.keys(savedProfiles).forEach(key => {
-            const profile = savedProfiles[key];
-            const option = document.createElement('option');
-            option.value = key;
-            option.textContent = profile.name;
-            select.appendChild(option);
-        });
-        
-        // Set current startup profile
-        const currentStartup = this.settings.startupProfile || 'default';
-        select.value = currentStartup;
-    }
-
-    loadStartupProfile() {
-        const startupProfile = this.settings.startupProfile || 'default';
-        
-        if (startupProfile === 'default') {
-            console.log('Loading default layout');
-            return;
-        }
-        
-        const savedProfiles = this.getSavedProfiles();
-        const profile = savedProfiles[startupProfile];
-        
-        if (profile && profile.layout) {
-            console.log('Loading startup profile:', startupProfile);
-            this.applyLayout(profile.layout);
-        } else {
-            console.warn('Startup profile not found, using default:', startupProfile);
+        if (startupLayout !== 'default') {
+            this.loadLayout(startupLayout);
         }
     }
 

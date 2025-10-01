@@ -442,8 +442,8 @@ html, body {
     border-color: #7b1fa2;
 }
 
-/* Startup Profile Layout Selector */
-.startup-profile-selector {
+/* Startup Layout Selector */
+.startup-layout-selector {
     background: var(--bg-accent);
     border-radius: 12px;
     padding: 20px;
@@ -457,70 +457,61 @@ html, body {
     line-height: 1.4;
 }
 
-.profile-selector {
+.startup-selector {
     display: flex;
-    flex-direction: column;
     gap: 12px;
+    align-items: center;
 }
 
-#startupProfile {
-    width: 100%;
-    padding: 12px 16px;
+.startup-dropdown {
+    flex: 1;
+    padding: 14px 18px;
     border: 2px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 10px;
     background: var(--bg-primary);
     color: var(--text-primary);
     font-size: 16px;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 40px;
 }
 
-#startupProfile:focus {
+.startup-dropdown:focus {
     outline: none;
     border-color: var(--accent-color);
     box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
 }
 
-.profile-actions {
-    display: flex;
-    gap: 12px;
+.startup-dropdown:hover {
+    border-color: var(--accent-color);
 }
 
-.save-profile-btn,
-.preview-profile-btn {
-    flex: 1;
-    padding: 12px 16px;
+.save-startup-btn {
+    padding: 14px 24px;
+    background: var(--accent-color);
+    color: white;
     border: none;
-    border-radius: 8px;
-    font-size: 14px;
+    border-radius: 10px;
+    font-size: 15px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
 }
 
-.save-profile-btn {
-    background: var(--accent-color);
-    color: white;
-}
-
-.save-profile-btn:hover {
+.save-startup-btn:hover {
     background: var(--accent-hover);
-    transform: translateY(-1px);
-}
-
-.preview-profile-btn {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    border: 2px solid var(--border-color);
-}
-
-.preview-profile-btn:hover {
-    background: var(--bg-hover);
-    border-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
 }
 
 /* Edit Mode */
