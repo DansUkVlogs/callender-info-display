@@ -2797,6 +2797,7 @@ class SmartDisplayHub {
 
     openSettings() {
         const modal = document.getElementById('settingsModal');
+        modal.classList.remove('hidden');
         modal.style.display = 'flex';
         modal.classList.add('show');
         
@@ -2809,6 +2810,7 @@ class SmartDisplayHub {
         modal.classList.remove('show');
         setTimeout(() => {
             modal.style.display = 'none';
+            modal.classList.add('hidden');
         }, 300);
         
         // API settings now hardcoded in tile classes - nothing to save
