@@ -3171,11 +3171,12 @@ document.addEventListener('DOMContentLoaded', () => {
     window.smartDisplayHub = new SmartDisplayHub();
 });
 
-// Service Worker registration for PWA functionality
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').then(() => {
-        console.log('Service Worker registered');
-    }).catch(err => {
-        console.warn('Service Worker registration failed:', err);
-    });
-}
+// Service Worker registration temporarily disabled for debugging
+// if ('serviceWorker' in navigator) {
+//     navigator.serviceWorker.register('sw.js').then(() => {
+//         console.log('Service Worker registered');
+//     }).catch(err => {
+//         console.warn('Service Worker registration failed:', err);
+//     });
+// }
+console.log('Service Worker registration temporarily disabled');
