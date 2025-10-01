@@ -25,7 +25,6 @@ class CountdownTile {
 
     setupEventListeners() {
         const editCountdownBtn = document.querySelector('#customCountdownTile .edit-countdown-btn');
-        const nextEventTile = document.getElementById('nextEventTile');
         const customCountdownTile = document.getElementById('customCountdownTile');
         
         console.log('Countdown setupEventListeners - editCountdownBtn found:', !!editCountdownBtn);
@@ -42,47 +41,19 @@ class CountdownTile {
         }
         
         // Click to cycle through countdowns
-        customCountdownTile.addEventListener('click', () => {
-            this.cycleCountdown();
-        });
-        
-        // Next event tile click
-        nextEventTile.addEventListener('click', () => {
-            this.showNextEventDetails();
-        });
+        if (customCountdownTile) {
+            customCountdownTile.addEventListener('click', () => {
+                this.cycleCountdown();
+            });
+        }
     }
 
     render() {
-        this.renderNextEventCountdown();
         this.renderCustomCountdown();
     }
 
-    renderNextEventCountdown() {
-        const nextEventCountdown = document.getElementById('nextEventCountdown');
-        const nextEvent = this.getNextEvent();
-        
-        if (!nextEvent) {
-            nextEventCountdown.innerHTML = `
-                <div class="no-events">
-                    <div class="countdown-event">No upcoming events</div>
-                    <div class="countdown-suggestion">Add an event to see countdown</div>
-                </div>
-            `;
-            return;
-        }
-        
-        const timeUntil = this.getTimeUntil(nextEvent.datetime);
-        
-        nextEventCountdown.innerHTML = `
-            <div class="countdown-event">${this.escapeHtml(nextEvent.title)}</div>
-            <div class="countdown-time">${timeUntil.formatted}</div>
-            <div class="countdown-units">${timeUntil.description}</div>
-            <div class="countdown-date">${this.formatEventDate(nextEvent.datetime)}</div>
-        `;
-    }
-
-    renderCustomCountdown() {
-        const customCountdown = document.getElementById('customCountdown');
+    renderCustomCountdown(element) {
+        const customCountdown = element || document.getElementById('customCountdown');
         
         if (this.countdowns.length === 0) {
             customCountdown.innerHTML = `
@@ -195,14 +166,16 @@ class CountdownTile {
         const nextIndex = (currentIndex + 1) % this.countdowns.length;
         this.activeCountdown = this.countdowns[nextIndex];
         
-        this.renderCustomCountdown();
+        this.render();
         
         // Visual feedback
         const customCountdownTile = document.getElementById('customCountdownTile');
-        customCountdownTile.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            customCountdownTile.style.transform = '';
-        }, 150);
+        if (customCountdownTile) {
+            customCountdownTile.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                customCountdownTile.style.transform = '';
+            }, 150);
+        }
     }
 
     showCountdownEditor() {
@@ -517,8 +490,7 @@ class CountdownTile {
     startCountdownUpdates() {
         // Update every second for active countdowns
         this.updateInterval = setInterval(() => {
-            this.renderNextEventCountdown();
-            this.renderCustomCountdown();
+            this.render();
         }, 1000);
     }
 
@@ -752,7 +724,7 @@ class CountdownTile {
                 const index = parseInt(dot.dataset.index);
                 if (index >= 0 && index < this.countdowns.length) {
                     this.activeCountdown = this.countdowns[index];
-                    this.renderCustomCountdown();
+                    this.render();
                     
                     // Visual feedback
                     dot.style.transform = 'scale(1.4)';

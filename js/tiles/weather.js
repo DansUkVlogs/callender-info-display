@@ -96,6 +96,7 @@ class WeatherTile {
     async fetchWeather(force = false) {
         if (!this.apiKey || !this.location) {
             console.warn('Weather API key or location not set');
+            this.showSetupMessage();
             return;
         }
         
@@ -104,37 +105,70 @@ class WeatherTile {
             return;
         }
         
+        console.log('🌤️ Fetching weather data...', {
+            location: this.location,
+            apiKey: this.apiKey ? `${this.apiKey.slice(0,8)}...` : 'none',
+            units: this.units
+        });
+        
         try {
             // Show loading state
             const weatherInfo = document.getElementById('weatherInfo');
-            const currentContent = weatherInfo.innerHTML;
-            weatherInfo.classList.add('loading');
+            if (weatherInfo) {
+                weatherInfo.classList.add('loading');
+                weatherInfo.innerHTML = `
+                    <div class="weather-loading">
+                        <div class="loading-spinner">🌤️</div>
+                        <div class="loading-text">Loading weather...</div>
+                    </div>
+                `;
+            }
             
             const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(this.location)}&appid=${this.apiKey}&units=${this.units}`;
+            console.log('🌐 Weather API URL:', url.replace(this.apiKey, 'API_KEY_HIDDEN'));
             
             const response = await fetch(url);
+            console.log('📡 Weather API Response:', {
+                status: response.status,
+                statusText: response.statusText,
+                ok: response.ok,
+                headers: Object.fromEntries(response.headers.entries())
+            });
             
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const errorText = await response.text();
+                console.error('❌ Weather API Error Response:', errorText);
+                throw new Error(`Weather API Error (${response.status}): ${response.statusText}${errorText ? ' - ' + errorText : ''}`);
             }
             
             const data = await response.json();
+            console.log('✅ Weather data received:', data);
             
             this.weatherData = data;
             this.lastUpdate = Date.now();
             this.saveWeatherData();
             this.render();
             
-            weatherInfo.classList.remove('loading');
+            if (weatherInfo) {
+                weatherInfo.classList.remove('loading');
+            }
             
         } catch (error) {
-            console.error('Failed to fetch weather:', error);
+            console.error('❌ Failed to fetch weather:', error);
+            console.error('Error details:', {
+                name: error.name,
+                message: error.message,
+                stack: error.stack
+            });
             
             // Remove loading state
-            document.getElementById('weatherInfo').classList.remove('loading');
+            const weatherInfo = document.getElementById('weatherInfo');
+            if (weatherInfo) {
+                weatherInfo.classList.remove('loading');
+            }
             
-            // Show error message
-            this.showError(error.message);
+            // Show specific error message
+            this.showError(error.message, error.name === 'TypeError' ? 'Network or CORS issue' : 'API Error');
         }
     }
 
