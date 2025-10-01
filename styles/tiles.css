@@ -1,0 +1,629 @@
+/* Tile Styles */
+.tile {
+    background: var(--tile-bg);
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid var(--tile-border);
+    box-shadow: var(--tile-shadow);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    min-height: 200px;
+}
+
+.tile:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--tile-shadow-hover);
+}
+
+.tile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--tile-border);
+}
+
+.tile-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.tile-expand-btn,
+.add-task-btn,
+.edit-countdown-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    min-width: 24px;
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tile-expand-btn:hover,
+.add-task-btn:hover,
+.edit-countdown-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.tile-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 3rem);
+}
+
+/* Tile Sizes */
+.tile-large {
+    grid-column: span 2;
+    grid-row: span 2;
+    min-height: 400px;
+}
+
+.tile-medium-large {
+    grid-column: span 2;
+    grid-row: span 1;
+    min-height: 300px;
+}
+
+.tile-medium {
+    grid-column: span 1;
+    grid-row: span 1;
+    min-height: 200px;
+}
+
+.tile-small {
+    grid-column: span 1;
+    grid-row: span 1;
+    min-height: 180px;
+}
+
+/* Calendar Tile */
+.calendar-tile {
+    background: linear-gradient(135deg, var(--calendar-bg-start), var(--calendar-bg-end));
+}
+
+.calendar-view {
+    width: 100%;
+    height: 100%;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0 0.5rem;
+}
+
+.calendar-header h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.calendar-nav {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    min-width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar-nav:hover {
+    background: var(--bg-hover);
+    transform: scale(1.05);
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 0.5rem;
+}
+
+.calendar-weekday {
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 0.5rem 0.25rem;
+    background: var(--bg-accent);
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--calendar-day-bg);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    min-height: 32px;
+    border: 1px solid transparent;
+}
+
+.calendar-day:hover {
+    background: var(--calendar-day-hover);
+    transform: scale(1.05);
+    border-color: var(--accent-color);
+}
+
+.calendar-day.other-month {
+    color: var(--text-tertiary);
+    background: var(--bg-primary);
+    opacity: 0.5;
+}
+
+.calendar-day.today {
+    background: var(--accent-color);
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 0 0 2px var(--accent-color), 0 0 0 4px rgba(var(--accent-color-rgb, 0, 123, 255), 0.2);
+}
+
+.calendar-day.has-event {
+    position: relative;
+    font-weight: 600;
+}
+
+.calendar-day.has-event::after {
+    content: '';
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px white;
+}
+
+.calendar-day.today.has-event::after {
+    background: white;
+    box-shadow: 0 0 0 1px var(--accent-color);
+}
+
+.calendar-day.birthday {
+    background: var(--birthday-color);
+    color: white;
+    position: relative;
+}
+
+.calendar-day.birthday::before {
+    content: '🎂';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 0.7rem;
+}
+
+/* Todo Tile */
+.todo-tile {
+    background: linear-gradient(135deg, var(--todo-bg-start), var(--todo-bg-end));
+}
+
+.todo-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    background: var(--todo-item-bg);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.todo-item:hover {
+    background: var(--todo-item-hover);
+}
+
+.todo-checkbox {
+    margin-right: 0.75rem;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.todo-text {
+    flex: 1;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.todo-item.completed .todo-text {
+    text-decoration: line-through;
+    color: var(--text-secondary);
+}
+
+.todo-priority {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-left: 0.5rem;
+}
+
+.todo-priority.high {
+    background: #e74c3c;
+}
+
+.todo-priority.medium {
+    background: #f39c12;
+}
+
+.todo-priority.low {
+    background: #27ae60;
+}
+
+/* Weather Tile */
+.weather-tile {
+    background: linear-gradient(135deg, var(--weather-bg-start), var(--weather-bg-end));
+}
+
+.weather-info {
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.weather-temp {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.weather-condition {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.weather-details {
+    display: flex;
+    justify-content: space-around;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.weather-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Time Tile */
+.time-tile {
+    background: linear-gradient(135deg, var(--time-bg-start), var(--time-bg-end));
+}
+
+.time-display {
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.current-time {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.current-date {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+}
+
+.timezone {
+    font-size: 0.9rem;
+    color: var(--text-tertiary);
+    margin-top: 0.25rem;
+}
+
+/* Countdown Tiles */
+.countdown-tile {
+    background: linear-gradient(135deg, var(--countdown-bg-start), var(--countdown-bg-end));
+}
+
+.countdown-display {
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.countdown-event {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.countdown-time {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.countdown-units {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+}
+
+/* Timer Tile */
+.timer-tile {
+    background: linear-gradient(135deg, var(--timer-bg-start), var(--timer-bg-end));
+}
+
+.timer-display {
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.timer-time {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.timer-controls {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.timer-btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.timer-btn:hover {
+    background: var(--accent-hover);
+}
+
+/* Traffic Tile */
+.traffic-tile {
+    background: linear-gradient(135deg, var(--traffic-bg-start), var(--traffic-bg-end));
+}
+
+.traffic-info {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.traffic-route {
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.traffic-duration {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.traffic-status {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.traffic-normal {
+    color: #27ae60;
+}
+
+.traffic-slow {
+    color: #f39c12;
+}
+
+.traffic-heavy {
+    color: #e74c3c;
+}
+
+/* Birthday Tile */
+.birthday-tile {
+    background: linear-gradient(135deg, var(--birthday-bg-start), var(--birthday-bg-end));
+}
+
+.birthday-info {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+}
+
+.birthday-today {
+    font-size: 1.1rem;
+    color: var(--birthday-color);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.birthday-next {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.birthday-celebration {
+    font-size: 2rem;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Edit Mode Styles */
+.tile.edit-mode {
+    border: 2px dashed var(--accent-color);
+    cursor: move;
+    position: relative;
+}
+
+.tile.edit-mode::before {
+    content: '✋ Drag to reorder';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.tile.edit-mode:hover {
+    border-color: var(--accent-hover);
+    background: var(--tile-bg-edit);
+}
+
+.tile.edit-mode:hover::before {
+    opacity: 1;
+}
+
+.tile.dragging {
+    opacity: 0.5;
+    transform: rotate(5deg);
+    z-index: 1000;
+}
+
+/* Timer Flash Animation */
+.timer-flash {
+    animation: timerFlash 0.5s ease-in-out 6;
+}
+
+@keyframes timerFlash {
+    0%, 100% { 
+        background: var(--timer-bg-start);
+    }
+    50% { 
+        background: #ff6b6b;
+        transform: scale(1.05);
+    }
+}
+
+/* Responsive Tile Adjustments */
+@media (max-width: 768px) {
+    .tile-large,
+    .tile-medium-large,
+    .tile-medium,
+    .tile-small {
+        grid-column: span 1;
+        min-height: 180px;
+    }
+    
+    .tile {
+        padding: 0.75rem;
+    }
+    
+    .tile-header h3 {
+        font-size: 1rem;
+    }
+    
+    .weather-temp,
+    .current-time {
+        font-size: 2rem;
+    }
+    
+    .countdown-time {
+        font-size: 1.5rem;
+    }
+    
+    .timer-time {
+        font-size: 1.75rem;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 600px) {
+    .tile {
+        min-height: 140px;
+        padding: 0.5rem;
+    }
+    
+    .tile-header {
+        margin-bottom: 0.5rem;
+    }
+    
+    .weather-temp,
+    .current-time {
+        font-size: 1.75rem;
+    }
+    
+    .countdown-time {
+        font-size: 1.25rem;
+    }
+    
+    .timer-time {
+        font-size: 1.5rem;
+    }
+}

@@ -1,0 +1,288 @@
+/* Theme System */
+:root {
+    /* Light Theme (Default) */
+    --bg-primary: #f8f9fa;
+    --bg-secondary: #ffffff;
+    --bg-accent: #e9ecef;
+    --bg-hover: #dee2e6;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-tertiary: #adb5bd;
+    --border-color: #dee2e6;
+    --accent-color: #007bff;
+    --accent-hover: #0056b3;
+    --accent-color-rgb: 0, 123, 255;
+    
+    /* Tile Colors */
+    --tile-bg: rgba(255, 255, 255, 0.9);
+    --tile-border: rgba(0, 0, 0, 0.1);
+    --tile-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --tile-shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.15);
+    --tile-bg-edit: rgba(0, 123, 255, 0.05);
+    
+    /* Calendar Colors */
+    --calendar-bg-start: #e3f2fd;
+    --calendar-bg-end: #bbdefb;
+    --calendar-day-bg: rgba(255, 255, 255, 0.7);
+    --calendar-day-hover: rgba(255, 255, 255, 0.9);
+    
+    /* Todo Colors */
+    --todo-bg-start: #f3e5f5;
+    --todo-bg-end: #e1bee7;
+    --todo-item-bg: rgba(255, 255, 255, 0.7);
+    --todo-item-hover: rgba(255, 255, 255, 0.9);
+    
+    /* Weather Colors */
+    --weather-bg-start: #fff3e0;
+    --weather-bg-end: #ffcc02;
+    
+    /* Time Colors */
+    --time-bg-start: #e8f5e8;
+    --time-bg-end: #a5d6a7;
+    
+    /* Countdown Colors */
+    --countdown-bg-start: #fce4ec;
+    --countdown-bg-end: #f8bbd9;
+    
+    /* Timer Colors */
+    --timer-bg-start: #fff8e1;
+    --timer-bg-end: #ffecb3;
+    
+    /* Traffic Colors */
+    --traffic-bg-start: #e0f2f1;
+    --traffic-bg-end: #b2dfdb;
+    
+    /* Birthday Colors */
+    --birthday-bg-start: #fff3e0;
+    --birthday-bg-end: #ffcc80;
+    --birthday-color: #ff6f00;
+    
+    /* Scrollbar */
+    --scrollbar-track: #f1f1f1;
+    --scrollbar-thumb: #c1c1c1;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-accent: #3a3a3a;
+    --bg-hover: #4a4a4a;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --text-tertiary: #808080;
+    --border-color: #404040;
+    --accent-color: #0d6efd;
+    --accent-hover: #0b5ed7;
+    --accent-color-rgb: 13, 110, 253;
+    
+    /* Tile Colors */
+    --tile-bg: rgba(45, 45, 45, 0.9);
+    --tile-border: rgba(255, 255, 255, 0.1);
+    --tile-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    --tile-shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --tile-bg-edit: rgba(13, 110, 253, 0.1);
+    
+    /* Calendar Colors */
+    --calendar-bg-start: #1e3a8a;
+    --calendar-bg-end: #3b82f6;
+    --calendar-day-bg: rgba(255, 255, 255, 0.1);
+    --calendar-day-hover: rgba(255, 255, 255, 0.2);
+    
+    /* Todo Colors */
+    --todo-bg-start: #4c1d95;
+    --todo-bg-end: #7c3aed;
+    --todo-item-bg: rgba(255, 255, 255, 0.1);
+    --todo-item-hover: rgba(255, 255, 255, 0.15);
+    
+    /* Weather Colors */
+    --weather-bg-start: #92400e;
+    --weather-bg-end: #f59e0b;
+    
+    /* Time Colors */
+    --time-bg-start: #14532d;
+    --time-bg-end: #22c55e;
+    
+    /* Countdown Colors */
+    --countdown-bg-start: #be185d;
+    --countdown-bg-end: #ec4899;
+    
+    /* Timer Colors */
+    --timer-bg-start: #92400e;
+    --timer-bg-end: #f59e0b;
+    
+    /* Traffic Colors */
+    --traffic-bg-start: #065f46;
+    --traffic-bg-end: #10b981;
+    
+    /* Birthday Colors */
+    --birthday-bg-start: #c2410c;
+    --birthday-bg-end: #f97316;
+    --birthday-color: #fb923c;
+    
+    /* Scrollbar */
+    --scrollbar-track: #2d2d2d;
+    --scrollbar-thumb: #5a5a5a;
+}
+
+/* Night Theme */
+[data-theme="night"] {
+    --bg-primary: #0f0f0f;
+    --bg-secondary: #1a1a1a;
+    --bg-accent: #252525;
+    --bg-hover: #333333;
+    --text-primary: #cccccc;
+    --text-secondary: #888888;
+    --text-tertiary: #666666;
+    --border-color: #333333;
+    --accent-color: #ff6b35;
+    --accent-hover: #e55a2b;
+    --accent-color-rgb: 255, 107, 53;
+    
+    /* Tile Colors */
+    --tile-bg: rgba(26, 26, 26, 0.95);
+    --tile-border: rgba(255, 255, 255, 0.05);
+    --tile-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    --tile-shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.6);
+    --tile-bg-edit: rgba(255, 107, 53, 0.1);
+    
+    /* Calendar Colors */
+    --calendar-bg-start: #1a1a2e;
+    --calendar-bg-end: #16213e;
+    --calendar-day-bg: rgba(255, 255, 255, 0.05);
+    --calendar-day-hover: rgba(255, 255, 255, 0.1);
+    
+    /* Todo Colors */
+    --todo-bg-start: #2d1b69;
+    --todo-bg-end: #1a1a2e;
+    --todo-item-bg: rgba(255, 255, 255, 0.05);
+    --todo-item-hover: rgba(255, 255, 255, 0.1);
+    
+    /* Weather Colors */
+    --weather-bg-start: #3c1810;
+    --weather-bg-end: #5c2317;
+    
+    /* Time Colors */
+    --time-bg-start: #0f2027;
+    --time-bg-end: #203a43;
+    
+    /* Countdown Colors */
+    --countdown-bg-start: #4a0e4e;
+    --countdown-bg-end: #2d1b69;
+    
+    /* Timer Colors */
+    --timer-bg-start: #3c1810;
+    --timer-bg-end: #5c2317;
+    
+    /* Traffic Colors */
+    --traffic-bg-start: #0d1b2a;
+    --traffic-bg-end: #1b263b;
+    
+    /* Birthday Colors */
+    --birthday-bg-start: #5c2317;
+    --birthday-bg-end: #3c1810;
+    --birthday-color: #ff6b35;
+    
+    /* Scrollbar */
+    --scrollbar-track: #1a1a1a;
+    --scrollbar-thumb: #404040;
+}
+
+/* Theme Transitions */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Auto Theme Detection */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+        --bg-primary: #1a1a1a;
+        --bg-secondary: #2d2d2d;
+        --bg-accent: #3a3a3a;
+        --bg-hover: #4a4a4a;
+        --text-primary: #ffffff;
+        --text-secondary: #b0b0b0;
+        --text-tertiary: #808080;
+        --border-color: #404040;
+        --accent-color: #0d6efd;
+        --accent-hover: #0b5ed7;
+        --accent-color-rgb: 13, 110, 253;
+        
+        /* Dark tile colors */
+        --tile-bg: rgba(45, 45, 45, 0.9);
+        --tile-border: rgba(255, 255, 255, 0.1);
+        --tile-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        --tile-shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.4);
+        --tile-bg-edit: rgba(13, 110, 253, 0.1);
+        
+        --calendar-bg-start: #1e3a8a;
+        --calendar-bg-end: #3b82f6;
+        --calendar-day-bg: rgba(255, 255, 255, 0.1);
+        --calendar-day-hover: rgba(255, 255, 255, 0.2);
+        
+        --todo-bg-start: #4c1d95;
+        --todo-bg-end: #7c3aed;
+        --todo-item-bg: rgba(255, 255, 255, 0.1);
+        --todo-item-hover: rgba(255, 255, 255, 0.15);
+        
+        --weather-bg-start: #92400e;
+        --weather-bg-end: #f59e0b;
+        
+        --time-bg-start: #14532d;
+        --time-bg-end: #22c55e;
+        
+        --countdown-bg-start: #be185d;
+        --countdown-bg-end: #ec4899;
+        
+        --timer-bg-start: #92400e;
+        --timer-bg-end: #f59e0b;
+        
+        --traffic-bg-start: #065f46;
+        --traffic-bg-end: #10b981;
+        
+        --birthday-bg-start: #c2410c;
+        --birthday-bg-end: #f97316;
+        --birthday-color: #fb923c;
+        
+        --scrollbar-track: #2d2d2d;
+        --scrollbar-thumb: #5a5a5a;
+    }
+}
+
+/* Night Mode Adjustments */
+[data-theme="night"] .tile {
+    opacity: 0.8;
+}
+
+[data-theme="night"] .tile:hover {
+    opacity: 1;
+}
+
+[data-theme="night"] .app {
+    filter: brightness(0.8);
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    :root {
+        --tile-border: rgba(0, 0, 0, 0.3);
+        --border-color: #000000;
+    }
+    
+    [data-theme="dark"] {
+        --tile-border: rgba(255, 255, 255, 0.3);
+        --border-color: #ffffff;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
+    
+    .birthday-celebration {
+        animation: none;
+    }
+}
