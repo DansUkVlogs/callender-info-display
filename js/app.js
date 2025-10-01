@@ -173,30 +173,30 @@ class SmartDisplayHub {
 
             // Layout editor modal event listeners will be set up when modal opens
 
-            // Settings form handlers
-            const themeRadios = document.querySelectorAll('input[name="theme"]');
-            themeRadios.forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    this.setTheme(e.target.value);
+            // Settings form handlers - Modern theme selector
+            const themeButtons = document.querySelectorAll('.theme-btn');
+            const themeSelector = document.querySelector('.theme-selector');
+            
+            themeButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const selectedTheme = button.getAttribute('data-theme');
+                    
+                    // Update active state
+                    themeButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // Update slider position
+                    if (themeSelector) {
+                        themeSelector.setAttribute('data-active', selectedTheme);
+                    }
+                    
+                    // Apply theme
+                    this.setTheme(selectedTheme);
                 });
             });
-            console.log('Theme radio listeners added:', themeRadios.length);
+            console.log('Theme button listeners added:', themeButtons.length);
 
-            const layoutProfile = document.getElementById('layoutProfile');
-            if (layoutProfile) {
-                layoutProfile.addEventListener('change', (e) => {
-                    this.loadLayout(e.target.value);
-                });
-                console.log('Layout profile listener added');
-            }
-
-            const saveLayout = document.getElementById('saveLayout');
-            if (saveLayout) {
-                saveLayout.addEventListener('click', () => {
-                    this.saveCurrentLayout();
-                });
-                console.log('Save layout listener added');
-            }
+            // Layout profile and save layout removed - theme selector only
 
             // Keyboard shortcuts
             document.addEventListener('keydown', (e) => {
@@ -2829,11 +2829,22 @@ class SmartDisplayHub {
             console.log('Modal classes after:', modal.className);
             console.log('Modal display after:', modal.style.display);
             
-            // API settings now hardcoded in tile classes - no inputs to populate
-            const layoutProfile = document.getElementById('layoutProfile');
-            if (layoutProfile) {
-                layoutProfile.value = this.currentLayout;
-            }
+            // Set active theme button based on current theme
+            const currentTheme = this.getCurrentTheme();
+            const themeButtons = document.querySelectorAll('.theme-btn');
+            const themeSelector = document.querySelector('.theme-selector');
+            
+            themeButtons.forEach(btn => {
+                const btnTheme = btn.getAttribute('data-theme');
+                if (btnTheme === currentTheme) {
+                    btn.classList.add('active');
+                    if (themeSelector) {
+                        themeSelector.setAttribute('data-active', currentTheme);
+                    }
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
         } else {
             console.error('Settings modal not found!');
         }

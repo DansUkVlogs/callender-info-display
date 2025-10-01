@@ -155,54 +155,30 @@
         <div id="settingsModal" class="modal hidden">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>Settings</h2>
+                    <h2>Theme Settings</h2>
                     <button class="close-btn" id="closeSettings">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="settings-section">
-                        <h3>Theme</h3>
-                        <div class="setting-group">
-                            <label>
-                                <input type="radio" name="theme" value="auto" checked>
-                                Auto (System)
-                            </label>
-                            <label>
-                                <input type="radio" name="theme" value="light">
-                                Light
-                            </label>
-                            <label>
-                                <input type="radio" name="theme" value="dark">
-                                Dark
-                            </label>
-                            <label>
-                                <input type="radio" name="theme" value="night">
-                                Night Mode
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="settings-section">
-                        <h3>Layout Profiles</h3>
-                        <div class="setting-group">
-                            <select id="layoutProfile">
-                                <option value="default">Default</option>
-                                <option value="workday">Workday</option>
-                                <option value="weekend">Weekend</option>
-                                <option value="night">Night Mode</option>
-                            </select>
-                            <button id="saveLayout">Save Current Layout</button>
-                        </div>
-                    </div>
-
-                    <div class="settings-section">
-                        <h3>API Configuration</h3>
-                        <div class="setting-info">
-                            <p><strong>✅ APIs Pre-configured!</strong></p>
-                            <ul>
-                                <li><strong>Weather:</strong> Your Portsmouth location (Stanhope Rd)</li>
-                                <li><strong>Traffic:</strong> Uni to Work & Home (carousel view)</li>
-                            </ul>
-                            <p><em>Auto-cycles every 10 seconds • Click dots to manually switch!</em></p>
+                        <h3>Choose Your Theme</h3>
+                        <div class="theme-selector">
+                            <div class="theme-slider"></div>
+                            <button class="theme-btn active" data-theme="light">
+                                <div class="theme-icon">☀️</div>
+                                <div class="theme-label">Light</div>
+                            </button>
+                            <button class="theme-btn" data-theme="dark">
+                                <div class="theme-icon">🌙</div>
+                                <div class="theme-label">Dark</div>
+                            </button>
+                            <button class="theme-btn" data-theme="night">
+                                <div class="theme-icon">🌌</div>
+                                <div class="theme-label">Night</div>
+                            </button>
+                            <button class="theme-btn" data-theme="auto">
+                                <div class="theme-icon">🔄</div>
+                                <div class="theme-label">Auto</div>
+                            </button>
                         </div>
                     </div>
                 </div>
