@@ -233,6 +233,309 @@
     font-size: 0.7rem;
 }
 
+/* Calendar View Mode Buttons */
+.calendar-view-modes {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 0.75rem;
+    padding: 0.25rem;
+    background: var(--bg-accent);
+    border-radius: 8px;
+}
+
+.view-mode-btn {
+    flex: 1;
+    padding: 0.4rem 0.75rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.view-mode-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.view-mode-btn.active {
+    background: var(--accent-color);
+    color: white;
+    font-weight: 600;
+}
+
+/* Calendar Settings Button */
+.calendar-settings-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    margin-right: 0.5rem;
+}
+
+.calendar-settings-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+/* Week View Styles */
+.week-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.week-grid {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.week-header {
+    display: grid;
+    grid-template-columns: 60px repeat(auto-fit, minmax(0, 1fr));
+    border-bottom: 2px solid var(--border-color);
+    background: var(--bg-accent);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.time-column-header {
+    background: var(--bg-accent);
+    border-right: 1px solid var(--border-color);
+}
+
+.day-header {
+    padding: 0.5rem 0.25rem;
+    text-align: center;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-right: 1px solid var(--border-color);
+    font-size: 0.8rem;
+}
+
+.day-header.today {
+    background: var(--accent-color);
+    color: white;
+    border-radius: 4px;
+    margin: 0.25rem;
+}
+
+.day-num {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-top: 0.25rem;
+}
+
+.time-row {
+    display: grid;
+    grid-template-columns: 60px repeat(auto-fit, minmax(0, 1fr));
+    min-height: 40px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.time-label {
+    padding: 0.25rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-align: center;
+    border-right: 1px solid var(--border-color);
+    background: var(--bg-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.time-slot {
+    border-right: 1px solid var(--border-color);
+    position: relative;
+    padding: 0.125rem;
+    min-height: 38px;
+}
+
+.time-slot:hover {
+    background: var(--bg-hover);
+}
+
+.event-block {
+    background: var(--accent-color);
+    color: white;
+    padding: 0.125rem 0.25rem;
+    margin: 0.125rem 0;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    line-height: 1.2;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.event-block:hover {
+    background: var(--accent-hover);
+}
+
+/* All Day Events Section */
+.all-day-section {
+    display: grid;
+    grid-template-columns: 60px repeat(auto-fit, minmax(0, 1fr));
+    border-bottom: 2px solid var(--border-color);
+    background: var(--bg-light);
+    min-height: 50px;
+    position: sticky;
+    top: 60px;
+    z-index: 1;
+}
+
+.all-day-slot {
+    border-right: 1px solid var(--border-color);
+    padding: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.all-day-event {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.all-day-event:hover {
+    background: var(--primary-hover);
+}
+
+/* Work Week and 3 Day View Adjustments */
+.week-view.work-week .week-header,
+.week-view.work-week .time-row,
+.week-view.work-week .all-day-section {
+    grid-template-columns: 60px repeat(5, minmax(0, 1fr));
+}
+
+.week-view.three-day .week-header,
+.week-view.three-day .time-row,
+.week-view.three-day .all-day-section {
+    grid-template-columns: 60px repeat(3, minmax(0, 1fr));
+}
+
+/* Calendar Settings Modal */
+.calendar-settings-modal .settings-section {
+    margin-bottom: 2rem;
+}
+
+.calendar-settings-modal .settings-section h4 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.calendar-settings-modal .setting-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.calendar-settings-modal .setting-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+}
+
+.calendar-settings-modal .setting-group label:hover {
+    background: var(--bg-hover);
+}
+
+.integration-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.integration-item {
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-light);
+}
+
+.integration-item h5 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.integration-item p {
+    margin: 0 0 1rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.connect-btn,
+.disconnect-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-right: 0.5rem;
+}
+
+.connect-btn {
+    background: var(--accent-color);
+    color: white;
+}
+
+.connect-btn:hover {
+    background: var(--accent-hover);
+}
+
+.disconnect-btn {
+    background: var(--error-color);
+    color: white;
+}
+
+.disconnect-btn:hover {
+    background: var(--error-hover);
+}
+
+.sync-now-btn {
+    padding: 0.5rem 1rem;
+    background: var(--success-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+.sync-now-btn:hover {
+    background: var(--success-hover);
+}
+
 /* Todo Tile */
 .todo-tile {
     background: linear-gradient(135deg, var(--todo-bg-start), var(--todo-bg-end));

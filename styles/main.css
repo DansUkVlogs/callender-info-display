@@ -409,7 +409,44 @@ html, body {
     }
 }
 
-/* Specific Modal Styles */
+/* All Modal Types - Ensure Proper Centering */
+.add-todo-modal,
+.edit-todo-modal,
+.add-event-modal,
+.day-events-modal,
+.countdown-editor-modal,
+.birthday-manager-modal,
+.weather-setup-modal,
+.traffic-setup-modal,
+.tile-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(2px);
+}
+
+.add-todo-modal.show,
+.edit-todo-modal.show,
+.add-event-modal.show,
+.day-events-modal.show,
+.countdown-editor-modal.show,
+.birthday-manager-modal.show,
+.weather-setup-modal.show,
+.traffic-setup-modal.show,
+.tile-modal.show {
+    opacity: 1;
+}
+
+/* Specific Modal Content Sizes */
 .add-todo-modal .modal-content,
 .edit-todo-modal .modal-content,
 .add-event-modal .modal-content,
@@ -421,6 +458,12 @@ html, body {
 .weather-setup-modal .modal-content,
 .traffic-setup-modal .modal-content {
     max-width: 650px;
+}
+
+.calendar-settings-modal .modal-content {
+    max-width: 700px;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
 .setup-info {

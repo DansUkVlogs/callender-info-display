@@ -125,23 +125,29 @@ class TodoTile {
         
         document.body.appendChild(modal);
         
-        // Focus the input
+        // Show modal with animation
         setTimeout(() => {
+            modal.classList.add('show');
             modal.querySelector('input[name="text"]').focus();
         }, 100);
         
+        // Function to close modal with animation
+        const closeModal = () => {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                if (document.body.contains(modal)) {
+                    document.body.removeChild(modal);
+                }
+            }, 300);
+        };
+
         // Event listeners
-        modal.querySelector('.close-btn').addEventListener('click', () => {
-            document.body.removeChild(modal);
-        });
-        
-        modal.querySelector('.cancel-btn').addEventListener('click', () => {
-            document.body.removeChild(modal);
-        });
+        modal.querySelector('.close-btn').addEventListener('click', closeModal);
+        modal.querySelector('.cancel-btn').addEventListener('click', closeModal);
         
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
-                document.body.removeChild(modal);
+                closeModal();
             }
         });
         
@@ -160,7 +166,7 @@ class TodoTile {
             };
             
             this.addTodo(todo);
-            document.body.removeChild(modal);
+            closeModal();
         });
         
         // Enter to submit
@@ -219,32 +225,38 @@ class TodoTile {
         
         document.body.appendChild(modal);
         
-        // Focus and select text
+        // Show modal with animation
         setTimeout(() => {
+            modal.classList.add('show');
             const textInput = modal.querySelector('input[name="text"]');
             textInput.focus();
             textInput.select();
         }, 100);
         
-        // Event listeners
-        modal.querySelector('.close-btn').addEventListener('click', () => {
-            document.body.removeChild(modal);
-        });
+        // Function to close modal with animation
+        const closeModal = () => {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                if (document.body.contains(modal)) {
+                    document.body.removeChild(modal);
+                }
+            }, 300);
+        };
         
-        modal.querySelector('.cancel-btn').addEventListener('click', () => {
-            document.body.removeChild(modal);
-        });
+        // Event listeners
+        modal.querySelector('.close-btn').addEventListener('click', closeModal);
+        modal.querySelector('.cancel-btn').addEventListener('click', closeModal);
         
         modal.querySelector('.delete-btn').addEventListener('click', () => {
             if (confirm('Delete this task?')) {
                 this.deleteTodo(todoId);
-                document.body.removeChild(modal);
+                closeModal();
             }
         });
         
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
-                document.body.removeChild(modal);
+                closeModal();
             }
         });
         
@@ -262,7 +274,7 @@ class TodoTile {
             };
             
             this.updateTodo(updatedTodo);
-            document.body.removeChild(modal);
+            closeModal();
         });
     }
 
