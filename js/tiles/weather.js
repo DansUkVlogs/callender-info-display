@@ -12,29 +12,12 @@ class WeatherTile {
 
     init() {
         this.loadSettings();
-        
-        // Use mock weather data for demo
-        this.weatherData = {
-            name: "Portsmouth",
-            main: {
-                temp: 18,
-                feels_like: 20,
-                humidity: 65
-            },
-            weather: [
-                {
-                    description: "partly cloudy",
-                    icon: "02d"
-                }
-            ],
-            wind: {
-                speed: 3.2
-            }
-        };
-        this.lastUpdate = Date.now();
-        
         this.render();
         this.setupEventListeners();
+        
+        // Always fetch weather since we have hardcoded values
+        this.fetchWeather();
+        this.startAutoUpdate();
         
         // Listen for global updates
         window.addEventListener('tileUpdate', () => {
@@ -45,21 +28,9 @@ class WeatherTile {
     setupEventListeners() {
         const weatherTile = document.getElementById('weatherTile');
         
-        // Click to refresh (just update display for demo)
+        // Click to refresh
         weatherTile.addEventListener('click', () => {
-            // Simulate weather change for demo
-            const temps = [15, 16, 17, 18, 19, 20, 21, 22];
-            const conditions = [
-                { description: "sunny", icon: "01d" },
-                { description: "partly cloudy", icon: "02d" },
-                { description: "cloudy", icon: "03d" },
-                { description: "light rain", icon: "10d" }
-            ];
-            
-            this.weatherData.main.temp = temps[Math.floor(Math.random() * temps.length)];
-            this.weatherData.weather[0] = conditions[Math.floor(Math.random() * conditions.length)];
-            this.lastUpdate = Date.now();
-            this.render();
+            this.fetchWeather(true);
         });
         
         // Settings update listener
@@ -393,15 +364,16 @@ class WeatherTile {
     }
 
     update() {
-        // Just re-render with current mock data
-        this.render();
+        // Check if we should fetch new weather data
+        this.fetchWeather();
     }
 
     loadSettings() {
         try {
             const settings = JSON.parse(localStorage.getItem('smartDisplayHub_weatherSettings')) || {};
-            this.apiKey = settings.apiKey || '';
-            this.location = settings.location || '';
+            // Keep hardcoded values if they exist, otherwise use saved settings
+            this.apiKey = this.apiKey || settings.apiKey || '';
+            this.location = this.location || settings.location || '';
             this.units = settings.units || 'metric';
         } catch (e) {
             console.warn('Failed to load weather settings:', e);
