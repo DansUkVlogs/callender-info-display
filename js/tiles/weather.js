@@ -2,7 +2,7 @@
 class WeatherTile {
     constructor() {
         this.apiKey = '1cdfadabddafedd72fe394e5be92c22d';
-        this.location = 'Portsmouth, UK';
+        this.location = 'portsmouth';
         this.units = 'metric'; // metric, imperial, kelvin
         this.weatherData = null;
         this.lastUpdate = null;
