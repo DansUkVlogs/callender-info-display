@@ -92,8 +92,7 @@ self.addEventListener('fetch', (event) => {
 
 // Background sync for offline actions
 self.addEventListener('sync', (event) => {
-    console.log('Service Worker: Background sync', event.tag);
-    
+
     if (event.tag === 'background-sync-tasks') {
         event.waitUntil(syncTasks());
     } else if (event.tag === 'background-sync-events') {
@@ -103,8 +102,7 @@ self.addEventListener('sync', (event) => {
 
 // Notification click handling
 self.addEventListener('notificationclick', (event) => {
-    console.log('Service Worker: Notification clicked', event);
-    
+
     event.notification.close();
     
     // Focus or open the app
@@ -128,7 +126,6 @@ self.addEventListener('notificationclick', (event) => {
 
 // Push notification handling
 self.addEventListener('push', (event) => {
-    console.log('Service Worker: Push received', event);
     
     const options = {
         body: event.data ? event.data.text() : 'New notification from Smart Display Hub',
@@ -157,7 +154,6 @@ self.addEventListener('push', (event) => {
 
 // Message handling from main app
 self.addEventListener('message', (event) => {
-    console.log('Service Worker: Message received', event.data);
     
     if (event.data && event.data.type) {
         switch (event.data.type) {
@@ -264,7 +260,6 @@ async function removePendingEvent(eventId) {
 // Periodic background fetch (if supported)
 if ('serviceWorker' in navigator && 'periodicSync' in window.ServiceWorkerRegistration.prototype) {
     self.addEventListener('periodicsync', (event) => {
-        console.log('Service Worker: Periodic sync', event.tag);
         
         if (event.tag === 'weather-update') {
             event.waitUntil(updateWeatherData());
