@@ -27,7 +27,8 @@ class TodoTile {
             if (e.target.classList.contains('todo-checkbox')) {
                 const todoId = e.target.closest('.todo-item').dataset.todoId;
                 this.toggleTodo(todoId);
-            } else if (e.target.classList.contains('todo-item')) {
+            } else if (e.target.classList.contains('todo-edit-btn')) {
+                e.stopPropagation(); // Prevent other click handlers
                 const todoId = e.target.dataset.todoId;
                 this.editTodo(todoId);
             }
@@ -49,8 +50,8 @@ class TodoTile {
         if (this.todos.length === 0) {
             todoList.innerHTML = `
                 <div class="no-todos">
-                    <p>No tasks yet</p>
-                    <button class="add-first-task">Add your first task</button>
+                    <p>Ready to get organized?</p>
+                    <button class="add-first-task">Create your first task</button>
                 </div>
             `;
             
@@ -75,9 +76,12 @@ class TodoTile {
         todoList.innerHTML = sortedTodos.map(todo => `
             <div class="todo-item ${todo.completed ? 'completed' : ''}" data-todo-id="${todo.id}">
                 <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''}>
-                <div class="todo-text">${this.escapeHtml(todo.text)}</div>
-                ${todo.priority ? `<div class="todo-priority ${todo.priority}"></div>` : ''}
-                ${todo.dueDate ? `<div class="todo-due-date">${this.formatDueDate(todo.dueDate)}</div>` : ''}
+                <div class="todo-content">
+                    <div class="todo-text">${this.escapeHtml(todo.text)}</div>
+                    ${todo.priority ? `<div class="todo-priority ${todo.priority}"></div>` : ''}
+                    ${todo.dueDate ? `<div class="todo-due-date">${this.formatDueDate(todo.dueDate)}</div>` : ''}
+                </div>
+                <button class="todo-edit-btn" data-todo-id="${todo.id}" title="Edit task">✏️</button>
             </div>
         `).join('');
     }

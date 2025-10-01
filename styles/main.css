@@ -597,6 +597,72 @@ html, body {
     font-style: italic;
 }
 
+.no-todos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    min-height: 120px;
+}
+
+.no-todos p {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+}
+
+/* Add First Task Button */
+.add-first-task {
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+    color: white;
+    border: none;
+    padding: 0.875rem 1.5rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.add-first-task:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, var(--accent-hover), var(--accent-color));
+}
+
+.add-first-task:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.add-first-task::before {
+    content: '✨';
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.add-first-task::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease;
+}
+
+.add-first-task:hover::after {
+    width: 300px;
+    height: 300px;
+}
+
 /* Touch Optimizations */
 @media (pointer: coarse) {
     .control-btn {
@@ -1249,4 +1315,395 @@ html, body {
     color: white;
     text-align: center;
     font-weight: 500;
+}
+
+/* Tile Edit Mode Styles */
+.dashboard.edit-mode {
+    padding: 1rem;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.tile.edit-mode {
+    position: relative;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.tile.edit-mode:active {
+    cursor: grabbing;
+}
+
+.tile.edit-mode.dragging {
+    opacity: 0.7;
+    transform: rotate(5deg);
+    z-index: 1000;
+}
+
+/* Wobble Animation */
+.tile.wobble {
+    animation: wobble 0.2s ease-in-out infinite alternate;
+}
+
+@keyframes wobble {
+    0% { transform: rotate(-0.3deg); }
+    100% { transform: rotate(0.3deg); }
+}
+
+/* Remove Button */
+.tile-remove-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+    z-index: 10;
+    line-height: 1;
+}
+
+.tile-remove-btn:hover {
+    background: #ff0000;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.tile-remove-btn:active {
+    transform: scale(0.95);
+}
+
+/* Add Tile Button */
+.add-tile-btn {
+    background: var(--bg-secondary);
+    border: 2px dashed var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 200px;
+}
+
+.add-tile-btn:hover {
+    background: var(--bg-accent);
+    border-color: var(--accent-color);
+    transform: scale(1.02);
+}
+
+.add-tile-content {
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.add-tile-icon {
+    font-size: 3rem;
+    font-weight: 300;
+    margin-bottom: 0.5rem;
+    color: var(--accent-color);
+}
+
+.add-tile-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.add-tile-btn:hover .add-tile-content {
+    color: var(--text-primary);
+}
+
+.add-tile-btn:hover .add-tile-icon {
+    color: var(--accent-hover);
+    transform: scale(1.1);
+}
+
+/* Tile Transitions */
+.tile {
+    transition: all 0.3s ease;
+}
+
+.tile.edit-mode {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Resize Handles */
+.resize-handles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.resize-handle {
+    position: absolute;
+    background: var(--accent-color);
+    border: 2px solid white;
+    border-radius: 4px;
+    pointer-events: all;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.tile.edit-mode:hover .resize-handle,
+.tile.resizing .resize-handle {
+    opacity: 1;
+}
+
+.resize-se {
+    bottom: -4px;
+    right: -4px;
+    width: 16px;
+    height: 16px;
+    cursor: se-resize;
+}
+
+.resize-s {
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 8px;
+    cursor: s-resize;
+}
+
+.resize-e {
+    right: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 16px;
+    cursor: e-resize;
+}
+
+.resize-handle:hover {
+    background: var(--accent-hover);
+    transform: scale(1.2);
+}
+
+.resize-se:hover {
+    transform: scale(1.2);
+}
+
+.resize-s:hover {
+    transform: translateX(-50%) scale(1.2);
+}
+
+.resize-e:hover {
+    transform: translateY(-50%) scale(1.2);
+}
+
+/* Enhanced Grid Overlay */
+.enhanced-grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 999;
+}
+
+.grid-cell {
+    position: absolute;
+    border: 2px dashed rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.dashboard.showing-grid .grid-cell {
+    border-color: var(--accent-color);
+    opacity: 0.3;
+}
+
+.grid-cell.drop-target {
+    border-color: var(--accent-color);
+    background: var(--accent-color);
+    opacity: 0.2;
+    border-style: solid;
+    transform: scale(0.95);
+}
+
+.drop-preview {
+    position: absolute;
+    border: 3px solid var(--accent-color);
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent-color)20, var(--accent-color)10);
+    opacity: 0.8;
+    animation: dropPreviewPulse 1s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes dropPreviewPulse {
+    0% { 
+        opacity: 0.6;
+        transform: scale(0.98);
+    }
+    100% { 
+        opacity: 0.9;
+        transform: scale(1.02);
+    }
+}
+
+/* Legacy grid overlay for compatibility */
+.grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    background-image: 
+        linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+    background-size: 250px 200px;
+    opacity: 0.5;
+    z-index: 999;
+    display: none;
+}
+
+/* Dragging States */
+.tile.dragging-source {
+    opacity: 0.3;
+    transform: scale(0.95);
+    transition: all 0.3s ease;
+}
+
+#drag-clone {
+    transition: none;
+    border: 2px solid var(--accent-color);
+}
+
+.tile.resizing {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhanced Edit Mode */
+.dashboard.edit-mode .tile:not(.add-tile-btn) {
+    border: 2px dashed transparent;
+    transition: all 0.2s ease;
+}
+
+.dashboard.edit-mode .tile:not(.add-tile-btn):hover {
+    border-color: var(--accent-color);
+}
+
+/* Drag Handle */
+.drag-handle {
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: grab;
+    padding: 4px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: all 0.2s ease;
+    line-height: 1;
+    font-family: monospace;
+    letter-spacing: -2px;
+}
+
+.tile.edit-mode:hover .drag-handle {
+    opacity: 0.7;
+}
+
+.drag-handle:hover {
+    opacity: 1;
+    background: var(--bg-accent);
+    color: var(--text-primary);
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+    background: var(--accent-color);
+    color: white;
+}
+
+/* Save Notification */
+.save-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    opacity: 0;
+    transform: translateX(100px);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.save-notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.save-notification.success {
+    border-left: 4px solid var(--success-color);
+}
+
+.save-notification.error {
+    border-left: 4px solid var(--danger-color);
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.notification-icon {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.save-notification.success .notification-icon {
+    color: var(--success-color);
+}
+
+.save-notification.error .notification-icon {
+    color: var(--danger-color);
+}
+
+.notification-text {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+/* Mobile responsiveness for notifications */
+@media (max-width: 768px) {
+    .save-notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        transform: translateY(-100px);
+    }
+    
+    .save-notification.show {
+        transform: translateY(0);
+    }
 }
