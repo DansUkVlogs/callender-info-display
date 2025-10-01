@@ -42,6 +42,7 @@
             <div class="tile tile-large calendar-tile" id="calendarTile" data-tile-type="calendar">
                 <div class="tile-header">
                     <h3>Calendar</h3>
+                    <button class="new-event-btn" title="Add New Event">+</button>
                     <button class="calendar-settings-btn" title="Calendar Settings">⚙</button>
                     <button class="tile-expand-btn">⤢</button>
                 </div>
@@ -197,17 +198,13 @@
 
                     <div class="settings-section">
                         <h3>API Configuration</h3>
-                        <div class="setting-group">
-                            <label>Weather API Key:</label>
-                            <input type="text" id="weatherApiKey" placeholder="OpenWeatherMap API Key">
-                        </div>
-                        <div class="setting-group">
-                            <label>Location:</label>
-                            <input type="text" id="location" placeholder="City, Country">
-                        </div>
-                        <div class="setting-group">
-                            <label>Traffic API Key:</label>
-                            <input type="text" id="trafficApiKey" placeholder="Google Maps API Key">
+                        <div class="setting-info">
+                            <p><strong>✅ APIs Pre-configured!</strong></p>
+                            <ul>
+                                <li><strong>Weather:</strong> Your Portsmouth location (Stanhope Rd)</li>
+                                <li><strong>Traffic:</strong> Uni to Work & Home (carousel view)</li>
+                            </ul>
+                            <p><em>Auto-cycles every 10 seconds • Click dots to manually switch!</em></p>
                         </div>
                     </div>
                 </div>

@@ -21,12 +21,24 @@ class CalendarTile {
     setupEventListeners() {
         const calendarView = document.getElementById('calendarView');
         const settingsBtn = document.querySelector('#calendarTile .calendar-settings-btn');
+        const newEventBtn = document.querySelector('#calendarTile .new-event-btn');
+        
+        // New event button
+        if (newEventBtn) {
+            newEventBtn.addEventListener('click', () => {
+                this.showAddEventDialog(new Date());
+            });
+        }
         
         // Calendar settings button
         if (settingsBtn) {
+            console.log('Settings button found, adding event listener');
             settingsBtn.addEventListener('click', () => {
+                console.log('Settings button clicked!');
                 this.showCalendarSettings();
             });
+        } else {
+            console.warn('Calendar settings button not found');
         }
         
         // Navigation buttons will be added dynamically
@@ -221,25 +233,118 @@ class CalendarTile {
         modal.innerHTML = `
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>Add Event - ${date.toLocaleDateString()}</h3>
+                    <h3>Add New Event - ${date.toLocaleDateString()}</h3>
                     <button class="close-btn">&times;</button>
                 </div>
                 <div class="modal-body">
                     <form class="add-event-form">
                         <div class="form-group">
-                            <label>Title:</label>
-                            <input type="text" name="title" required>
+                            <label>Event Title:</label>
+                            <input type="text" name="title" placeholder="Enter event title..." required autofocus>
                         </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group half-width">
+                                <label>Date:</label>
+                                <input type="date" name="date" value="${date.toISOString().split('T')[0]}" required>
+                            </div>
+                            <div class="form-group half-width">
+                                <label>All Day Event:</label>
+                                <input type="checkbox" name="allDay" id="allDayToggle">
+                            </div>
+                        </div>
+                        
+                        <div class="time-section" id="timeSection">
+                            <div class="form-row">
+                                <div class="form-group half-width">
+                                    <label>Start Time:</label>
+                                    <input type="time" name="startTime" value="09:00">
+                                </div>
+                                <div class="form-group half-width">
+                                    <label>End Time:</label>
+                                    <input type="time" name="endTime" value="10:00">
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="form-group">
-                            <label>Time:</label>
-                            <input type="time" name="time">
+                            <label>Location:</label>
+                            <input type="text" name="location" placeholder="Event location (optional)">
                         </div>
+                        
                         <div class="form-group">
                             <label>Description:</label>
-                            <textarea name="description"></textarea>
+                            <textarea name="description" placeholder="Event description (optional)" rows="3"></textarea>
                         </div>
+                        
+                        <div class="form-group">
+                            <label>Category:</label>
+                            <select name="category">
+                                <option value="">No Category</option>
+                                <option value="work">Work</option>
+                                <option value="personal">Personal</option>
+                                <option value="meeting">Meeting</option>
+                                <option value="appointment">Appointment</option>
+                                <option value="reminder">Reminder</option>
+                                <option value="birthday">Birthday</option>
+                                <option value="holiday">Holiday</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Repeat:</label>
+                            <select name="repeat" id="repeatSelect">
+                                <option value="none">No Repeat</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="biweekly">Bi-weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                                <option value="weekdays">Weekdays Only</option>
+                                <option value="custom">Custom...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="repeat-options" id="repeatOptions" style="display: none;">
+                            <div class="form-row">
+                                <div class="form-group half-width">
+                                    <label>Repeat Every:</label>
+                                    <input type="number" name="repeatInterval" value="1" min="1" max="365">
+                                </div>
+                                <div class="form-group half-width">
+                                    <label>Unit:</label>
+                                    <select name="repeatUnit">
+                                        <option value="days">Days</option>
+                                        <option value="weeks">Weeks</option>
+                                        <option value="months">Months</option>
+                                        <option value="years">Years</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>End Repeat:</label>
+                                <select name="repeatEnd">
+                                    <option value="never">Never</option>
+                                    <option value="after">After number of occurrences</option>
+                                    <option value="date">On specific date</option>
+                                </select>
+                            </div>
+                            
+                            <div class="repeat-end-options" id="repeatEndOptions" style="display: none;">
+                                <div class="form-group" id="repeatCountGroup" style="display: none;">
+                                    <label>Number of Occurrences:</label>
+                                    <input type="number" name="repeatCount" value="10" min="1" max="365">
+                                </div>
+                                <div class="form-group" id="repeatUntilGroup" style="display: none;">
+                                    <label>End Date:</label>
+                                    <input type="date" name="repeatUntil">
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="form-actions">
-                            <button type="submit">Add Event</button>
+                            <button type="submit" class="primary-btn">Create Event</button>
                             <button type="button" class="cancel-btn">Cancel</button>
                         </div>
                     </form>
@@ -268,19 +373,121 @@ class CalendarTile {
         modal.querySelector('.close-btn').addEventListener('click', closeModal);
         modal.querySelector('.cancel-btn').addEventListener('click', closeModal);
         
+        // All-day toggle functionality
+        const allDayToggle = modal.querySelector('#allDayToggle');
+        const timeSection = modal.querySelector('#timeSection');
+        
+        allDayToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                timeSection.style.display = 'none';
+            } else {
+                timeSection.style.display = 'block';
+            }
+        });
+        
+        // Repeat functionality
+        const repeatSelect = modal.querySelector('#repeatSelect');
+        const repeatOptions = modal.querySelector('#repeatOptions');
+        const repeatEndSelect = modal.querySelector('[name="repeatEnd"]');
+        const repeatEndOptions = modal.querySelector('#repeatEndOptions');
+        const repeatCountGroup = modal.querySelector('#repeatCountGroup');
+        const repeatUntilGroup = modal.querySelector('#repeatUntilGroup');
+        
+        repeatSelect.addEventListener('change', (e) => {
+            if (e.target.value === 'none') {
+                repeatOptions.style.display = 'none';
+            } else if (e.target.value === 'custom') {
+                repeatOptions.style.display = 'block';
+            } else {
+                repeatOptions.style.display = 'block';
+                // Set default values for common repeats
+                const interval = modal.querySelector('[name="repeatInterval"]');
+                const unit = modal.querySelector('[name="repeatUnit"]');
+                
+                switch (e.target.value) {
+                    case 'daily':
+                        interval.value = 1;
+                        unit.value = 'days';
+                        break;
+                    case 'weekly':
+                        interval.value = 1;
+                        unit.value = 'weeks';
+                        break;
+                    case 'biweekly':
+                        interval.value = 2;
+                        unit.value = 'weeks';
+                        break;
+                    case 'monthly':
+                        interval.value = 1;
+                        unit.value = 'months';
+                        break;
+                    case 'yearly':
+                        interval.value = 1;
+                        unit.value = 'years';
+                        break;
+                    case 'weekdays':
+                        interval.value = 1;
+                        unit.value = 'days';
+                        break;
+                }
+            }
+        });
+        
+        repeatEndSelect.addEventListener('change', (e) => {
+            repeatCountGroup.style.display = 'none';
+            repeatUntilGroup.style.display = 'none';
+            
+            if (e.target.value === 'never') {
+                repeatEndOptions.style.display = 'none';
+            } else {
+                repeatEndOptions.style.display = 'block';
+                if (e.target.value === 'after') {
+                    repeatCountGroup.style.display = 'block';
+                } else if (e.target.value === 'date') {
+                    repeatUntilGroup.style.display = 'block';
+                }
+            }
+        });
+        
         modal.querySelector('.add-event-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
             
-            const event = {
+            const isAllDay = formData.get('allDay') === 'on';
+            const startTime = formData.get('startTime') || '09:00';
+            const endTime = formData.get('endTime') || '10:00';
+            const repeatType = formData.get('repeat');
+            
+            const baseEvent = {
                 id: Date.now().toString(),
-                date: date.toISOString().split('T')[0],
+                date: formData.get('date'),
                 title: formData.get('title'),
-                time: formData.get('time') || '00:00',
-                description: formData.get('description') || ''
+                startTime: isAllDay ? null : startTime,
+                endTime: isAllDay ? null : endTime,
+                allDay: isAllDay,
+                location: formData.get('location') || '',
+                description: formData.get('description') || '',
+                category: formData.get('category') || '',
+                created: new Date().toISOString()
             };
             
-            this.addEvent(event);
+            if (repeatType === 'none') {
+                // Single event
+                this.addEvent(baseEvent);
+            } else {
+                // Recurring event
+                const events = this.generateRecurringEvents(baseEvent, {
+                    type: repeatType,
+                    interval: parseInt(formData.get('repeatInterval')) || 1,
+                    unit: formData.get('repeatUnit') || 'weeks',
+                    endType: formData.get('repeatEnd') || 'never',
+                    count: parseInt(formData.get('repeatCount')) || 10,
+                    until: formData.get('repeatUntil') || null
+                });
+                
+                events.forEach(event => this.addEvent(event));
+            }
+            
             closeModal();
             this.render();
         });
@@ -310,12 +517,94 @@ class CalendarTile {
         window.dispatchEvent(new CustomEvent('eventAdded', { detail: event }));
     }
 
+    generateRecurringEvents(baseEvent, repeatConfig) {
+        const events = [];
+        const startDate = new Date(baseEvent.date);
+        let currentDate = new Date(startDate);
+        let count = 0;
+        
+        // Calculate end date
+        let endDate = null;
+        if (repeatConfig.endType === 'date' && repeatConfig.until) {
+            endDate = new Date(repeatConfig.until);
+        } else if (repeatConfig.endType === 'after') {
+            // We'll use the count limit instead
+        } else {
+            // Default to 2 years for "never" to prevent infinite loops
+            endDate = new Date();
+            endDate.setFullYear(endDate.getFullYear() + 2);
+        }
+        
+        while (count < 365 && (repeatConfig.endType !== 'after' || count < repeatConfig.count)) {
+            // Break if we've reached the end date
+            if (endDate && currentDate > endDate) break;
+            
+            // Create event for current date
+            const event = {
+                ...baseEvent,
+                id: `${baseEvent.id}_${count}`,
+                date: currentDate.toISOString().split('T')[0]
+            };
+            events.push(event);
+            
+            // Calculate next occurrence
+            switch (repeatConfig.type) {
+                case 'daily':
+                    currentDate.setDate(currentDate.getDate() + repeatConfig.interval);
+                    break;
+                case 'weekly':
+                    currentDate.setDate(currentDate.getDate() + (7 * repeatConfig.interval));
+                    break;
+                case 'biweekly':
+                    currentDate.setDate(currentDate.getDate() + 14);
+                    break;
+                case 'monthly':
+                    currentDate.setMonth(currentDate.getMonth() + repeatConfig.interval);
+                    break;
+                case 'yearly':
+                    currentDate.setFullYear(currentDate.getFullYear() + repeatConfig.interval);
+                    break;
+                case 'weekdays':
+                    // Skip to next weekday
+                    do {
+                        currentDate.setDate(currentDate.getDate() + 1);
+                    } while (currentDate.getDay() === 0 || currentDate.getDay() === 6); // Skip weekends
+                    break;
+                case 'custom':
+                    if (repeatConfig.unit === 'days') {
+                        currentDate.setDate(currentDate.getDate() + repeatConfig.interval);
+                    } else if (repeatConfig.unit === 'weeks') {
+                        currentDate.setDate(currentDate.getDate() + (7 * repeatConfig.interval));
+                    } else if (repeatConfig.unit === 'months') {
+                        currentDate.setMonth(currentDate.getMonth() + repeatConfig.interval);
+                    } else if (repeatConfig.unit === 'years') {
+                        currentDate.setFullYear(currentDate.getFullYear() + repeatConfig.interval);
+                    }
+                    break;
+            }
+            
+            count++;
+            
+            // Safety check to prevent infinite loops
+            if (count >= (repeatConfig.endType === 'after' ? repeatConfig.count : 365)) {
+                break;
+            }
+        }
+        
+        return events;
+    }
+
+    isRecurringEvent(event) {
+        // Check if this event ID contains an underscore (indicating it's part of a recurring series)
+        return event.id && event.id.includes('_');
+    }
+
     loadEvents() {
         try {
-            return JSON.parse(localStorage.getItem('smartDisplayHub_events')) || this.getDefaultEvents();
+            return JSON.parse(localStorage.getItem('smartDisplayHub_events')) || [];
         } catch (e) {
             console.warn('Failed to load events:', e);
-            return this.getDefaultEvents();
+            return [];
         }
     }
 
@@ -327,6 +616,20 @@ class CalendarTile {
         }
     }
 
+    clearAllEvents() {
+        // Clear all calendar-related localStorage data
+        localStorage.removeItem('smartDisplayHub_events');
+        localStorage.removeItem('smartDisplayHub_birthdays');
+        localStorage.removeItem('externalCalendars');
+        localStorage.removeItem('calendarSyncSettings');
+        localStorage.removeItem('calendarCredentials');
+        
+        // Reset the events array and re-render
+        this.events = [];
+        this.render();
+        console.log('All calendar events and data cleared');
+    }
+
     getBirthdays() {
         try {
             return JSON.parse(localStorage.getItem('smartDisplayHub_birthdays')) || [];
@@ -336,26 +639,7 @@ class CalendarTile {
     }
 
     getDefaultEvents() {
-        const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
-        
-        return [
-            {
-                id: '1',
-                date: today.toISOString().split('T')[0],
-                title: 'Welcome to Smart Display Hub!',
-                time: '09:00',
-                description: 'Start customizing your dashboard'
-            },
-            {
-                id: '2',
-                date: tomorrow.toISOString().split('T')[0],
-                title: 'Sample Event',
-                time: '14:00',
-                description: 'This is how events will appear'
-            }
-        ];
+        return [];
     }
 
     update() {
@@ -509,7 +793,8 @@ class CalendarTile {
                 
                 grid += '<div class="time-slot">';
                 slotEvents.forEach(event => {
-                    grid += `<div class="event-block" data-event-id="${event.id}">${event.title}</div>`;
+                    const recurringClass = this.isRecurringEvent(event) ? ' recurring' : '';
+                    grid += `<div class="event-block${recurringClass}" data-event-id="${event.id}">${event.title}</div>`;
                 });
                 grid += '</div>';
             });
@@ -526,7 +811,8 @@ class CalendarTile {
             
             grid += '<div class="all-day-slot">';
             allDayEvents.forEach(event => {
-                grid += `<div class="all-day-event" data-event-id="${event.id}">${event.title}</div>`;
+                const recurringClass = this.isRecurringEvent(event) ? ' recurring' : '';
+                grid += `<div class="all-day-event${recurringClass}" data-event-id="${event.id}">${event.title}</div>`;
             });
             grid += '</div>';
         });
@@ -563,6 +849,7 @@ class CalendarTile {
 
     // Calendar Settings Modal
     showCalendarSettings() {
+        console.log('showCalendarSettings called');
         const modal = document.createElement('div');
         modal.className = 'calendar-settings-modal';
         modal.innerHTML = `
@@ -605,6 +892,7 @@ class CalendarTile {
                         </div>
                     </div>
                     
+                    
                     <div class="settings-section">
                         <h4>Sync Settings</h4>
                         <div class="setting-group">
@@ -613,6 +901,14 @@ class CalendarTile {
                             <label><input type="checkbox" ${this.getSyncSetting('syncFutureEvents') ? 'checked' : ''}> Sync future events (90 days)</label>
                         </div>
                         <button class="sync-now-btn">Sync Now</button>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h4>Data Management</h4>
+                        <div class="setting-group">
+                            <p>⚠️ This will permanently delete all calendar events and data</p>
+                            <button class="clear-all-btn" style="background: #dc3545; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer;">Clear All Events</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -672,6 +968,15 @@ class CalendarTile {
         modal.querySelector('.sync-now-btn').addEventListener('click', () => {
             this.syncAllCalendars();
         });
+        
+        // Clear all events button
+        modal.querySelector('.clear-all-btn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to delete all calendar events and data? This cannot be undone.')) {
+                this.clearAllEvents();
+                closeModal();
+            }
+        });
+
     }
 
     // View Mode Management
@@ -725,28 +1030,97 @@ class CalendarTile {
         return settings[setting] || false;
     }
 
+
+
     // Integration methods for external calendar services
     async connectGoogleCalendar() {
-        // Google Calendar API integration
         try {
-            // This would use Google Calendar API
             console.log('Initiating Google Calendar connection...');
             
-            // Placeholder for Google OAuth flow
-            const authUrl = `https://accounts.google.com/o/oauth2/auth?` +
-                `client_id=YOUR_GOOGLE_CLIENT_ID&` +
-                `redirect_uri=${encodeURIComponent(window.location.origin)}&` +
-                `scope=https://www.googleapis.com/auth/calendar.readonly&` +
-                `response_type=code&` +
-                `access_type=offline`;
+            // Create a setup modal for Google Calendar
+            const setupModal = document.createElement('div');
+            setupModal.className = 'google-setup-modal';
+            setupModal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Connect Google Calendar</h3>
+                        <button class="close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="setup-info">
+                            <h4>Setup Instructions:</h4>
+                            <ol>
+                                <li>Go to <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a></li>
+                                <li>Create a new project or select existing one</li>
+                                <li>Enable the Google Calendar API</li>
+                                <li>Create OAuth 2.0 credentials (Web application)</li>
+                                <li>Add <strong>${window.location.origin}</strong> to authorized JavaScript origins</li>
+                                <li>Add <strong>${window.location.origin}</strong> to authorized redirect URIs</li>
+                                <li>Copy your Client ID below</li>
+                            </ol>
+                            <div class="redirect-info">
+                                <p><strong>Current redirect URI:</strong> <code>${window.location.origin}</code></p>
+                                <p><small>Copy this exact URL into your Google OAuth settings</small></p>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Google Client ID:</label>
+                            <input type="text" id="googleClientId" placeholder="Enter your Google OAuth Client ID" 
+                                   value="${this.getStoredClientId('google') || ''}">
+                            <small>This will be stored locally in your browser</small>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button class="connect-btn" id="connectGoogleBtn">Connect Google Calendar</button>
+                            <button class="test-btn" id="testGoogleBtn">Test Connection</button>
+                            <button class="cancel-btn">Cancel</button>
+                        </div>
+                        
+                        <div id="connectionStatus" class="connection-status"></div>
+                    </div>
+                </div>
+            `;
             
-            // For now, show instructions
-            alert(`To connect Google Calendar:
-1. Go to Google Cloud Console
-2. Create a project and enable Calendar API
-3. Create OAuth 2.0 credentials
-4. Add your domain to authorized origins
-5. Update the client ID in the code`);
+            document.body.appendChild(setupModal);
+            
+            // Show modal with animation
+            setTimeout(() => {
+                setupModal.classList.add('show');
+            }, 100);
+            
+            // Function to close modal
+            const closeSetupModal = () => {
+                setupModal.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(setupModal)) {
+                        document.body.removeChild(setupModal);
+                    }
+                }, 300);
+            };
+            
+            // Event listeners
+            setupModal.querySelector('.close-btn').addEventListener('click', closeSetupModal);
+            setupModal.querySelector('.cancel-btn').addEventListener('click', closeSetupModal);
+            
+            setupModal.querySelector('#connectGoogleBtn').addEventListener('click', () => {
+                const clientId = setupModal.querySelector('#googleClientId').value;
+                if (clientId) {
+                    this.storeClientId('google', clientId);
+                    this.initiateGoogleOAuth(clientId);
+                } else {
+                    this.showConnectionStatus('Please enter your Google Client ID', 'error');
+                }
+            });
+            
+            setupModal.querySelector('#testGoogleBtn').addEventListener('click', () => {
+                const clientId = setupModal.querySelector('#googleClientId').value;
+                if (clientId) {
+                    this.testGoogleConnection(clientId);
+                } else {
+                    this.showConnectionStatus('Please enter your Google Client ID', 'error');
+                }
+            });
             
         } catch (error) {
             console.error('Google Calendar connection error:', error);
@@ -754,26 +1128,91 @@ class CalendarTile {
     }
 
     async connectOutlookCalendar() {
-        // Microsoft Graph API integration
         try {
-            // This would use Microsoft Graph API
             console.log('Initiating Outlook Calendar connection...');
             
-            // Placeholder for Microsoft OAuth flow
-            const authUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?` +
-                `client_id=YOUR_MICROSOFT_CLIENT_ID&` +
-                `response_type=code&` +
-                `redirect_uri=${encodeURIComponent(window.location.origin)}&` +
-                `scope=https://graph.microsoft.com/calendars.read&` +
-                `response_mode=query`;
+            // Create a setup modal for Outlook Calendar
+            const setupModal = document.createElement('div');
+            setupModal.className = 'outlook-setup-modal';
+            setupModal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Connect Outlook Calendar</h3>
+                        <button class="close-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="setup-info">
+                            <h4>Setup Instructions:</h4>
+                            <ol>
+                                <li>Go to <a href="https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade" target="_blank">Azure App Registrations</a></li>
+                                <li>Create a new application (Single-page application)</li>
+                                <li>Add Microsoft Graph API permissions: Calendars.Read</li>
+                                <li>Add <strong>${window.location.origin}</strong> to redirect URIs</li>
+                                <li>Copy your Application (Client) ID below</li>
+                            </ol>
+                            <div class="redirect-info">
+                                <p><strong>Current redirect URI:</strong> <code>${window.location.origin}</code></p>
+                                <p><small>Copy this exact URL into your Azure app redirect URIs</small></p>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Microsoft Client ID:</label>
+                            <input type="text" id="outlookClientId" placeholder="Enter your Azure App Client ID" 
+                                   value="${this.getStoredClientId('outlook') || ''}">
+                            <small>This will be stored locally in your browser</small>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button class="connect-btn" id="connectOutlookBtn">Connect Outlook Calendar</button>
+                            <button class="test-btn" id="testOutlookBtn">Test Connection</button>
+                            <button class="cancel-btn">Cancel</button>
+                        </div>
+                        
+                        <div id="connectionStatus" class="connection-status"></div>
+                    </div>
+                </div>
+            `;
             
-            // For now, show instructions
-            alert(`To connect Outlook Calendar:
-1. Go to Azure App Registrations
-2. Create a new application
-3. Add Calendar.Read permissions
-4. Add your domain to redirect URIs
-5. Update the client ID in the code`);
+            document.body.appendChild(setupModal);
+            
+            // Show modal with animation
+            setTimeout(() => {
+                setupModal.classList.add('show');
+            }, 100);
+            
+            // Function to close modal
+            const closeSetupModal = () => {
+                setupModal.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(setupModal)) {
+                        document.body.removeChild(setupModal);
+                    }
+                }, 300);
+            };
+            
+            // Event listeners
+            setupModal.querySelector('.close-btn').addEventListener('click', closeSetupModal);
+            setupModal.querySelector('.cancel-btn').addEventListener('click', closeSetupModal);
+            
+            setupModal.querySelector('#connectOutlookBtn').addEventListener('click', () => {
+                const clientId = setupModal.querySelector('#outlookClientId').value;
+                if (clientId) {
+                    this.storeClientId('outlook', clientId);
+                    this.initiateOutlookOAuth(clientId);
+                } else {
+                    this.showConnectionStatus('Please enter your Microsoft Client ID', 'error');
+                }
+            });
+            
+            setupModal.querySelector('#testOutlookBtn').addEventListener('click', () => {
+                const clientId = setupModal.querySelector('#outlookClientId').value;
+                if (clientId) {
+                    this.testOutlookConnection(clientId);
+                } else {
+                    this.showConnectionStatus('Please enter your Microsoft Client ID', 'error');
+                }
+            });
             
         } catch (error) {
             console.error('Outlook Calendar connection error:', error);
@@ -802,6 +1241,157 @@ class CalendarTile {
         }
         
         this.render();
+    }
+
+    // OAuth Helper Methods
+    storeClientId(provider, clientId) {
+        const credentials = JSON.parse(localStorage.getItem('calendarCredentials') || '{}');
+        credentials[provider] = { clientId };
+        localStorage.setItem('calendarCredentials', JSON.stringify(credentials));
+    }
+
+    getStoredClientId(provider) {
+        const credentials = JSON.parse(localStorage.getItem('calendarCredentials') || '{}');
+        return credentials[provider]?.clientId || '';
+    }
+
+    showConnectionStatus(message, type) {
+        const statusDiv = document.querySelector('#connectionStatus');
+        if (statusDiv) {
+            statusDiv.innerHTML = `<div class="status-message ${type}">${message}</div>`;
+        }
+    }
+
+    // Google Calendar OAuth Flow
+    initiateGoogleOAuth(clientId) {
+        const redirectUri = encodeURIComponent(window.location.origin);
+        const scope = encodeURIComponent('https://www.googleapis.com/auth/calendar.readonly');
+        const state = encodeURIComponent(JSON.stringify({ provider: 'google', timestamp: Date.now() }));
+        
+        const authUrl = `https://accounts.google.com/o/oauth2/auth?` +
+            `client_id=${clientId}&` +
+            `redirect_uri=${redirectUri}&` +
+            `scope=${scope}&` +
+            `response_type=code&` +
+            `access_type=offline&` +
+            `state=${state}`;
+        
+        // Open OAuth window
+        const popup = window.open(authUrl, 'googleAuth', 'width=500,height=600');
+        
+        // Listen for OAuth completion
+        const checkClosed = setInterval(() => {
+            if (popup.closed) {
+                clearInterval(checkClosed);
+                this.checkGoogleAuthCompletion();
+            }
+        }, 1000);
+        
+        this.showConnectionStatus('Opening Google authentication window...', 'info');
+    }
+
+    // Outlook Calendar OAuth Flow
+    initiateOutlookOAuth(clientId) {
+        const redirectUri = encodeURIComponent(window.location.origin);
+        const scope = encodeURIComponent('https://graph.microsoft.com/calendars.read');
+        const state = encodeURIComponent(JSON.stringify({ provider: 'outlook', timestamp: Date.now() }));
+        
+        const authUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?` +
+            `client_id=${clientId}&` +
+            `response_type=code&` +
+            `redirect_uri=${redirectUri}&` +
+            `scope=${scope}&` +
+            `state=${state}&` +
+            `response_mode=query`;
+        
+        // Open OAuth window
+        const popup = window.open(authUrl, 'outlookAuth', 'width=500,height=600');
+        
+        // Listen for OAuth completion
+        const checkClosed = setInterval(() => {
+            if (popup.closed) {
+                clearInterval(checkClosed);
+                this.checkOutlookAuthCompletion();
+            }
+        }, 1000);
+        
+        this.showConnectionStatus('Opening Microsoft authentication window...', 'info');
+    }
+
+    // Test Connection Methods
+    async testGoogleConnection(clientId) {
+        try {
+            this.showConnectionStatus('Testing Google Calendar connection...', 'info');
+            
+            // Simple validation
+            if (clientId && clientId.includes('.googleusercontent.com')) {
+                this.showConnectionStatus('✓ Client ID format appears valid. Click "Connect" to authenticate.', 'success');
+            } else {
+                this.showConnectionStatus('⚠ Invalid Client ID format. Please check your Google Cloud Console.', 'warning');
+            }
+        } catch (error) {
+            this.showConnectionStatus('✗ Connection test failed: ' + error.message, 'error');
+        }
+    }
+
+    async testOutlookConnection(clientId) {
+        try {
+            this.showConnectionStatus('Testing Outlook Calendar connection...', 'info');
+            
+            // Simple validation
+            if (clientId && clientId.length === 36 && clientId.includes('-')) {
+                this.showConnectionStatus('✓ Client ID format appears valid. Click "Connect" to authenticate.', 'success');
+            } else {
+                this.showConnectionStatus('⚠ Invalid Client ID format. Please check your Azure App Registration.', 'warning');
+            }
+        } catch (error) {
+            this.showConnectionStatus('✗ Connection test failed: ' + error.message, 'error');
+        }
+    }
+
+    // Auth Completion Handlers
+    checkGoogleAuthCompletion() {
+        // Check for stored tokens or success indicators
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('code') && urlParams.get('state')) {
+            const state = JSON.parse(decodeURIComponent(urlParams.get('state')));
+            if (state.provider === 'google') {
+                this.handleGoogleAuthSuccess(urlParams.get('code'));
+            }
+        }
+    }
+
+    checkOutlookAuthCompletion() {
+        // Check for stored tokens or success indicators
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('code') && urlParams.get('state')) {
+            const state = JSON.parse(decodeURIComponent(urlParams.get('state')));
+            if (state.provider === 'outlook') {
+                this.handleOutlookAuthSuccess(urlParams.get('code'));
+            }
+        }
+    }
+
+    handleGoogleAuthSuccess(authCode) {
+        this.externalCalendars.google = {
+            connected: true,
+            authCode: authCode,
+            connectedAt: new Date().toISOString()
+        };
+        this.saveExternalCalendars();
+        this.showConnectionStatus('✓ Google Calendar connected successfully!', 'success');
+        console.log('Google Calendar connected with auth code:', authCode);
+    }
+
+    handleOutlookAuthSuccess(authCode) {
+        this.externalCalendars.outlook = {
+            connected: true,
+            authCode: authCode,
+            connectedAt: new Date().toISOString()
+        };
+        this.saveExternalCalendars();
+        this.showConnectionStatus('✓ Outlook Calendar connected successfully!', 'success');
+        console.log('Outlook Calendar connected with auth code:', authCode);
     }
 }
 

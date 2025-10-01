@@ -15,6 +15,12 @@ class TimerTile {
     }
 
     init() {
+        // Store instance on the timer tile element
+        const timerTile = document.getElementById('timerTile');
+        if (timerTile) {
+            timerTile.__timerInstance = this;
+        }
+        
         this.render();
         this.setupEventListeners();
         
@@ -26,18 +32,6 @@ class TimerTile {
 
     setupEventListeners() {
         const timerDisplay = document.getElementById('timerDisplay');
-        
-        // Timer controls will be added dynamically
-        timerDisplay.addEventListener('click', (e) => {
-            if (e.target.classList.contains('timer-btn')) {
-                const action = e.target.dataset.action;
-                this.handleTimerAction(action);
-            } else if (e.target.classList.contains('preset-timer')) {
-                const minutes = parseInt(e.target.dataset.minutes);
-                const name = e.target.dataset.name;
-                this.startPresetTimer(minutes, name);
-            }
-        });
         
         // Long press for timer settings
         let longPressTimer;
@@ -64,14 +58,14 @@ class TimerTile {
                 <div class="timer-setup">
                     <div class="timer-time">00:00</div>
                     <div class="timer-presets">
-                        ${this.presetTimers.map(preset => `
-                            <button class="preset-timer" data-minutes="${preset.minutes}" data-name="${preset.name}">
+                        ${this.presetTimers.map((preset, index) => `
+                            <button class="preset-timer" tabindex="0" onmousedown="console.log('Button ${index}: ${preset.name} clicked at', event.target); window.timerTileInstance.startPresetTimer(${preset.minutes}, '${preset.name}')">
                                 ${preset.name}
                             </button>
                         `).join('')}
-                    </div>
-                    <div class="timer-controls">
-                        <button class="timer-btn" data-action="custom">Custom</button>
+                        <button class="preset-timer custom-btn" tabindex="0" onmousedown="console.log('Custom button clicked at', event.target); window.timerTileInstance.showCustomTimerDialog()">
+                            Custom
+                        </button>
                     </div>
                 </div>
             `;
@@ -90,11 +84,12 @@ class TimerTile {
                     <div class="timer-progress-bar" style="width: ${progress}%"></div>
                 </div>
                 <div class="timer-controls">
-                    <button class="timer-btn" data-action="${timer.isRunning ? 'pause' : 'resume'}">
+                    <button class="timer-btn" tabindex="0" onclick="console.log('Button 1: ${timer.isRunning ? 'Pause' : 'Resume'} clicked at', event.target); window.timerTileInstance.${timer.isRunning ? 'pauseTimer()' : 'resumeTimer()'}">
                         ${timer.isRunning ? 'Pause' : 'Resume'}
                     </button>
-                    <button class="timer-btn" data-action="stop">Stop</button>
-                    <button class="timer-btn" data-action="add1">+1m</button>
+                    <button class="timer-btn" tabindex="0" onclick="console.log('Button 2: Stop clicked at', event.target); window.timerTileInstance.stopTimer()">Stop</button>
+                    <button class="timer-btn" tabindex="0" onclick="console.log('Button 3: Reset clicked at', event.target); window.timerTileInstance.resetTimer()">Reset</button>
+                    <button class="timer-btn" tabindex="0" onclick="console.log('Button 4: +1m clicked at', event.target); window.timerTileInstance.addTime(60)">+1m</button>
                 </div>
             </div>
         `;
@@ -108,20 +103,30 @@ class TimerTile {
     }
 
     handleTimerAction(action) {
+        console.log('handleTimerAction called with:', action, 'activeTimer:', this.activeTimer);
         switch (action) {
             case 'pause':
+                console.log('Calling pauseTimer');
                 this.pauseTimer();
                 break;
             case 'resume':
+                console.log('Calling resumeTimer');
                 this.resumeTimer();
                 break;
             case 'stop':
+                console.log('Calling stopTimer');
                 this.stopTimer();
                 break;
+            case 'reset':
+                console.log('Calling resetTimer');
+                this.resetTimer();
+                break;
             case 'add1':
+                console.log('Calling addTime(60)');
                 this.addTime(60); // Add 1 minute
                 break;
             case 'custom':
+                console.log('Calling showCustomTimerDialog');
                 this.showCustomTimerDialog();
                 break;
         }
@@ -182,10 +187,43 @@ class TimerTile {
         }
     }
 
-    addTime(seconds) {
+    resetTimer() {
         if (this.activeTimer) {
-            this.activeTimer.duration += seconds;
+            // Reset elapsed time to 0 but keep the timer running state
+            this.activeTimer.elapsed = 0;
+            this.activeTimer.startTime = Date.now();
             this.render();
+            
+            // Remove complete state
+            document.getElementById('timerDisplay').classList.remove('timer-complete');
+            
+            // Visual feedback
+            const timerTile = document.getElementById('timerTile');
+            timerTile.style.transform = 'scale(1.02)';
+            setTimeout(() => {
+                timerTile.style.transform = '';
+            }, 200);
+        }
+    }
+
+    addTime(seconds) {
+        console.log('addTime called with', seconds, 'seconds, activeTimer exists:', !!this.activeTimer);
+        if (this.activeTimer) {
+            console.log('Before - duration:', this.activeTimer.duration, 'elapsed:', this.activeTimer.elapsed);
+            this.activeTimer.duration += seconds;
+            console.log('After - duration:', this.activeTimer.duration);
+            this.render();
+            
+            // Visual feedback
+            const timerTile = document.getElementById('timerTile');
+            if (timerTile) {
+                timerTile.style.backgroundColor = '#28a745';
+                setTimeout(() => {
+                    timerTile.style.backgroundColor = '';
+                }, 300);
+            }
+        } else {
+            console.log('No active timer to add time to');
         }
     }
 
@@ -485,3 +523,16 @@ class TimerTile {
 
 // Make available globally
 window.TimerTile = TimerTile;
+
+// Test function for debugging
+window.testTimer = function() {
+    const instance = window.timerTileInstance;
+    if (instance) {
+        console.log('Timer instance found:', instance);
+        console.log('Active timer:', instance.activeTimer);
+        // Start a test timer
+        instance.startPresetTimer(1, 'Test Timer');
+    } else {
+        console.log('No timer instance found');
+    }
+};

@@ -66,6 +66,7 @@
     --warning-hover: #e0a800;
     --info-color: #17a2b8;
     --info-hover: #138496;
+    --info-bg: #d1ecf1;
     
     /* Additional Colors */
     --bg-light: #f8f9fa;
@@ -146,6 +147,7 @@
     --warning-hover: #d97706;
     --info-color: #06b6d4;
     --info-hover: #0891b2;
+    --info-bg: #0f172a;
     
     /* Additional Colors */
     --bg-light: #374151;
@@ -226,6 +228,7 @@
     --warning-hover: #b45309;
     --info-color: #0369a1;
     --info-hover: #075985;
+    --info-bg: #0c4a6e;
     
     /* Additional Colors */
     --bg-light: #1f2937;

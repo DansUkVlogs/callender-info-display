@@ -37,46 +37,12 @@ class SettingsManager {
             });
         }
 
-        // API settings - auto-save on blur
-        const apiInputs = ['weatherApiKey', 'location', 'trafficApiKey'];
-        apiInputs.forEach(inputId => {
-            const input = document.getElementById(inputId);
-            if (input) {
-                input.addEventListener('blur', () => {
-                    this.saveApiSettings();
-                });
-            }
-        });
+        // API settings removed - now hardcoded in tile classes
     }
 
-    saveApiSettings() {
-        if (window.smartDisplayHub) {
-            const settings = window.smartDisplayHub.settings;
-            settings.weatherApiKey = document.getElementById('weatherApiKey').value;
-            settings.location = document.getElementById('location').value;
-            settings.trafficApiKey = document.getElementById('trafficApiKey').value;
-            window.smartDisplayHub.saveSettings();
+    // saveApiSettings() method removed - API keys now hardcoded
 
-            // Trigger API-dependent tiles to update
-            window.dispatchEvent(new CustomEvent('apiSettingsChanged'));
-        }
-    }
-
-    validateApiKey(service, key) {
-        // Basic validation
-        if (!key || key.trim().length === 0) {
-            return false;
-        }
-
-        switch (service) {
-            case 'weather':
-                return key.length >= 32; // OpenWeatherMap keys are typically 32 chars
-            case 'traffic':
-                return key.startsWith('AIza'); // Google Maps API keys start with AIza
-            default:
-                return key.length > 10;
-        }
-    }
+    // validateApiKey() method removed - API keys now hardcoded
 
     showNotification(message, type = 'info') {
         const notification = document.createElement('div');

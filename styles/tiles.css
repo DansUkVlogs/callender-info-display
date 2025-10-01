@@ -267,7 +267,8 @@
     font-weight: 600;
 }
 
-/* Calendar Settings Button */
+/* Calendar Buttons */
+.new-event-btn,
 .calendar-settings-btn {
     background: none;
     border: none;
@@ -277,11 +278,30 @@
     border-radius: 4px;
     transition: all 0.2s ease;
     margin-right: 0.5rem;
+    font-size: 1rem;
 }
 
+.new-event-btn:hover,
 .calendar-settings-btn:hover {
     background: var(--bg-hover);
     color: var(--text-primary);
+}
+
+.new-event-btn {
+    background: var(--accent-color);
+    color: white;
+    font-weight: bold;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.new-event-btn:hover {
+    background: var(--accent-hover);
+    color: white;
 }
 
 /* Week View Styles */
@@ -385,6 +405,28 @@
 
 .event-block:hover {
     background: var(--accent-hover);
+}
+
+/* Recurring Event Indicator */
+.event-block.recurring {
+    position: relative;
+}
+
+.event-block.recurring::before {
+    content: "🔁";
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.6rem;
+    opacity: 0.8;
+}
+
+.all-day-event.recurring::after {
+    content: "🔁";
+    margin-left: 4px;
+    font-size: 0.7rem;
+    opacity: 0.8;
 }
 
 /* All Day Events Section */
@@ -534,6 +576,210 @@
 
 .sync-now-btn:hover {
     background: var(--success-hover);
+}
+
+/* Enhanced Event Modal */
+.add-event-modal .modal-content {
+    max-width: 600px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group.half-width {
+    margin-bottom: 1rem;
+}
+
+.time-section {
+    transition: all 0.3s ease;
+}
+
+.repeat-options,
+.repeat-end-options {
+    margin-top: 0.5rem;
+    padding: 1rem;
+    background: var(--surface-color);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.repeat-options .form-group {
+    margin-bottom: 0.75rem;
+}
+
+.repeat-options .form-group:last-child {
+    margin-bottom: 0;
+}
+
+.repeat-end-options {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+}
+
+#repeatCountGroup,
+#repeatUntilGroup {
+    margin-top: 0.5rem;
+}
+
+.primary-btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.primary-btn:hover {
+    background: var(--accent-hover);
+}
+
+/* OAuth Setup Modals */
+.google-setup-modal,
+.outlook-setup-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(2px);
+}
+
+.google-setup-modal.show,
+.outlook-setup-modal.show {
+    opacity: 1;
+}
+
+.google-setup-modal .modal-content,
+.outlook-setup-modal .modal-content {
+    max-width: 650px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.setup-info {
+    background: var(--bg-accent);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--accent-color);
+}
+
+.setup-info h4 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.setup-info ol {
+    margin: 0;
+    padding-left: 1.2rem;
+    color: var(--text-secondary);
+}
+
+.setup-info li {
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.setup-info a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.setup-info a:hover {
+    text-decoration: underline;
+}
+
+.redirect-info {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--info-bg, #e3f2fd);
+    border: 1px solid var(--info-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.redirect-info p {
+    margin: 0.5rem 0;
+}
+
+.redirect-info code {
+    background: rgba(0,0,0,0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    word-break: break-all;
+}
+
+.test-btn {
+    background: var(--info-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-right: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.test-btn:hover {
+    background: var(--info-hover);
+}
+
+.connection-status {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+}
+
+.connection-status .status-message {
+    display: block;
+    font-weight: 500;
+}
+
+.connection-status .status-message.info {
+    background: var(--info-color);
+    color: white;
+    display: block;
+}
+
+.connection-status .status-message.success {
+    background: var(--success-color);
+    color: white;
+    display: block;
+}
+
+.connection-status .status-message.warning {
+    background: var(--warning-color);
+    color: white;
+    display: block;
+}
+
+.connection-status .status-message.error {
+    background: var(--error-color);
+    color: white;
+    display: block;
+}
+
+.connection-status:has(.status-message) {
+    display: block;
 }
 
 /* Todo Tile */
@@ -704,38 +950,322 @@
 }
 
 .timer-display {
-    text-align: center;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+}
+
+.timer-setup {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
 }
 
 .timer-time {
-    font-size: 2rem;
+    font-size: 2.5rem;
     font-weight: bold;
     color: var(--text-primary);
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.timer-presets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    width: 100%;
+    max-width: 340px;
+    padding: 0.2rem;
+    justify-items: center;
+    align-items: center;
+}
+
+.preset-timer {
+    background: var(--accent-color);
+    color: white;
+    border: 2px solid transparent;
+    padding: 0.8rem 0.6rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    position: static;
+    overflow: visible;
+    white-space: nowrap;
+    pointer-events: auto;
+    z-index: 1;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Removed ::before pseudo-element that might interfere with clicks */
+
+.preset-timer:hover {
+    background: var(--accent-hover);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Removed ::before hover effect that might interfere with clicks */
+
+.preset-timer:active {
+    background: var(--accent-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.preset-timer.custom-btn {
+    background: linear-gradient(135deg, #6f42c1, #5a32a3);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
 }
 
 .timer-controls {
     display: flex;
+    gap: 0.4rem;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+    padding: 0.2rem;
     justify-content: center;
-    gap: 0.5rem;
+    flex-wrap: nowrap;
 }
 
 .timer-btn {
     background: var(--accent-color);
     color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
+    border: 1px solid transparent;
+    padding: 0.6rem 0.5rem;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    min-width: 65px;
+    min-height: 36px;
+    position: relative;
+    overflow: visible;
+    white-space: nowrap;
+    pointer-events: all;
+    z-index: 10;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    touch-action: manipulation;
 }
+
+/* Removed ::before pseudo-element that might interfere with clicks */
 
 .timer-btn:hover {
     background: var(--accent-hover);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+.timer-btn:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* Removed ::before hover effect that might interfere with clicks */
+
+.timer-btn:active {
+    background: var(--accent-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Special button variants */
+.timer-btn[data-action="stop"] {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+}
+
+.timer-btn[data-action="pause"] {
+    background: linear-gradient(135deg, #ffc107, #e0a800);
+    color: #212529;
+}
+
+.timer-btn[data-action="resume"] {
+    background: linear-gradient(135deg, #28a745, #218838);
+}
+
+.timer-btn[data-action="reset"] {
+    background: linear-gradient(135deg, #6f42c1, #5a32a3);
+}
+
+.timer-btn[data-action="add1"] {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+}
+
+/* Active timer layout */
+.active-timer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.timer-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    opacity: 0.9;
+}
+
+.timer-progress {
+    width: 100%;
+    max-width: 200px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0.5rem 0;
+}
+
+.timer-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-color), var(--accent-hover));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Custom Timer Modal */
+.custom-timer-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.custom-timer-modal .modal-content {
+    background: var(--tile-bg);
+    border-radius: 16px;
+    max-width: 400px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+}
+
+.custom-timer-form {
+    padding: 0;
+}
+
+.time-inputs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.time-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.time-input-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.time-input-group input {
+    background: var(--input-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.time-input-group input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.form-actions button {
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+    color: white;
+    border: none;
+    padding: 0.875rem 1.5rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 120px;
+    position: relative;
+    overflow: hidden;
+}
+
+.form-actions button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.form-actions button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.form-actions button:hover::before {
+    left: 100%;
+}
+
+.form-actions button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.form-actions .cancel-btn {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+}
+
+.form-actions .cancel-btn:hover {
+    background: linear-gradient(135deg, #5a6268, #545b62);
 }
 
 /* Traffic Tile */
@@ -748,6 +1278,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .traffic-route {
@@ -755,8 +1286,15 @@
     text-align: center;
 }
 
+.traffic-route-name {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
 .traffic-duration {
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: bold;
     color: var(--text-primary);
     margin-bottom: 0.25rem;
@@ -777,6 +1315,32 @@
 
 .traffic-heavy {
     color: #e74c3c;
+}
+
+.traffic-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin: 4px 0;
+}
+
+.traffic-dots .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.traffic-dots .dot.active {
+    background-color: rgba(255, 255, 255, 0.9);
+    transform: scale(1.2);
+}
+
+.traffic-dots .dot:hover {
+    background-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.1);
 }
 
 /* Birthday Tile */
@@ -904,6 +1468,29 @@
     
     .timer-time {
         font-size: 1.75rem;
+    }
+    
+    .timer-presets {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 240px;
+        gap: 0.4rem;
+    }
+    
+    .preset-timer {
+        padding: 0.5rem 0.3rem;
+        font-size: 0.7rem;
+    }
+    
+    .timer-btn {
+        padding: 0.4rem 0.2rem;
+        font-size: 0.65rem;
+        min-width: 55px;
+        min-height: 28px;
+    }
+    
+    .timer-controls {
+        gap: 0.25rem;
+        max-width: 180px;
     }
 }
 

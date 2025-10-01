@@ -54,15 +54,15 @@ class SmartDisplayHub {
             }
             
             if (window.TimerTile) {
-                new TimerTile();
+                window.timerTileInstance = new TimerTile();
                 console.log('Timer tile loaded');
             } else {
                 console.warn('TimerTile class not found');
             }
             
             if (window.TrafficTile) {
-                new TrafficTile();
-                console.log('Traffic tile loaded');
+                window.trafficTileInstance = new TrafficTile();
+                console.log('Traffic tile loaded and saved to window.trafficTileInstance');
             } else {
                 console.warn('TrafficTile class not found');
             }
@@ -437,10 +437,7 @@ class SmartDisplayHub {
         modal.style.display = 'flex';
         modal.classList.add('show');
         
-        // Populate current settings
-        document.getElementById('weatherApiKey').value = this.settings.weatherApiKey || '';
-        document.getElementById('location').value = this.settings.location || '';
-        document.getElementById('trafficApiKey').value = this.settings.trafficApiKey || '';
+        // API settings now hardcoded in tile classes - no inputs to populate
         document.getElementById('layoutProfile').value = this.currentLayout;
     }
 
@@ -451,11 +448,7 @@ class SmartDisplayHub {
             modal.style.display = 'none';
         }, 300);
         
-        // Save settings
-        this.settings.weatherApiKey = document.getElementById('weatherApiKey').value;
-        this.settings.location = document.getElementById('location').value;
-        this.settings.trafficApiKey = document.getElementById('trafficApiKey').value;
-        
+        // API settings now hardcoded in tile classes - nothing to save
         this.saveSettings();
     }
 

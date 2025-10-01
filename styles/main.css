@@ -418,6 +418,9 @@ html, body {
 .birthday-manager-modal,
 .weather-setup-modal,
 .traffic-setup-modal,
+.calendar-settings-modal,
+.google-setup-modal,
+.outlook-setup-modal,
 .tile-modal {
     position: fixed;
     top: 0;
@@ -442,6 +445,9 @@ html, body {
 .birthday-manager-modal.show,
 .weather-setup-modal.show,
 .traffic-setup-modal.show,
+.calendar-settings-modal.show,
+.google-setup-modal.show,
+.outlook-setup-modal.show,
 .tile-modal.show {
     opacity: 1;
 }

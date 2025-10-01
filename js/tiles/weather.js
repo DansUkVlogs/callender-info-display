@@ -1,8 +1,8 @@
 // Weather Tile
 class WeatherTile {
     constructor() {
-        this.apiKey = '';
-        this.location = '';
+        this.apiKey = '1cdfadabddafedd72fe394e5be92c22d';
+        this.location = 'Stanhope Rd, Portsmouth PO1 1DZ';
         this.units = 'metric'; // metric, imperial, kelvin
         this.weatherData = null;
         this.lastUpdate = null;
@@ -15,12 +15,9 @@ class WeatherTile {
         this.render();
         this.setupEventListeners();
         
-        if (this.apiKey && this.location) {
-            this.fetchWeather();
-            this.startAutoUpdate();
-        } else {
-            this.showSetupMessage();
-        }
+        // Always fetch weather since we have hardcoded values
+        this.fetchWeather();
+        this.startAutoUpdate();
         
         // Listen for global updates
         window.addEventListener('tileUpdate', () => {
