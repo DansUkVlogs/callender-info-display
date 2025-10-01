@@ -332,87 +332,114 @@ html, body {
     background: var(--accent-hover);
 }
 
-/* Modern Theme Selector */
+/* Modern Theme Selector - Inspired by landscape gallery */
 .theme-selector {
-    position: relative;
     display: flex;
-    background: var(--bg-accent);
-    border-radius: 12px;
-    padding: 6px;
-    gap: 4px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.theme-slider {
-    position: absolute;
-    top: 6px;
-    left: 6px;
-    width: calc(25% - 3px);
-    height: calc(100% - 12px);
-    background: var(--accent-color);
-    border-radius: 8px;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    z-index: 1;
+    gap: 16px;
+    padding: 20px 0;
+    justify-content: center;
+    align-items: flex-end;
+    perspective: 1000px;
 }
 
 .theme-btn {
     position: relative;
-    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 16px 12px;
-    background: transparent;
-    border: none;
-    border-radius: 8px;
+    background: var(--bg-accent);
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 2;
-    min-height: 80px;
-    color: var(--text-secondary);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    min-width: 120px;
+    min-height: 100px;
+    transform-origin: bottom center;
+    
+    /* Default non-selected state */
+    opacity: 0.7;
+    transform: scale(0.85) translateY(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .theme-btn.active {
-    color: white;
+    /* Selected state - elevated and highlighted like center image */
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    border-color: var(--accent-color);
+    background: linear-gradient(135deg, var(--bg-primary), var(--bg-accent));
+    z-index: 10;
 }
 
 .theme-btn:hover:not(.active) {
-    background: var(--bg-hover);
-    color: var(--text-primary);
+    opacity: 0.9;
+    transform: scale(0.9) translateY(5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.theme-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 24px 16px;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
 }
 
 .theme-icon {
-    font-size: 24px;
+    font-size: 32px;
     line-height: 1;
+    transition: transform 0.3s ease;
+}
+
+.theme-btn.active .theme-icon {
+    transform: scale(1.1);
 }
 
 .theme-label {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 600;
     text-align: center;
+    color: var(--text-primary);
+    transition: color 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-/* Slider positions */
-.theme-btn[data-theme="light"].active ~ .theme-slider,
-.theme-selector[data-active="light"] .theme-slider {
-    transform: translateX(0%);
+.theme-btn.active .theme-label {
+    color: var(--accent-color);
 }
 
-.theme-btn[data-theme="dark"].active ~ .theme-slider,
-.theme-selector[data-active="dark"] .theme-slider {
-    transform: translateX(calc(100% + 4px));
+/* Specific theme styling */
+.theme-btn[data-theme="light"] {
+    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
 }
 
-.theme-btn[data-theme="night"].active ~ .theme-slider,
-.theme-selector[data-active="night"] .theme-slider {
-    transform: translateX(calc(200% + 8px));
+.theme-btn[data-theme="light"].active {
+    background: linear-gradient(135deg, #fff 0%, #e3f2fd 100%);
+    border-color: #2196f3;
 }
 
-.theme-btn[data-theme="auto"].active ~ .theme-slider,
-.theme-selector[data-active="auto"] .theme-slider {
-    transform: translateX(calc(300% + 12px));
+.theme-btn[data-theme="dark"] {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+}
+
+.theme-btn[data-theme="dark"].active {
+    background: linear-gradient(135deg, #2c3e50 0%, #3f51b5 100%);
+    border-color: #3f51b5;
+}
+
+.theme-btn[data-theme="night"] {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+}
+
+.theme-btn[data-theme="night"].active {
+    background: linear-gradient(135deg, #1a1a1a 0%, #4a148c 100%);
+    border-color: #7b1fa2;
 }
 
 /* Edit Mode */

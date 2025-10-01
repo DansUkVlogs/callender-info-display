@@ -173,22 +173,16 @@ class SmartDisplayHub {
 
             // Layout editor modal event listeners will be set up when modal opens
 
-            // Settings form handlers - Modern theme selector
+            // Settings form handlers - Modern elevated theme selector
             const themeButtons = document.querySelectorAll('.theme-btn');
-            const themeSelector = document.querySelector('.theme-selector');
             
             themeButtons.forEach(button => {
                 button.addEventListener('click', (e) => {
                     const selectedTheme = button.getAttribute('data-theme');
                     
-                    // Update active state
+                    // Update active state with smooth animation
                     themeButtons.forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active');
-                    
-                    // Update slider position
-                    if (themeSelector) {
-                        themeSelector.setAttribute('data-active', selectedTheme);
-                    }
                     
                     // Apply theme
                     this.setTheme(selectedTheme);
@@ -2806,11 +2800,11 @@ class SmartDisplayHub {
     }
 
     initializeTheme() {
-        const savedTheme = this.settings.theme || 'auto';
+        const savedTheme = this.settings.theme || 'light';
         this.applyTheme(savedTheme);
         
-        // Set radio button
-        document.querySelector(`input[name="theme"][value="${savedTheme}"]`).checked = true;
+        // No radio buttons to set - using button-based theme selector now
+        console.log('Theme initialized:', savedTheme);
     }
 
     openSettings() {
@@ -2832,15 +2826,11 @@ class SmartDisplayHub {
             // Set active theme button based on current theme
             const currentTheme = this.getCurrentTheme();
             const themeButtons = document.querySelectorAll('.theme-btn');
-            const themeSelector = document.querySelector('.theme-selector');
             
             themeButtons.forEach(btn => {
                 const btnTheme = btn.getAttribute('data-theme');
                 if (btnTheme === currentTheme) {
                     btn.classList.add('active');
-                    if (themeSelector) {
-                        themeSelector.setAttribute('data-active', currentTheme);
-                    }
                 } else {
                     btn.classList.remove('active');
                 }
