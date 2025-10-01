@@ -38,7 +38,6 @@ self.addEventListener('install', (event) => {
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
     console.log('Service Worker: Activating...');
-    
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
