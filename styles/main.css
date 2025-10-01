@@ -442,6 +442,87 @@ html, body {
     border-color: #7b1fa2;
 }
 
+/* Startup Profile Layout Selector */
+.startup-profile-selector {
+    background: var(--bg-accent);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.section-description {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 16px;
+    line-height: 1.4;
+}
+
+.profile-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#startupProfile {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#startupProfile:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.profile-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.save-profile-btn,
+.preview-profile-btn {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.save-profile-btn {
+    background: var(--accent-color);
+    color: white;
+}
+
+.save-profile-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.preview-profile-btn {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+}
+
+.preview-profile-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent-color);
+}
+
 /* Edit Mode */
 .edit-mode-overlay {
     position: fixed;
