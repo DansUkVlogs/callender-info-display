@@ -1,5 +1,5 @@
 // Service Worker for Smart Display Hub
-const CACHE_NAME = 'smart-display-hub-v1';
+const CACHE_NAME = 'smart-display-hub-v2';
 const CACHE_ASSETS = [
     '/',
     '/index.html',
