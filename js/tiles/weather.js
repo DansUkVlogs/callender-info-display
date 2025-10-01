@@ -90,8 +90,17 @@ class WeatherTile {
     }
 
     async fetchWeather(force = false) {
+        console.log('fetchWeather called with:', {
+            apiKey: this.apiKey ? `${this.apiKey.slice(0,8)}...` : 'MISSING',
+            location: this.location || 'MISSING',
+            force: force
+        });
+        
         if (!this.apiKey || !this.location) {
-            console.warn('Weather API key or location not set');
+            console.warn('Weather API key or location not set', {
+                apiKey: !!this.apiKey,
+                location: !!this.location
+            });
             this.showSetupMessage();
             return;
         }
@@ -371,10 +380,24 @@ class WeatherTile {
     loadSettings() {
         try {
             const settings = JSON.parse(localStorage.getItem('smartDisplayHub_weatherSettings')) || {};
-            // Keep hardcoded values if they exist, otherwise use saved settings
-            this.apiKey = this.apiKey || settings.apiKey || '';
-            this.location = this.location || settings.location || '';
+            // Always preserve hardcoded values if they exist in constructor
+            const hasHardcodedApiKey = this.apiKey && this.apiKey !== '';
+            const hasHardcodedLocation = this.location && this.location !== '';
+            
+            if (!hasHardcodedApiKey) {
+                this.apiKey = settings.apiKey || '';
+            }
+            if (!hasHardcodedLocation) {
+                this.location = settings.location || '';
+            }
             this.units = settings.units || 'metric';
+            
+            console.log('Weather settings loaded:', {
+                apiKey: this.apiKey ? `${this.apiKey.slice(0,8)}...` : 'none',
+                location: this.location,
+                hardcodedApiKey: hasHardcodedApiKey,
+                hardcodedLocation: hasHardcodedLocation
+            });
         } catch (e) {
             console.warn('Failed to load weather settings:', e);
         }
