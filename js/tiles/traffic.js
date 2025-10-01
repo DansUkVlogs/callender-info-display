@@ -62,6 +62,15 @@ class TrafficTile {
 
     setupEventListeners() {
         const trafficTile = document.getElementById('trafficTile');
+        const settingsBtn = document.querySelector('.traffic-settings-btn');
+        
+        // Settings button click
+        if (settingsBtn) {
+            settingsBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent tile click
+                this.showSetupDialog();
+            });
+        }
         
         // Click to refresh or cycle routes
         trafficTile.addEventListener('click', () => {
@@ -197,8 +206,25 @@ class TrafficTile {
             console.log('Fetching REAL traffic data from TomTom...');
             
             // Build TomTom routing URL with traffic-aware routing
-            const origin = `${route.origin[1]},${route.origin[0]}`; // TomTom uses lat,lng format
-            const destination = `${route.destination[1]},${route.destination[0]}`;
+            // Handle both old format (array) and new format (object)
+            let originLat, originLon, destLat, destLon;
+            
+            if (route.start) {
+                // New format with start/end objects
+                originLat = route.start.lat;
+                originLon = route.start.lon;
+                destLat = route.end.lat;
+                destLon = route.end.lon;
+            } else {
+                // Old format with origin/destination arrays
+                originLat = route.origin[1];
+                originLon = route.origin[0];
+                destLat = route.destination[1];
+                destLon = route.destination[0];
+            }
+            
+            const origin = `${originLat},${originLon}`; // TomTom uses lat,lng format
+            const destination = `${destLat},${destLon}`;
             const apiUrl = `https://api.tomtom.com/routing/1/calculateRoute/${origin}:${destination}/json?key=${this.apiKey}&traffic=true&routeType=fastest&travelMode=car`;
             
             console.log('Fetching from TomTom API:', apiUrl);
@@ -380,94 +406,263 @@ class TrafficTile {
         modal.innerHTML = `
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3>Traffic Setup</h3>
+                    <h3>Traffic Routes Settings</h3>
                     <button class="close-btn">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="setup-info">
-                        <p><strong>Traffic information is pre-configured for your commute!</strong></p>
-                        <p>Your routes are hardcoded with realistic travel times - no external API required.</p>
-                        <ol>
-                            <li><strong>Uni → Work:</strong> University to Portsmouth North Harbour (≈12-18 min)</li>
-                            <li><strong>Uni → Home:</strong> University to Worthing (≈55-68 min)</li>
-                            <li>Auto-cycles every 10 seconds like a carousel</li>
-                            <li>Click dots to manually switch routes</li>
-                        </ol>
+                        <p><strong>Manage your traffic routes</strong></p>
+                        <p>Using TomTom API for real-time traffic data. Routes auto-cycle every 10 seconds.</p>
                     </div>
-                    <form class="traffic-setup-form">
-                        <div class="form-group">
-                            <label>Traffic Data Source:</label>
-                            <input type="text" name="apiKey" value="Hardcoded Route Data" placeholder="No API required" readonly style="background: #f5f5f5;">
-                            <small style="color: #666;">Uses reliable hardcoded data - no external API calls needed!</small>
+                    
+                    <div class="routes-section">
+                        <div class="section-header">
+                            <h4>Current Routes</h4>
+                            <button type="button" class="add-route-btn">+ Add Route</button>
                         </div>
-                        <div class="routes-section">
-                            <h4>Routes</h4>
-                            <div class="routes-list">
-                                ${this.routes.map((route, index) => `
-                                    <div class="route-item" data-index="${index}">
-                                        <div class="route-info">
-                                            <strong>${this.escapeHtml(route.name)}</strong><br>
-                                            ${this.escapeHtml(route.origin)} → ${this.escapeHtml(route.destination)}
+                        
+                        <div class="routes-list">
+                            ${this.routes.length === 0 ? `
+                                <div class="no-routes">
+                                    <p>No routes configured</p>
+                                    <small>Click "Add Route" to create your first traffic route</small>
+                                </div>
+                            ` : this.routes.map((route, index) => `
+                                <div class="route-item" data-index="${index}">
+                                    <div class="route-info">
+                                        <div class="route-name">${this.escapeHtml(route.name)}</div>
+                                        <div class="route-details">
+                                            ${route.start ? route.start.name : 'Start Location'} → ${route.end ? route.end.name : 'End Location'}
                                         </div>
+                                        <div class="route-coordinates">
+                                            <small>From: ${route.start ? `${route.start.lat.toFixed(4)}, ${route.start.lon.toFixed(4)}` : `${route.origin[1].toFixed(4)}, ${route.origin[0].toFixed(4)}`}</small><br>
+                                            <small>To: ${route.end ? `${route.end.lat.toFixed(4)}, ${route.end.lon.toFixed(4)}` : `${route.destination[1].toFixed(4)}, ${route.destination[0].toFixed(4)}`}</small>
+                                        </div>
+                                    </div>
+                                    <div class="route-actions">
+                                        <button type="button" class="edit-route-btn" data-index="${index}">Edit</button>
                                         <button type="button" class="delete-route-btn" data-index="${index}">Delete</button>
                                     </div>
-                                `).join('')}
-                            </div>
-                            <button type="button" class="add-route-btn">Add Route</button>
+                                </div>
+                            `).join('')}
                         </div>
-                        <div class="form-actions">
-                            <button type="submit">Save Settings</button>
-                            <button type="button" class="cancel-btn">Cancel</button>
+                    </div>
+                    
+                    <div class="api-info">
+                        <h4>API Configuration</h4>
+                        <div class="api-status">
+                            <strong>TomTom Routing API</strong> - Live traffic data enabled
                         </div>
-                    </form>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="close-settings-btn">Close</button>
+                    </div>
                 </div>
             </div>
         `;
         
         document.body.appendChild(modal);
         
+        // Make modal visible
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+        
         // Event listeners
         modal.querySelector('.close-btn').addEventListener('click', () => {
-            document.body.removeChild(modal);
+            this.closeModal(modal);
         });
         
-        modal.querySelector('.cancel-btn').addEventListener('click', () => {
-            document.body.removeChild(modal);
+        modal.querySelector('.close-settings-btn').addEventListener('click', () => {
+            this.closeModal(modal);
         });
         
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
-                document.body.removeChild(modal);
+                this.closeModal(modal);
             }
         });
         
         // Add route button
         modal.querySelector('.add-route-btn').addEventListener('click', () => {
-            this.showAddRouteDialog(modal);
+            this.showRouteForm(modal);
+        });
+        
+        // Edit route buttons
+        modal.querySelectorAll('.edit-route-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = parseInt(e.target.dataset.index);
+                this.showRouteForm(modal, this.routes[index], index);
+            });
         });
         
         // Delete route buttons
         modal.querySelectorAll('.delete-route-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const index = parseInt(e.target.dataset.index);
-                this.routes.splice(index, 1);
-                this.refreshSetupDialog(modal);
+                if (confirm(`Delete route "${this.routes[index].name}"?`)) {
+                    this.routes.splice(index, 1);
+                    this.saveSettings();
+                    this.closeModal(modal);
+                    this.render();
+                    // Refresh the modal
+                    setTimeout(() => this.showSetupDialog(), 100);
+                }
+            });
+        });
+    }
+
+    closeModal(modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            if (document.body.contains(modal)) {
+                document.body.removeChild(modal);
+            }
+        }, 300);
+    }
+
+    showRouteForm(parentModal, editRoute = null, editIndex = null) {
+        const isEdit = editRoute !== null;
+        
+        const routeModal = document.createElement('div');
+        routeModal.className = 'modal route-form-modal';
+        routeModal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>${isEdit ? 'Edit Route' : 'Add New Route'}</h3>
+                    <button class="close-btn" type="button">&times;</button>
+                </div>
+                <form class="route-form">
+                    <div class="form-group">
+                        <label for="routeName">Route Name:</label>
+                        <input type="text" id="routeName" name="routeName" 
+                               value="${isEdit ? editRoute.name : ''}" 
+                               placeholder="e.g., Home to Work" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="startLocation">Start Address:</label>
+                        <input type="text" id="startLocation" name="startLocation" 
+                               value="${isEdit ? editRoute.start.address || editRoute.start.name : ''}" 
+                               placeholder="e.g., Stanhope Road, Portsmouth" required>
+                        <button type="button" class="search-location-btn" data-target="start">📍 Search</button>
+                        <div class="location-results" id="startResults"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="endLocation">End Address:</label>
+                        <input type="text" id="endLocation" name="endLocation" 
+                               value="${isEdit ? editRoute.end.address || editRoute.end.name : ''}" 
+                               placeholder="e.g., North Harbour, Portsmouth" required>
+                        <button type="button" class="search-location-btn" data-target="end">📍 Search</button>
+                        <div class="location-results" id="endResults"></div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit">${isEdit ? 'Update Route' : 'Add Route'}</button>
+                        <button type="button" class="cancel-btn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        `;
+        
+        document.body.appendChild(routeModal);
+        
+        // Make modal visible
+        setTimeout(() => {
+            routeModal.classList.add('show');
+        }, 10);
+        
+        // Store selected coordinates
+        let selectedCoordinates = {
+            start: isEdit ? { lat: editRoute.start.lat, lon: editRoute.start.lon } : null,
+            end: isEdit ? { lat: editRoute.end.lat, lon: editRoute.end.lon } : null
+        };
+        
+        // Event listeners
+        routeModal.querySelector('.close-btn').addEventListener('click', () => {
+            this.closeModal(routeModal);
+        });
+        
+        routeModal.querySelector('.cancel-btn').addEventListener('click', () => {
+            this.closeModal(routeModal);
+        });
+        
+        routeModal.addEventListener('click', (e) => {
+            if (e.target === routeModal) {
+                this.closeModal(routeModal);
+            }
+        });
+        
+        // Address search functionality
+        routeModal.querySelectorAll('.search-location-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const target = e.target.dataset.target;
+                const input = routeModal.querySelector(`#${target}Location`);
+                const resultsDiv = routeModal.querySelector(`#${target}Results`);
+                
+                if (!input.value.trim()) {
+                    alert('Please enter an address to search');
+                    return;
+                }
+                
+                btn.textContent = '🔄 Searching...';
+                btn.disabled = true;
+                
+                try {
+                    const results = await this.searchAddress(input.value.trim());
+                    this.displaySearchResults(results, resultsDiv, target, selectedCoordinates, btn);
+                } catch (error) {
+                    console.error('Address search failed:', error);
+                    alert('Address search failed. Please try again.');
+                    btn.textContent = '📍 Search';
+                    btn.disabled = false;
+                }
             });
         });
         
-        modal.querySelector('.traffic-setup-form').addEventListener('submit', (e) => {
+        routeModal.querySelector('.route-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
             
-            this.apiKey = formData.get('apiKey').trim();
-            this.saveSettings();
-            
-            if (this.routes.length > 0) {
-                this.fetchTrafficData(true);
-                this.startAutoUpdate();
+            // Validate that coordinates have been selected
+            if (!selectedCoordinates.start || !selectedCoordinates.end) {
+                alert('Please search and select both start and end locations from the search results.');
+                return;
             }
             
-            document.body.removeChild(modal);
+            const newRoute = {
+                name: formData.get('routeName').trim(),
+                start: {
+                    name: formData.get('startLocation').trim(),
+                    address: formData.get('startLocation').trim(),
+                    lat: selectedCoordinates.start.lat,
+                    lon: selectedCoordinates.start.lon
+                },
+                end: {
+                    name: formData.get('endLocation').trim(),
+                    address: formData.get('endLocation').trim(),
+                    lat: selectedCoordinates.end.lat,
+                    lon: selectedCoordinates.end.lon
+                }
+            };
+            
+            if (isEdit) {
+                this.routes[editIndex] = newRoute;
+            } else {
+                this.routes.push(newRoute);
+            }
+            
+            this.saveSettings();
+            this.closeModal(routeModal);
+            this.closeModal(parentModal);
+            this.render();
+            
+            // Refresh traffic data if we have routes
+            if (this.routes.length > 0) {
+                this.fetchTrafficData(true);
+            }
         });
     }
 
@@ -728,6 +923,78 @@ class TrafficTile {
         } catch (e) {
             console.warn('Failed to load traffic data:', e);
         }
+    }
+
+    async searchAddress(address) {
+        const encodedAddress = encodeURIComponent(address);
+        const url = `https://api.tomtom.com/search/2/geocode/${encodedAddress}.json?key=${this.apiKey}&limit=5&countrySet=GB`;
+        
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Geocoding failed: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return data.results || [];
+    }
+
+    displaySearchResults(results, resultsDiv, target, selectedCoordinates, searchBtn) {
+        if (results.length === 0) {
+            resultsDiv.innerHTML = '<div class="no-results">No locations found. Try a different search term.</div>';
+            searchBtn.textContent = '📍 Search';
+            searchBtn.disabled = false;
+            return;
+        }
+
+        const resultsHtml = results.map((result, index) => {
+            const address = result.address.freeformAddress;
+            const lat = result.position.lat;
+            const lon = result.position.lon;
+            
+            return `
+                <div class="search-result" data-index="${index}">
+                    <div class="result-address">${address}</div>
+                    <div class="result-coords">${lat.toFixed(4)}, ${lon.toFixed(4)}</div>
+                </div>
+            `;
+        }).join('');
+
+        resultsDiv.innerHTML = `
+            <div class="results-header">Select a location:</div>
+            ${resultsHtml}
+        `;
+
+        // Add click handlers for results
+        resultsDiv.querySelectorAll('.search-result').forEach(resultEl => {
+            resultEl.addEventListener('click', () => {
+                const index = parseInt(resultEl.dataset.index);
+                const selected = results[index];
+                
+                // Store coordinates
+                selectedCoordinates[target] = {
+                    lat: selected.position.lat,
+                    lon: selected.position.lon
+                };
+                
+                // Update UI to show selection
+                resultEl.classList.add('selected');
+                resultsDiv.querySelectorAll('.search-result').forEach(r => {
+                    if (r !== resultEl) r.classList.remove('selected');
+                });
+                
+                // Update input field with selected address
+                const input = document.querySelector(`#${target}Location`);
+                input.value = selected.address.freeformAddress;
+                
+                // Hide results after short delay
+                setTimeout(() => {
+                    resultsDiv.innerHTML = `<div class="location-selected">✓ Location selected: ${selected.address.freeformAddress}</div>`;
+                }, 500);
+            });
+        });
+
+        searchBtn.textContent = '📍 Search';
+        searchBtn.disabled = false;
     }
 
     destroy() {

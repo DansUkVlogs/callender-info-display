@@ -35,7 +35,8 @@
 
 .tile-expand-btn,
 .add-task-btn,
-.edit-countdown-btn {
+.edit-countdown-btn,
+.traffic-settings-btn {
     background: none;
     border: none;
     color: var(--text-secondary);
@@ -52,7 +53,8 @@
 
 .tile-expand-btn:hover,
 .add-task-btn:hover,
-.edit-countdown-btn:hover {
+.edit-countdown-btn:hover,
+.traffic-settings-btn:hover {
     background: var(--bg-hover);
     color: var(--text-primary);
 }
@@ -927,9 +929,11 @@
 }
 
 .countdown-event {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.8rem;
+    line-height: 1.2;
 }
 
 .countdown-time {
@@ -1339,6 +1343,33 @@
 }
 
 .traffic-dots .dot:hover {
+    background-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.1);
+}
+
+/* Countdown Dots */
+.countdown-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin: 4px 0;
+}
+
+.countdown-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.countdown-dot.active {
+    background-color: rgba(255, 255, 255, 0.9);
+    transform: scale(1.2);
+}
+
+.countdown-dot:hover {
     background-color: rgba(255, 255, 255, 0.6);
     transform: scale(1.1);
 }

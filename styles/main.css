@@ -418,6 +418,7 @@ html, body {
 .birthday-manager-modal,
 .weather-setup-modal,
 .traffic-setup-modal,
+.route-form-modal,
 .calendar-settings-modal,
 .google-setup-modal,
 .outlook-setup-modal,
@@ -445,6 +446,7 @@ html, body {
 .birthday-manager-modal.show,
 .weather-setup-modal.show,
 .traffic-setup-modal.show,
+.route-form-modal.show,
 .calendar-settings-modal.show,
 .google-setup-modal.show,
 .outlook-setup-modal.show,
@@ -456,14 +458,23 @@ html, body {
 .add-todo-modal .modal-content,
 .edit-todo-modal .modal-content,
 .add-event-modal .modal-content,
-.countdown-editor-modal .modal-content,
 .birthday-manager-modal .modal-content {
     max-width: 500px;
+}
+
+.countdown-editor-modal .modal-content {
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
 .weather-setup-modal .modal-content,
 .traffic-setup-modal .modal-content {
     max-width: 650px;
+}
+
+.route-form-modal .modal-content {
+    max-width: 500px;
 }
 
 .calendar-settings-modal .modal-content {
@@ -769,4 +780,473 @@ html, body {
     padding: 2rem;
     max-height: calc(90vh - 80px);
     overflow-y: auto;
+}
+
+/* Countdown Modal Specific Styles */
+.countdown-source-selection {
+    margin-bottom: 2rem;
+}
+
+.countdown-source-selection h4 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+}
+
+.source-option {
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.source-option.active {
+    border-color: var(--accent-color);
+    background: var(--bg-accent);
+}
+
+.option-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.option-header input[type="radio"] {
+    margin-top: 0.25rem;
+}
+
+.option-header label {
+    flex: 1;
+    cursor: pointer;
+}
+
+.option-header h5 {
+    margin: 0 0 0.25rem 0;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.option-header p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.preset-events, .calendar-events {
+    margin-top: 0.75rem;
+}
+
+.preset-event, .calendar-event {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.preset-event:hover, .calendar-event:hover {
+    background: var(--bg-accent);
+    border-color: var(--accent-color);
+}
+
+.preset-event.selected, .calendar-event.selected {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+.preset-icon, .calendar-icon {
+    font-size: 1.5rem;
+}
+
+.preset-info, .calendar-info {
+    flex: 1;
+}
+
+.preset-title, .calendar-title {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.preset-date, .calendar-date {
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+.no-calendar-events, .calendar-error {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-secondary);
+}
+
+.no-calendar-events small {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.create-countdown-btn {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.create-countdown-btn:hover:not(:disabled) {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.create-countdown-btn:disabled {
+    background: var(--border-color);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+}
+
+.cancel-btn {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cancel-btn:hover {
+    background: var(--bg-accent);
+    border-color: var(--accent-color);
+}
+
+.existing-countdowns {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.existing-countdowns h4 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.countdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.countdown-info {
+    flex: 1;
+}
+
+.countdown-title {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.countdown-target {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.countdown-actions .delete-btn {
+    background: var(--danger-color);
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+}
+
+.countdown-actions .delete-btn:hover {
+    background: var(--danger-hover);
+    transform: scale(1.1);
+}
+
+/* Traffic Route Management */
+.routes-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin: 1rem 0;
+}
+
+.route-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    background: var(--bg-accent);
+}
+
+.route-info {
+    flex: 1;
+}
+
+.route-name {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+
+.route-details {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.3;
+}
+
+.route-coordinates {
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+.route-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.edit-route-btn,
+.delete-route-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.edit-route-btn {
+    background: var(--accent-color);
+    color: white;
+}
+
+.edit-route-btn:hover {
+    background: var(--accent-hover);
+    transform: scale(1.05);
+}
+
+.delete-route-btn {
+    background: var(--danger-color);
+    color: white;
+}
+
+.delete-route-btn:hover {
+    background: var(--danger-hover);
+    transform: scale(1.05);
+}
+
+.add-route-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-bottom: 1rem;
+}
+
+.add-route-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.coordinates-input {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.coordinates-input input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.coordinates-input input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px var(--accent-color)20;
+}
+
+.api-info {
+    background: var(--bg-accent);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    border-left: 4px solid var(--success-color);
+}
+
+.api-info h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.api-status {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.close-settings-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.close-settings-btn:hover {
+    background: var(--bg-accent);
+    border-color: var(--accent-color);
+}
+
+/* Address Search Functionality */
+.search-location-btn {
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.search-location-btn:hover:not(:disabled) {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+.search-location-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.location-results {
+    margin-top: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+}
+
+.location-results:not(:empty) {
+    display: block;
+}
+
+.results-header {
+    padding: 0.5rem;
+    background: var(--bg-accent);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.search-result {
+    padding: 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+}
+
+.search-result:hover {
+    background: var(--bg-accent);
+}
+
+.search-result.selected {
+    background: var(--accent-color);
+    color: white;
+}
+
+.search-result:last-child {
+    border-bottom: none;
+}
+
+.result-address {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+}
+
+.search-result.selected .result-address {
+    color: white;
+}
+
+.result-coords {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: 'Courier New', monospace;
+}
+
+.search-result.selected .result-coords {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.no-results {
+    padding: 1rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.location-selected {
+    padding: 0.75rem;
+    background: var(--success-color);
+    color: white;
+    text-align: center;
+    font-weight: 500;
 }
