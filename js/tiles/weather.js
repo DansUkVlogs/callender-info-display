@@ -7,11 +7,28 @@ class WeatherTile {
         this.weatherData = null;
         this.lastUpdate = null;
         this.updateInterval = 10 * 60 * 1000; // 10 minutes
+        
+        console.log('WeatherTile constructor - hardcoded values:', {
+            apiKey: this.apiKey ? `${this.apiKey.slice(0,8)}...` : 'MISSING',
+            location: this.location || 'MISSING'
+        });
+        
         this.init();
     }
 
     init() {
+        console.log('WeatherTile init() - before loadSettings:', {
+            apiKey: this.apiKey ? `${this.apiKey.slice(0,8)}...` : 'MISSING',
+            location: this.location || 'MISSING'
+        });
+        
         this.loadSettings();
+        
+        console.log('WeatherTile init() - after loadSettings:', {
+            apiKey: this.apiKey ? `${this.apiKey.slice(0,8)}...` : 'MISSING',
+            location: this.location || 'MISSING'
+        });
+        
         this.render();
         this.setupEventListeners();
         
@@ -379,24 +396,44 @@ class WeatherTile {
 
     loadSettings() {
         try {
-            const settings = JSON.parse(localStorage.getItem('smartDisplayHub_weatherSettings')) || {};
-            // Always preserve hardcoded values if they exist in constructor
-            const hasHardcodedApiKey = this.apiKey && this.apiKey !== '';
-            const hasHardcodedLocation = this.location && this.location !== '';
+            const storedSettings = localStorage.getItem('smartDisplayHub_weatherSettings');
+            console.log('Raw stored weather settings:', storedSettings);
             
-            if (!hasHardcodedApiKey) {
-                this.apiKey = settings.apiKey || '';
+            const settings = JSON.parse(storedSettings) || {};
+            console.log('Parsed weather settings:', settings);
+            
+            // Check what we have before processing
+            console.log('Before processing settings:', {
+                thisApiKey: this.apiKey,
+                thisLocation: this.location,
+                settingsApiKey: settings.apiKey,
+                settingsLocation: settings.location
+            });
+            
+            // If stored settings are empty strings, clear them and use hardcoded values
+            if (settings.apiKey === '' || settings.location === '') {
+                console.log('Found empty stored settings, clearing localStorage and using hardcoded values');
+                localStorage.removeItem('smartDisplayHub_weatherSettings');
+                // Don't change this.apiKey or this.location - keep hardcoded values
+            } else {
+                // Only use stored settings if they have actual values and we don't have hardcoded ones
+                const hasHardcodedApiKey = this.apiKey && this.apiKey !== '';
+                const hasHardcodedLocation = this.location && this.location !== '';
+                
+                if (!hasHardcodedApiKey && settings.apiKey) {
+                    this.apiKey = settings.apiKey;
+                }
+                if (!hasHardcodedLocation && settings.location) {
+                    this.location = settings.location;
+                }
             }
-            if (!hasHardcodedLocation) {
-                this.location = settings.location || '';
-            }
+            
             this.units = settings.units || 'metric';
             
-            console.log('Weather settings loaded:', {
-                apiKey: this.apiKey ? `${this.apiKey.slice(0,8)}...` : 'none',
-                location: this.location,
-                hardcodedApiKey: hasHardcodedApiKey,
-                hardcodedLocation: hasHardcodedLocation
+            console.log('Final weather settings after loadSettings:', {
+                apiKey: this.apiKey ? `${this.apiKey.slice(0,8)}...` : 'MISSING',
+                location: this.location || 'MISSING',
+                units: this.units
             });
         } catch (e) {
             console.warn('Failed to load weather settings:', e);
