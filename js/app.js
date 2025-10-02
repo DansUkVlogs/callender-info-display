@@ -2799,8 +2799,16 @@ class SmartDisplayHub {
         this.applyTheme(theme);
         this.saveSettings();
         
-        // Update radio buttons
-        document.querySelector(`input[name="theme"][value="${theme}"]`).checked = true;
+        // Update theme buttons (no longer using radio buttons)
+        const themeButtons = document.querySelectorAll('.theme-btn');
+        themeButtons.forEach(btn => {
+            const btnTheme = btn.getAttribute('data-theme');
+            if (btnTheme === theme) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
     }
 
     applyTheme(theme) {
