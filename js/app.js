@@ -2837,7 +2837,7 @@ class SmartDisplayHub {
             console.log('Modal classes after:', modal.className);
             console.log('Modal display after:', modal.style.display);
             
-            // Set active theme button based on current theme
+            // Set active theme button based on current theme - FIXED getCurrentTheme error
             const currentTheme = this.settings.theme || 'light';
             const themeButtons = document.querySelectorAll('.theme-btn');
             
