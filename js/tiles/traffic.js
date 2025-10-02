@@ -2,7 +2,7 @@
 class TrafficTile {
     constructor() {
         // Using TomTom Routing API - free tier with excellent traffic data
-        this.apiKey = 'M0kq7edufKs5ozjxrB95ACXwRoPh2zdN'; // Your TomTom API key
+        this.apiKey = 'RmVuf6piQwSQTfUkLSrFeTKYJAcc58HZ'; // Your TomTom API key
         this.routes = [
             {
                 id: 'uni-to-work',
@@ -232,6 +232,20 @@ class TrafficTile {
             const response = await fetch(apiUrl);
             
             if (!response.ok) {
+                if (response.status === 403) {
+                    console.warn('🔑 TomTom API key is invalid or expired. Switching to estimated data...');
+                    // Remove loading state
+                    document.getElementById('trafficInfo').classList.remove('loading');
+                    
+                    // Use fallback data and return early to avoid duplicate error handling
+                    const fallbackData = this.getFallbackTrafficData(route);
+                    if (fallbackData) {
+                        this.trafficData = fallbackData;
+                        this.lastUpdate = Date.now();
+                        this.render();
+                    }
+                    return; // Exit early to prevent catch block execution
+                }
                 throw new Error(`TomTom API error: ${response.status} ${response.statusText}`);
             }
             
@@ -273,22 +287,26 @@ class TrafficTile {
             console.log('REAL traffic data loaded successfully:', routeData);
             
         } catch (error) {
-            console.error('TomTom API failed:', error.message);
+            console.warn('🛣️ TomTom API network error:', error.message);
             
             // Remove loading state
             document.getElementById('trafficInfo').classList.remove('loading');
             
             // Fallback to estimated data if API fails
-            console.log('Falling back to estimated data due to API error');
+            console.log('📊 Falling back to estimated data due to network error');
             const estimatedData = this.getEstimatedRouteData(route);
             
             if (estimatedData) {
+                estimatedData.isEstimated = true; // Mark as estimated
                 this.trafficData = estimatedData;
                 this.lastUpdate = Date.now();
                 this.render();
             } else {
                 // Show error message
-                this.trafficData = { error: error.message };
+                this.trafficData = { 
+                    error: 'Traffic data unavailable',
+                    isEstimated: true 
+                };
                 this.render();
             }
         }
@@ -348,6 +366,16 @@ class TrafficTile {
             distance: baseData.distance,
             isEstimated: true // Mark as fallback data
         };
+    }
+
+    getFallbackTrafficData(route) {
+        // Return estimated data when API key fails
+        console.log('📊 Using fallback traffic data for route:', route.name);
+        const estimatedData = this.getEstimatedRouteData(route);
+        if (estimatedData) {
+            estimatedData.isEstimated = true; // Mark as estimated data
+        }
+        return estimatedData;
     }
 
     // geocodeLocation method removed - using hardcoded route data instead
