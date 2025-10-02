@@ -214,7 +214,7 @@ class CalendarTile {
         }
         
         // Remove from week view date headers
-        const previousSelectedHeader = calendarView.querySelector('.date-header.selected');
+        const previousSelectedHeader = calendarView.querySelector('.day-header.selected');
         if (previousSelectedHeader) {
             previousSelectedHeader.classList.remove('selected');
         }
@@ -228,9 +228,10 @@ class CalendarTile {
         });
         
         // Add selection to date headers in week views
-        const headerElements = calendarView.querySelectorAll('.date-header');
+        const headerElements = calendarView.querySelectorAll('.day-header');
         headerElements.forEach(headerEl => {
             if (parseInt(headerEl.dataset.day) === selectedDay) {
+                console.log('Adding selected class to day header:', selectedDay);
                 headerEl.classList.add('selected');
             }
         });
@@ -245,13 +246,14 @@ class CalendarTile {
             }
         } else {
             // Week/Work Week/3-day views
-            const dateHeader = e.target.classList.contains('date-header') ? e.target : e.target.closest('.date-header');
+            const dayHeader = e.target.classList.contains('day-header') ? e.target : e.target.closest('.day-header');
             const timeSlot = e.target.classList.contains('time-slot') ? e.target : e.target.closest('.time-slot');
             
-            if (dateHeader) {
+            if (dayHeader) {
                 // Clicking date header selects the day
-                const day = parseInt(dateHeader.dataset.day);
+                const day = parseInt(dayHeader.dataset.day);
                 if (day) {
+                    console.log('Day header clicked, selecting day:', day);
                     this.selectDayOnly(day);
                 }
             } else if (timeSlot) {

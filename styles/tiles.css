@@ -411,7 +411,7 @@
     box-shadow: 0 0 12px rgba(251, 191, 36, 0.6) !important;
 }
 
-.date-header.selected {
+.day-header.selected {
     background: var(--accent-color) !important;
     color: white !important;
     border-radius: 4px;
