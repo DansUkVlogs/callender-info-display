@@ -48,10 +48,18 @@ class CalendarTile {
                 this.navigate(direction);
             } else if (e.target.classList.contains('calendar-day')) {
                 const day = parseInt(e.target.dataset.day);
-                this.selectDay(day);
+                this.selectDayOnly(day); // Just select the day, don't open modal
             } else if (e.target.classList.contains('view-mode-btn')) {
                 const viewMode = e.target.dataset.view;
                 this.changeViewMode(viewMode);
+            }
+        });
+
+        // Add double-click handler for opening event modal
+        calendarView.addEventListener('dblclick', (e) => {
+            if (e.target.classList.contains('calendar-day')) {
+                const day = parseInt(e.target.dataset.day);
+                this.openEventModal(day);
             }
         });
     }
@@ -174,6 +182,46 @@ class CalendarTile {
         } else {
             this.showAddEventDialog(selectedDate);
         }
+    }
+
+    selectDayOnly(day) {
+        const selectedDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day);
+        
+        // Update visual selection
+        this.updateDaySelection(day);
+        
+        // Notify Daily Events tile about the selected date
+        window.dispatchEvent(new CustomEvent('calendarDaySelected', {
+            detail: { date: selectedDate }
+        }));
+    }
+
+    openEventModal(day) {
+        const selectedDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day);
+        const events = this.getEventsForDate(selectedDate);
+        
+        if (events.length > 0) {
+            this.showDayEvents(selectedDate, events);
+        } else {
+            this.showAddEventDialog(selectedDate);
+        }
+    }
+
+    updateDaySelection(selectedDay) {
+        // Remove previous selection
+        const calendarView = document.getElementById('calendarView');
+        const previousSelected = calendarView.querySelector('.calendar-day.selected');
+        if (previousSelected) {
+            previousSelected.classList.remove('selected');
+        }
+        
+        // Add selection to clicked day
+        const dayElements = calendarView.querySelectorAll('.calendar-day');
+        dayElements.forEach(dayEl => {
+            if (parseInt(dayEl.dataset.day) === selectedDay) {
+                dayEl.classList.add('selected');
+            }
+        });
     }
 
     showDayEvents(date, events) {
