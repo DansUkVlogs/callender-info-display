@@ -238,10 +238,11 @@
 }
 
 .calendar-day.today {
-    background: var(--accent-color);
-    color: white;
+    background: var(--calendar-day-bg);
+    color: var(--text-primary);
     font-weight: bold;
-    box-shadow: 0 0 0 2px var(--accent-color), 0 0 0 4px rgba(var(--accent-color-rgb, 0, 123, 255), 0.2);
+    border: 3px solid #fbbf24;
+    box-shadow: 0 0 0 1px #fbbf24, 0 0 8px rgba(251, 191, 36, 0.4);
 }
 
 .calendar-day.selected {
@@ -402,10 +403,12 @@
 }
 
 .day-header.today {
-    background: var(--accent-color);
-    color: white;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 3px solid #fbbf24;
     border-radius: 4px;
     margin: 0.25rem;
+    box-shadow: 0 0 8px rgba(251, 191, 36, 0.3);
 }
 
 .day-num {
@@ -1651,6 +1654,7 @@
 
 /* Daily Events Tile */
 .daily-events-tile {
+    grid-row: span 2; /* Make it tall (1x2) */
     background: linear-gradient(135deg, #f8f4ff 0%, #e8e0ff 100%);
     border: 2px solid #d4c5ff;
     position: relative;
