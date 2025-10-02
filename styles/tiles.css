@@ -12,6 +12,34 @@
     min-height: 200px;
 }
 
+/* Blank Tile Styles */
+.blank-tile {
+    background: transparent;
+    border: 2px dashed var(--text-muted, #95a5a6);
+    box-shadow: none;
+    opacity: 0.5;
+    cursor: default;
+}
+
+.blank-tile:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.blank-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 160px;
+}
+
+.blank-placeholder {
+    font-size: 2rem;
+    color: var(--text-muted, #95a5a6);
+    opacity: 0.7;
+}
+
 .tile:hover {
     transform: translateY(-2px);
     box-shadow: var(--tile-shadow-hover);

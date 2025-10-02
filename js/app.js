@@ -560,6 +560,13 @@ class SmartDisplayHub {
                 icon: '🎂',
                 size: { width: 1, height: 1 },
                 description: 'Upcoming birthdays'
+            },
+            {
+                type: 'blank',
+                name: 'Blank Space',
+                icon: '⬜',
+                size: { width: 1, height: 1 },
+                description: 'Empty space placeholder'
             }
         ];
         
@@ -568,13 +575,14 @@ class SmartDisplayHub {
             option.className = 'tile-option';
             option.dataset.tileType = tile.type;
             
-            // Check if this tile is currently in the editor layout
-            const isInLayout = this.editorLayout.some(t => t.type === tile.type);
+            // Check if this tile is currently in the editor layout (blank tiles can always be placed)
+            const isInLayout = tile.type !== 'blank' && this.editorLayout.some(t => t.type === tile.type);
+            const blanksInLayout = tile.type === 'blank' ? this.editorLayout.filter(t => t.type === 'blank').length : 0;
             
             option.innerHTML = `
                 <div class="tile-option-icon">${tile.icon}</div>
                 <div class="tile-option-info">
-                    <div class="tile-option-name">${tile.name} ${isInLayout ? '(in layout)' : ''}</div>
+                    <div class="tile-option-name">${tile.name} ${isInLayout ? '(in layout)' : blanksInLayout > 0 ? `(${blanksInLayout} placed)` : ''}</div>
                     <div class="tile-option-size">${tile.size.width} × ${tile.size.height}</div>
                     <div class="tile-option-description">${tile.description}</div>
                 </div>
@@ -727,11 +735,13 @@ class SmartDisplayHub {
         const { col, row } = this.selectedGridArea;
         const { size, type, name } = this.selectedTileType;
         
-        // Check if this tile type is already in the layout
-        const existingTile = this.editorLayout.find(t => t.type === type);
-        if (existingTile) {
-            this.showInvalidPlacement(`${name} is already in the layout`);
-            return;
+        // Check if this tile type is already in the layout (except for blank tiles)
+        if (type !== 'blank') {
+            const existingTile = this.editorLayout.find(t => t.type === type);
+            if (existingTile) {
+                this.showInvalidPlacement(`${name} is already in the layout`);
+                return;
+            }
         }
         
         // Check if tile fits within bounds
@@ -3062,27 +3072,35 @@ class SmartDisplayHub {
             // Just reposition existing tiles based on saved layout
             const dashboard = document.getElementById('dashboard');
             
+            // Remove any existing blank tiles first
+            dashboard.querySelectorAll('.blank-tile').forEach(tile => tile.remove());
+            
             config.layout.forEach(savedTile => {
-                // Find the existing tile by type
-                const existingTile = dashboard.querySelector(`[data-tile-type="${savedTile.type}"]`);
-                if (existingTile) {
-                    // Update position
-                    existingTile.style.gridColumn = `${savedTile.col + 1} / span ${savedTile.width}`;
-                    existingTile.style.gridRow = `${savedTile.row + 1} / span ${savedTile.height}`;
-                    
-                    // Update size classes
-                    existingTile.className = existingTile.className.replace(/(tile-small|tile-medium|tile-large|tile-medium-large)/, '');
-                    if (savedTile.width === 2 && savedTile.height === 2) {
-                        existingTile.classList.add('tile-large');
-                    } else if (savedTile.width === 2) {
-                        existingTile.classList.add('tile-medium-large');
-                    } else if (savedTile.width === 1 && savedTile.height === 1) {
-                        existingTile.classList.add('tile-small');
-                    } else {
-                        existingTile.classList.add('tile-medium');
+                if (savedTile.type === 'blank') {
+                    // Create a blank tile dynamically
+                    this.createBlankTile(savedTile);
+                } else {
+                    // Find the existing tile by type
+                    const existingTile = dashboard.querySelector(`[data-tile-type="${savedTile.type}"]`);
+                    if (existingTile) {
+                        // Update position
+                        existingTile.style.gridColumn = `${savedTile.col + 1} / span ${savedTile.width}`;
+                        existingTile.style.gridRow = `${savedTile.row + 1} / span ${savedTile.height}`;
+                        
+                        // Update size classes
+                        existingTile.className = existingTile.className.replace(/(tile-small|tile-medium|tile-large|tile-medium-large)/, '');
+                        if (savedTile.width === 2 && savedTile.height === 2) {
+                            existingTile.classList.add('tile-large');
+                        } else if (savedTile.width === 2) {
+                            existingTile.classList.add('tile-medium-large');
+                        } else if (savedTile.width === 1 && savedTile.height === 1) {
+                            existingTile.classList.add('tile-small');
+                        } else {
+                            existingTile.classList.add('tile-medium');
+                        }
+                        
+                        console.log(`Repositioned ${savedTile.type} tile to ${savedTile.col},${savedTile.row}`);
                     }
-                    
-                    console.log(`Repositioned ${savedTile.type} tile to ${savedTile.col},${savedTile.row}`);
                 }
             });
             
@@ -3092,6 +3110,41 @@ class SmartDisplayHub {
         } catch (error) {
             console.error('Error loading configuration:', error);
         }
+    }
+
+    createBlankTile(tileData) {
+        const dashboard = document.getElementById('dashboard');
+        
+        // Create a blank tile element
+        const blankTile = document.createElement('div');
+        blankTile.classList.add('tile', 'blank-tile');
+        blankTile.setAttribute('data-tile-type', 'blank');
+        blankTile.id = `blankTile-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Set position and size
+        blankTile.style.gridColumn = `${tileData.col + 1} / span ${tileData.width}`;
+        blankTile.style.gridRow = `${tileData.row + 1} / span ${tileData.height}`;
+        
+        // Add size class
+        if (tileData.width === 2 && tileData.height === 2) {
+            blankTile.classList.add('tile-large');
+        } else if (tileData.width === 2) {
+            blankTile.classList.add('tile-medium-large');
+        } else if (tileData.width === 1 && tileData.height === 1) {
+            blankTile.classList.add('tile-small');
+        } else {
+            blankTile.classList.add('tile-medium');
+        }
+        
+        // Add minimal content to show it's a blank space
+        blankTile.innerHTML = `
+            <div class="tile-content blank-content">
+                <div class="blank-placeholder">⬜</div>
+            </div>
+        `;
+        
+        dashboard.appendChild(blankTile);
+        console.log(`Created blank tile at ${tileData.col},${tileData.row}`);
     }
 
     createTileFromData(tileData) {
