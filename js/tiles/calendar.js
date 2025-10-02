@@ -46,21 +46,17 @@ class CalendarTile {
             if (e.target.classList.contains('calendar-nav')) {
                 const direction = e.target.dataset.direction;
                 this.navigate(direction);
-            } else if (e.target.classList.contains('calendar-day')) {
-                const day = parseInt(e.target.dataset.day);
-                this.selectDayOnly(day); // Just select the day, don't open modal
             } else if (e.target.classList.contains('view-mode-btn')) {
                 const viewMode = e.target.dataset.view;
                 this.changeViewMode(viewMode);
+            } else {
+                this.handleViewSpecificClick(e);
             }
         });
 
         // Add double-click handler for opening event modal
         calendarView.addEventListener('dblclick', (e) => {
-            if (e.target.classList.contains('calendar-day')) {
-                const day = parseInt(e.target.dataset.day);
-                this.openEventModal(day);
-            }
+            this.handleViewSpecificDoubleClick(e);
         });
     }
 
@@ -224,6 +220,49 @@ class CalendarTile {
         });
     }
 
+    handleViewSpecificClick(e) {
+        if (this.viewMode === 'month') {
+            // Month view: calendar-day elements
+            if (e.target.classList.contains('calendar-day')) {
+                const day = parseInt(e.target.dataset.day);
+                this.selectDayOnly(day);
+            }
+        } else {
+            // Week/Work Week/3-day views
+            if (e.target.classList.contains('date-header')) {
+                // Clicking date header selects the day
+                const day = parseInt(e.target.dataset.day);
+                if (day) {
+                    this.selectDayOnly(day);
+                }
+            } else if (e.target.classList.contains('time-slot') || e.target.closest('.time-slot')) {
+                // Clicking time slot opens event modal with specific time
+                const slot = e.target.classList.contains('time-slot') ? e.target : e.target.closest('.time-slot');
+                const day = parseInt(slot.dataset.day);
+                const time = slot.dataset.time;
+                if (day && time) {
+                    this.openEventModalWithTime(day, time);
+                }
+            }
+        }
+    }
+
+    handleViewSpecificDoubleClick(e) {
+        if (this.viewMode === 'month') {
+            // Month view: double-click calendar day to add event
+            if (e.target.classList.contains('calendar-day')) {
+                const day = parseInt(e.target.dataset.day);
+                this.openEventModal(day);
+            }
+        }
+        // For week views, double-click isn't needed as single click on time slots opens event modal
+    }
+
+    openEventModalWithTime(day, time) {
+        const selectedDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day);
+        this.showAddEventDialog(selectedDate, time);
+    }
+
     showDayEvents(date, events) {
         const modal = document.createElement('div');
         modal.className = 'day-events-modal';
@@ -280,7 +319,7 @@ class CalendarTile {
         });
     }
 
-    showAddEventDialog(date) {
+    showAddEventDialog(date, presetTime = null) {
         const modal = document.createElement('div');
         modal.className = 'add-event-modal';
         modal.innerHTML = `
@@ -311,11 +350,11 @@ class CalendarTile {
                             <div class="form-row">
                                 <div class="form-group half-width">
                                     <label>Start Time:</label>
-                                    <input type="time" name="startTime" value="09:00">
+                                    <input type="time" name="startTime" value="${presetTime || '09:00'}">
                                 </div>
                                 <div class="form-group half-width">
                                     <label>End Time:</label>
-                                    <input type="time" name="endTime" value="10:00">
+                                    <input type="time" name="endTime" value="${presetTime ? this.addMinutesToTime(presetTime, 30) : '10:00'}">
                                 </div>
                             </div>
                         </div>
@@ -691,6 +730,14 @@ class CalendarTile {
         }
     }
 
+    addMinutesToTime(timeStr, minutes) {
+        const [hours, mins] = timeStr.split(':').map(Number);
+        const totalMinutes = hours * 60 + mins + minutes;
+        const newHours = Math.floor(totalMinutes / 60) % 24;
+        const newMins = totalMinutes % 60;
+        return `${String(newHours).padStart(2, '0')}:${String(newMins).padStart(2, '0')}`;
+    }
+
     getDefaultEvents() {
         return [];
     }
@@ -831,7 +878,7 @@ class CalendarTile {
             const isToday = date.toDateString() === today.toDateString();
             const dayName = date.toLocaleDateString('en', { weekday: 'short' });
             const dayNum = date.getDate();
-            grid += `<div class="day-header ${isToday ? 'today' : ''}">${dayName}<br><span class="day-num">${dayNum}</span></div>`;
+            grid += `<div class="day-header date-header ${isToday ? 'today' : ''}" data-day="${dayNum}">${dayName}<br><span class="day-num">${dayNum}</span></div>`;
         });
         grid += '</div>';
         
@@ -844,7 +891,7 @@ class CalendarTile {
                 const dayEvents = this.getEventsForDate(date);
                 const slotEvents = this.getEventsForTimeSlot(dayEvents, timeSlot);
                 
-                grid += '<div class="time-slot">';
+                grid += `<div class="time-slot" data-day="${date.getDate()}" data-time="${timeSlot}">`;
                 slotEvents.forEach(event => {
                     const recurringClass = this.isRecurringEvent(event) ? ' recurring' : '';
                     grid += `<div class="event-block${recurringClass}" data-event-id="${event.id}">${event.title}</div>`;

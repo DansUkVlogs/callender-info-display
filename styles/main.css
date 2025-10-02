@@ -2083,8 +2083,9 @@ html, body {
 /* Save Notification */
 .save-notification {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
     background: var(--bg-primary);
     border: 1px solid var(--border-color);
     border-radius: 8px;
@@ -2092,14 +2093,13 @@ html, body {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     z-index: 10000;
     opacity: 0;
-    transform: translateX(100px);
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
 }
 
 .save-notification.show {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .save-notification.success {
