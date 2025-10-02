@@ -2972,16 +2972,21 @@ class SmartDisplayHub {
     // Startup Layout Methods
     populateStartupLayoutDropdown() {
         const select = document.getElementById('startupLayout');
-        if (!select) return;
+        if (!select) {
+            console.error('Startup layout dropdown not found!');
+            return;
+        }
         
         // Get saved configurations from Layout Configurations
         const savedConfigs = JSON.parse(localStorage.getItem('layoutConfigurations') || '[]');
+        console.log('Saved configurations found:', savedConfigs);
         
         // Clear and rebuild options
         select.innerHTML = '<option value="default">Default</option>';
         
         // Add each saved configuration
         savedConfigs.forEach((config, index) => {
+            console.log(`Adding config ${index}:`, config.name);
             const option = document.createElement('option');
             option.value = index.toString(); // Use index as value
             option.textContent = config.name;
@@ -2991,6 +2996,8 @@ class SmartDisplayHub {
         // Set current startup layout
         const currentStartupLayout = this.settings.startupLayout || 'default';
         select.value = currentStartupLayout;
+        
+        console.log('Dropdown populated with', savedConfigs.length, 'saved configurations');
     }
 
     setStartupLayout(layoutValue) {
