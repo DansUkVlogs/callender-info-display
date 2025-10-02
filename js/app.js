@@ -1,4 +1,4 @@
-// Smart Display Hub - Main Application
+// Smart Display Hub - Main Application - Version 2025-10-02-01 CACHE BUSTER
 class SmartDisplayHub {
     constructor() {
         this.isEditMode = false;
