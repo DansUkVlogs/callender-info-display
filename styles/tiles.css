@@ -411,6 +411,15 @@
     box-shadow: 0 0 12px rgba(251, 191, 36, 0.6) !important;
 }
 
+.date-header.selected {
+    background: var(--accent-color) !important;
+    color: white !important;
+    border-radius: 4px;
+    margin: 0.25rem;
+    box-shadow: 0 0 0 2px var(--accent-color), 0 0 8px rgba(var(--accent-color-rgb, 0, 123, 255), 0.3) !important;
+    transform: scale(1.05);
+}
+
 .day-num {
     display: block;
     font-size: 1.1rem;

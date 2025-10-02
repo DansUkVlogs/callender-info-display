@@ -206,16 +206,32 @@ class CalendarTile {
     updateDaySelection(selectedDay) {
         // Remove previous selection
         const calendarView = document.getElementById('calendarView');
-        const previousSelected = calendarView.querySelector('.calendar-day.selected');
-        if (previousSelected) {
-            previousSelected.classList.remove('selected');
+        
+        // Remove from month view calendar days
+        const previousSelectedDay = calendarView.querySelector('.calendar-day.selected');
+        if (previousSelectedDay) {
+            previousSelectedDay.classList.remove('selected');
         }
         
-        // Add selection to clicked day
+        // Remove from week view date headers
+        const previousSelectedHeader = calendarView.querySelector('.date-header.selected');
+        if (previousSelectedHeader) {
+            previousSelectedHeader.classList.remove('selected');
+        }
+        
+        // Add selection to clicked day in month view
         const dayElements = calendarView.querySelectorAll('.calendar-day');
         dayElements.forEach(dayEl => {
             if (parseInt(dayEl.dataset.day) === selectedDay) {
                 dayEl.classList.add('selected');
+            }
+        });
+        
+        // Add selection to date headers in week views
+        const headerElements = calendarView.querySelectorAll('.date-header');
+        headerElements.forEach(headerEl => {
+            if (parseInt(headerEl.dataset.day) === selectedDay) {
+                headerEl.classList.add('selected');
             }
         });
     }
@@ -229,17 +245,19 @@ class CalendarTile {
             }
         } else {
             // Week/Work Week/3-day views
-            if (e.target.classList.contains('date-header')) {
+            const dateHeader = e.target.classList.contains('date-header') ? e.target : e.target.closest('.date-header');
+            const timeSlot = e.target.classList.contains('time-slot') ? e.target : e.target.closest('.time-slot');
+            
+            if (dateHeader) {
                 // Clicking date header selects the day
-                const day = parseInt(e.target.dataset.day);
+                const day = parseInt(dateHeader.dataset.day);
                 if (day) {
                     this.selectDayOnly(day);
                 }
-            } else if (e.target.classList.contains('time-slot') || e.target.closest('.time-slot')) {
+            } else if (timeSlot) {
                 // Clicking time slot opens event modal with specific time
-                const slot = e.target.classList.contains('time-slot') ? e.target : e.target.closest('.time-slot');
-                const day = parseInt(slot.dataset.day);
-                const time = slot.dataset.time;
+                const day = parseInt(timeSlot.dataset.day);
+                const time = timeSlot.dataset.time;
                 if (day && time) {
                     this.openEventModalWithTime(day, time);
                 }
@@ -462,8 +480,43 @@ class CalendarTile {
         };
         
         // Event listeners
-        modal.querySelector('.close-btn').addEventListener('click', closeModal);
-        modal.querySelector('.cancel-btn').addEventListener('click', closeModal);
+        const closeBtn = modal.querySelector('.close-btn');
+        const cancelBtn = modal.querySelector('.cancel-btn');
+        
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Close button clicked');
+                closeModal();
+            });
+        } else {
+            console.error('Close button not found in add event modal');
+        }
+        
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Cancel button clicked');
+                closeModal();
+            });
+        }
+        
+        // Close on outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+        
+        // Close on Escape key
+        document.addEventListener('keydown', function escapeHandler(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                document.removeEventListener('keydown', escapeHandler);
+            }
+        });
         
         // All-day toggle functionality
         const allDayToggle = modal.querySelector('#allDayToggle');
