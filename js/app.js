@@ -2850,12 +2850,8 @@ class SmartDisplayHub {
                 }
             });
             
-            // Set current startup layout in dropdown
-            const startupLayoutSelect = document.getElementById('startupLayout');
-            if (startupLayoutSelect) {
-                const currentStartupLayout = this.settings.startupLayout || 'default';
-                startupLayoutSelect.value = currentStartupLayout;
-            }
+            // Populate and set current startup layout in dropdown
+            this.populateStartupLayoutDropdown();
         } else {
             console.error('Settings modal not found!');
         }
@@ -2974,10 +2970,33 @@ class SmartDisplayHub {
     }
 
     // Startup Layout Methods
-    setStartupLayout(layoutName) {
-        this.settings.startupLayout = layoutName;
+    populateStartupLayoutDropdown() {
+        const select = document.getElementById('startupLayout');
+        if (!select) return;
+        
+        // Get saved configurations from Layout Configurations
+        const savedConfigs = JSON.parse(localStorage.getItem('layoutConfigurations') || '[]');
+        
+        // Clear and rebuild options
+        select.innerHTML = '<option value="default">Default</option>';
+        
+        // Add each saved configuration
+        savedConfigs.forEach((config, index) => {
+            const option = document.createElement('option');
+            option.value = index.toString(); // Use index as value
+            option.textContent = config.name;
+            select.appendChild(option);
+        });
+        
+        // Set current startup layout
+        const currentStartupLayout = this.settings.startupLayout || 'default';
+        select.value = currentStartupLayout;
+    }
+
+    setStartupLayout(layoutValue) {
+        this.settings.startupLayout = layoutValue;
         this.saveSettings();
-        console.log('Startup layout set to:', layoutName);
+        console.log('Startup layout set to:', layoutValue);
         
         // Show confirmation
         const button = document.getElementById('saveStartupLayout');
@@ -2992,13 +3011,76 @@ class SmartDisplayHub {
     }
 
     loadStartupLayout() {
-        const startupLayout = this.settings.startupLayout || 'default';
+        const startupLayoutValue = this.settings.startupLayout || 'default';
         
-        console.log('Loading startup layout:', startupLayout);
+        console.log('Loading startup layout:', startupLayoutValue);
         
-        if (startupLayout !== 'default') {
-            this.loadLayout(startupLayout);
+        if (startupLayoutValue === 'default') {
+            console.log('Using default layout');
+            return;
         }
+        
+        // Load saved configuration by index
+        const savedConfigs = JSON.parse(localStorage.getItem('layoutConfigurations') || '[]');
+        const configIndex = parseInt(startupLayoutValue);
+        
+        if (savedConfigs[configIndex]) {
+            console.log('Loading saved configuration:', savedConfigs[configIndex].name);
+            this.loadConfiguration(savedConfigs[configIndex]);
+        } else {
+            console.warn('Startup layout configuration not found, using default');
+        }
+    }
+
+    loadConfiguration(config) {
+        try {
+            console.log('Loading configuration:', config.name);
+            
+            // Clear current layout
+            const dashboard = document.getElementById('dashboard');
+            const tiles = dashboard.querySelectorAll('.tile:not(.add-tile-btn)');
+            tiles.forEach(tile => tile.remove());
+            
+            // Apply the saved layout
+            config.layout.forEach(tileData => {
+                this.createTileFromData(tileData);
+            });
+            
+            // Save as current layout
+            this.saveLayout();
+            
+        } catch (error) {
+            console.error('Error loading configuration:', error);
+        }
+    }
+
+    createTileFromData(tileData) {
+        // This method should create a tile based on the saved tile data
+        // For now, let's use a simpler approach by updating the layout directly
+        const dashboard = document.getElementById('dashboard');
+        
+        // Find existing tile or create placeholder
+        let tile = document.getElementById(tileData.id);
+        if (!tile) {
+            // Create a basic tile structure if it doesn't exist
+            console.log('Creating tile for:', tileData.type);
+            
+            // This is a simplified version - you might need to adjust based on your tile creation logic
+            tile = document.createElement('div');
+            tile.id = tileData.id;
+            tile.className = tileData.class;
+            tile.setAttribute('data-tile-type', tileData.type);
+            
+            // Add basic content based on tile type
+            tile.innerHTML = `<div class="tile-content">Loading ${tileData.type}...</div>`;
+            
+            dashboard.appendChild(tile);
+        }
+        
+        // Apply styles
+        tile.style.gridColumn = tileData.gridColumn;
+        tile.style.gridRow = tileData.gridRow;
+        tile.style.display = tileData.hidden ? 'none' : '';
     }
 
     loadLayouts() {
