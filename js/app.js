@@ -18,12 +18,9 @@ class SmartDisplayHub {
             // Load saved layout first
             this.loadSavedLayout();
             
-            // Load startup layout
-            this.loadStartupLayout();
-            
             this.startUpdateCycle();
             
-            // Initialize all tiles with error handling
+            // Initialize all tiles with error handling FIRST
             console.log('Loading tiles...');
             if (window.CalendarTile) {
                 new CalendarTile();
@@ -82,6 +79,9 @@ class SmartDisplayHub {
             }
             
             console.log('Smart Display Hub initialized successfully');
+            
+            // Load startup layout AFTER all tiles are initialized
+            this.loadStartupLayout();
         } catch (error) {
             console.error('Error initializing Smart Display Hub:', error);
         }
