@@ -1,8 +1,8 @@
-// Traffic Tile - Using MapBox Directions API with real-time traffic
+// Traffic Tile - Using OpenRouteService API with route calculation
 class TrafficTile {
     constructor() {
-        // Using TomTom Routing API - free tier with excellent traffic data
-        this.apiKey = 'RmVuf6piQwSQTfUkLSrFeTKYJAcc58HZ'; // Your TomTom API key
+        // Using OpenRouteService API - free tier: 2,000 requests/day (no credit card required)
+        this.apiKey = 'eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjUyZTQ3ZTQ2NjE5NjQ4MDZiN2EwMTk2NmM4Y2ZmYzAwIiwiaCI6Im11cm11cjY0In0=';
         this.routes = [
             {
                 id: 'uni-to-work',
@@ -21,7 +21,7 @@ class TrafficTile {
         this.activeRoute = null;
         this.trafficData = null;
         this.lastUpdate = null;
-        this.updateInterval = 10 * 60 * 1000; // 10 minutes (longer for free API)
+        this.updateInterval = 60 * 60 * 1000; // 1 HOUR - Conservative for 2000/day limit (max 24 requests/day)
         this.init();
     }
 
@@ -145,24 +145,30 @@ class TrafficTile {
         const durationInTraffic = this.formatDuration(data.duration_in_traffic.value);
         const statusClass = this.getTrafficStatusClass(data.duration.value, data.duration_in_traffic.value);
         
-        // TomTom provides separate normal time and traffic-aware time
-        const isRealTime = !data.isEstimated;
-        const hasTrafficDelay = data.trafficDelay && data.trafficDelay > 0;
+        // Handle different data sources
+        const isEstimated = data.isEstimated;
+        const isRouteData = data.isRealTime === false; // OpenRouteService route data
         
         let timeDisplay, statusDisplay;
         
-        if (isRealTime && hasTrafficDelay) {
-            // Show traffic-aware time with delay info
-            timeDisplay = `${durationInTraffic} (+${Math.round(data.trafficDelay / 60)} min traffic)`;
-            statusDisplay = `Live traffic: ${Math.round(data.trafficDelay / 60)} min delay`;
-        } else if (isRealTime) {
-            // No current traffic delays
-            timeDisplay = durationInTraffic;
-            statusDisplay = 'Live traffic: Clear roads';
-        } else {
-            // Fallback data
+        if (isEstimated) {
+            // Fallback estimated data
             timeDisplay = durationInTraffic;
             statusDisplay = 'Estimated time (API unavailable)';
+        } else if (isRouteData) {
+            // OpenRouteService route calculation
+            timeDisplay = durationInTraffic;
+            statusDisplay = 'Route time (Updated hourly)';
+        } else {
+            // Real-time traffic data (if available)
+            const hasTrafficDelay = data.trafficDelay && data.trafficDelay > 0;
+            if (hasTrafficDelay) {
+                timeDisplay = `${durationInTraffic} (+${Math.round(data.trafficDelay / 60)} min traffic)`;
+                statusDisplay = `Live traffic: ${Math.round(data.trafficDelay / 60)} min delay`;
+            } else {
+                timeDisplay = durationInTraffic;
+                statusDisplay = 'Live traffic: Clear roads';
+            }
         }
         
         trafficInfo.innerHTML = `
@@ -202,8 +208,8 @@ class TrafficTile {
             
             console.log('Fetching REAL traffic data for route:', route.name);
             
-            // Use TomTom Routing API with real-time traffic
-            console.log('Fetching REAL traffic data from TomTom...');
+            // Use OpenRouteService API with route calculation
+            console.log('Fetching route data from OpenRouteService (cached 1hr)...');
             
             // Build TomTom routing URL with traffic-aware routing
             // Handle both old format (array) and new format (object)
@@ -223,17 +229,18 @@ class TrafficTile {
                 destLon = route.destination[0];
             }
             
-            const origin = `${originLat},${originLon}`; // TomTom uses lat,lng format
-            const destination = `${destLat},${destLon}`;
-            const apiUrl = `https://api.tomtom.com/routing/1/calculateRoute/${origin}:${destination}/json?key=${this.apiKey}&traffic=true&routeType=fastest&travelMode=car`;
+            // OpenRouteService uses lon,lat format (longitude first!)
+            const startCoords = `${originLon},${originLat}`;
+            const endCoords = `${destLon},${destLat}`;
+            const apiUrl = `https://api.openrouteservice.org/v2/directions/driving-car?api_key=${this.apiKey}&start=${startCoords}&end=${endCoords}`;
             
-            console.log('Fetching from TomTom API:', apiUrl);
+            console.log('Fetching from OpenRouteService API (1hr cache):', apiUrl);
             
             const response = await fetch(apiUrl);
             
             if (!response.ok) {
-                if (response.status === 403) {
-                    console.warn('🔑 TomTom API key is invalid or expired. Switching to estimated data...');
+                if (response.status === 401 || response.status === 403) {
+                    console.warn('🔑 OpenRouteService API key is invalid or quota exceeded. Switching to estimated data...');
                     // Remove loading state
                     document.getElementById('trafficInfo').classList.remove('loading');
                     
@@ -246,37 +253,37 @@ class TrafficTile {
                     }
                     return; // Exit early to prevent catch block execution
                 }
-                throw new Error(`TomTom API error: ${response.status} ${response.statusText}`);
+                throw new Error(`OpenRouteService API error: ${response.status} ${response.statusText}`);
             }
             
             const data = await response.json();
             
-            if (!data.routes || data.routes.length === 0) {
-                throw new Error('No route found from TomTom');
+            if (!data.features || data.features.length === 0) {
+                throw new Error('No route found from OpenRouteService');
             }
             
-            const tomtomRoute = data.routes[0];
-            const summary = tomtomRoute.summary;
+            const orsRoute = data.features[0];
+            const summary = orsRoute.properties.summary;
             
-            // Convert TomTom response to our format
+            // Convert OpenRouteService response to our format
+            const durationSeconds = summary.duration; // Travel time in seconds
+            const distanceMeters = summary.distance;  // Distance in meters
+            
             const routeData = {
                 duration: {
-                    text: this.formatDuration(summary.travelTimeInSeconds),
-                    value: summary.travelTimeInSeconds
+                    text: this.formatDuration(durationSeconds),
+                    value: durationSeconds
                 },
                 duration_in_traffic: {
-                    text: this.formatDuration(summary.trafficDelayInSeconds ? 
-                        summary.travelTimeInSeconds + summary.trafficDelayInSeconds : 
-                        summary.travelTimeInSeconds),
-                    value: summary.trafficDelayInSeconds ? 
-                        summary.travelTimeInSeconds + summary.trafficDelayInSeconds : 
-                        summary.travelTimeInSeconds
+                    text: this.formatDuration(durationSeconds), // ORS doesn't separate traffic/base time
+                    value: durationSeconds
                 },
                 distance: {
-                    text: `${(summary.lengthInMeters / 1000).toFixed(1)} km`,
-                    value: summary.lengthInMeters
+                    text: `${(distanceMeters / 1000).toFixed(1)} km`,
+                    value: distanceMeters
                 },
-                trafficDelay: summary.trafficDelayInSeconds || 0
+                trafficDelay: 0, // ORS doesn't provide separate traffic delay
+                isRealTime: false // Mark as route-based, not live traffic
             };
             
             this.trafficData = routeData;
@@ -287,13 +294,13 @@ class TrafficTile {
             console.log('REAL traffic data loaded successfully:', routeData);
             
         } catch (error) {
-            console.warn('🛣️ TomTom API network error:', error.message);
+            console.warn('🛣️ OpenRouteService API network error:', error.message);
             
             // Remove loading state
             document.getElementById('trafficInfo').classList.remove('loading');
             
             // Fallback to estimated data if API fails
-            console.log('📊 Falling back to estimated data due to network error');
+            console.log('📊 Falling back to estimated data due to OpenRouteService API error');
             const estimatedData = this.getEstimatedRouteData(route);
             
             if (estimatedData) {
