@@ -77,6 +77,13 @@ class SmartDisplayHub {
             } else {
                 console.warn('BirthdayTile class not found');
             }
+
+            if (window.DailyEventsTile) {
+                window.dailyEventsTileInstance = new DailyEventsTile();
+                console.log('Daily Events tile loaded');
+            } else {
+                console.warn('DailyEventsTile class not found');
+            }
             
             console.log('Smart Display Hub initialized successfully');
             
@@ -569,6 +576,13 @@ class SmartDisplayHub {
                 icon: '🎂',
                 size: { width: 1, height: 1 },
                 description: 'Upcoming birthdays'
+            },
+            {
+                type: 'daily-events',
+                name: 'Daily Events',
+                icon: '📋',
+                size: { width: 1, height: 2 },
+                description: 'Events for selected day'
             },
             {
                 type: 'blank',

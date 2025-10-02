@@ -164,6 +164,11 @@ class CalendarTile {
         const selectedDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), day);
         const events = this.getEventsForDate(selectedDate);
         
+        // Notify Daily Events tile about the selected date
+        window.dispatchEvent(new CustomEvent('calendarDaySelected', {
+            detail: { date: selectedDate }
+        }));
+        
         if (events.length > 0) {
             this.showDayEvents(selectedDate, events);
         } else {

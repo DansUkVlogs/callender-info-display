@@ -348,21 +348,45 @@
     display: flex;
     gap: 1rem;
     align-items: center;
+    padding: 1.5rem;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 1rem;
 }
 
 .save-config input {
     flex: 1;
-    padding: 0.75rem;
+    padding: 0.875rem 1rem;
     border: 2px solid var(--border-color);
     border-radius: 8px;
     background: var(--bg-primary);
     color: var(--text-primary);
     font-size: 1rem;
+    transition: all 0.2s ease;
 }
 
 .save-config input:focus {
     outline: none;
     border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
+    transform: translateY(-1px);
+}
+
+.save-config .btn-primary {
+    padding: 0.875rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(var(--accent-rgb), 0.2);
+}
+
+.save-config .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
 }
 
 .saved-configs {

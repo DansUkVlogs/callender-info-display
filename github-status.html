@@ -366,7 +366,7 @@
             if (autoRefreshInterval) clearInterval(autoRefreshInterval);
             if (countdownInterval) clearInterval(countdownInterval);
             
-            countdownSeconds = 30;
+            countdownSeconds = 1;
             
             countdownInterval = setInterval(() => {
                 countdownSeconds--;
@@ -374,7 +374,7 @@
                 
                 if (countdownSeconds <= 0) {
                     fetchWorkflowRuns();
-                    countdownSeconds = 30;
+                    countdownSeconds = 1;
                 }
             }, 1000);
         }
