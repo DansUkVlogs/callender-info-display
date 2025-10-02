@@ -3059,14 +3059,31 @@ class SmartDisplayHub {
         try {
             console.log('Loading configuration:', config.name);
             
-            // Clear current layout
+            // Just reposition existing tiles based on saved layout
             const dashboard = document.getElementById('dashboard');
-            const tiles = dashboard.querySelectorAll('.tile:not(.add-tile-btn)');
-            tiles.forEach(tile => tile.remove());
             
-            // Apply the saved layout
-            config.layout.forEach(tileData => {
-                this.createTileFromData(tileData);
+            config.layout.forEach(savedTile => {
+                // Find the existing tile by type
+                const existingTile = dashboard.querySelector(`[data-tile-type="${savedTile.type}"]`);
+                if (existingTile) {
+                    // Update position
+                    existingTile.style.gridColumn = `${savedTile.col + 1} / span ${savedTile.width}`;
+                    existingTile.style.gridRow = `${savedTile.row + 1} / span ${savedTile.height}`;
+                    
+                    // Update size classes
+                    existingTile.className = existingTile.className.replace(/(tile-small|tile-medium|tile-large|tile-medium-large)/, '');
+                    if (savedTile.width === 2 && savedTile.height === 2) {
+                        existingTile.classList.add('tile-large');
+                    } else if (savedTile.width === 2) {
+                        existingTile.classList.add('tile-medium-large');
+                    } else if (savedTile.width === 1 && savedTile.height === 1) {
+                        existingTile.classList.add('tile-small');
+                    } else {
+                        existingTile.classList.add('tile-medium');
+                    }
+                    
+                    console.log(`Repositioned ${savedTile.type} tile to ${savedTile.col},${savedTile.row}`);
+                }
             });
             
             // Save as current layout
