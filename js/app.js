@@ -226,6 +226,9 @@ class SmartDisplayHub {
             document.addEventListener('visibilitychange', () => {
                 this.handleVisibilityChange();
             });
+
+            // Configuration Manager listeners
+            this.setupConfigManagerListeners();
             
             console.log('All event listeners set up successfully');
         } catch (error) {
@@ -719,20 +722,25 @@ class SmartDisplayHub {
         
         applyBtn.addEventListener('click', () => this.applyLayout());
         cancelBtn.addEventListener('click', () => this.closeLayoutEditor());
-        
-        // Configuration manager listeners
-        this.setupConfigManagerListeners();
     }
 
     setupConfigManagerListeners() {
+        console.log('setupConfigManagerListeners called');
         const closeBtn = document.getElementById('closeConfigManager');
         const saveBtn = document.getElementById('saveConfig');
         
+        console.log('closeConfigManager element:', closeBtn);
+        console.log('saveConfig element:', saveBtn);
+        
         if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                console.log('Config manager close button clicked');
+            console.log('Adding click listener to closeConfigManager');
+            closeBtn.addEventListener('click', (e) => {
+                console.log('Config manager close button clicked', e);
+                e.preventDefault();
+                e.stopPropagation();
                 this.closeConfigManager();
             });
+            console.log('Close button listener added successfully');
         } else {
             console.error('closeConfigManager button not found!');
         }
