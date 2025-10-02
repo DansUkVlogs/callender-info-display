@@ -706,6 +706,100 @@
     background: var(--success-hover);
 }
 
+/* Calendar Settings View Mode Selector */
+.view-mode-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.view-mode-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--tile-bg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    text-align: center;
+    min-height: 80px;
+}
+
+.view-mode-btn:hover {
+    border-color: var(--accent-color);
+    background: var(--bg-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.view-mode-btn.active {
+    border-color: var(--accent-color);
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(var(--accent-color-rgb, 0, 123, 255), 0.3);
+}
+
+.view-mode-btn .view-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+}
+
+.view-mode-btn.active .view-icon {
+    opacity: 1;
+}
+
+.view-mode-btn .view-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.view-mode-btn.active .view-name {
+    color: white;
+    font-weight: 600;
+}
+
+/* Data Management Section */
+.warning-text {
+    color: var(--warning-color, #f39c12);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.clear-all-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--error-color, #dc3545);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+.clear-all-btn:hover {
+    background: var(--error-hover, #c82333);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.clear-all-btn .btn-icon {
+    font-size: 1.1rem;
+}
+
 /* Enhanced Event Modal */
 .add-event-modal .modal-content {
     max-width: 600px;

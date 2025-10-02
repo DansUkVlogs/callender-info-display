@@ -1015,54 +1015,35 @@ class CalendarTile {
                 </div>
                 <div class="modal-body">
                     <div class="settings-section">
-                        <h4>Default View</h4>
-                        <div class="setting-group">
-                            <label><input type="radio" name="defaultView" value="month" ${this.viewMode === 'month' ? 'checked' : ''}> Month View</label>
-                            <label><input type="radio" name="defaultView" value="week" ${this.viewMode === 'week' ? 'checked' : ''}> Week View</label>
-                            <label><input type="radio" name="defaultView" value="workweek" ${this.viewMode === 'workweek' ? 'checked' : ''}> Work Week View</label>
-                            <label><input type="radio" name="defaultView" value="3day" ${this.viewMode === '3day' ? 'checked' : ''}> 3 Day View</label>
+                        <h4>View Mode</h4>
+                        <div class="view-mode-selector">
+                            <button class="view-mode-btn ${this.viewMode === 'month' ? 'active' : ''}" data-view="month">
+                                <div class="view-icon">📅</div>
+                                <div class="view-name">Month</div>
+                            </button>
+                            <button class="view-mode-btn ${this.viewMode === 'week' ? 'active' : ''}" data-view="week">
+                                <div class="view-icon">📊</div>
+                                <div class="view-name">Week</div>
+                            </button>
+                            <button class="view-mode-btn ${this.viewMode === 'workweek' ? 'active' : ''}" data-view="workweek">
+                                <div class="view-icon">💼</div>
+                                <div class="view-name">Work Week</div>
+                            </button>
+                            <button class="view-mode-btn ${this.viewMode === '3day' ? 'active' : ''}" data-view="3day">
+                                <div class="view-icon">📋</div>
+                                <div class="view-name">3 Day</div>
+                            </button>
                         </div>
-                    </div>
-                    
-                    <div class="settings-section">
-                        <h4>External Calendar Integration</h4>
-                        <div class="integration-options">
-                            <div class="integration-item">
-                                <h5>Google Calendar</h5>
-                                <p>Connect your Google Calendar to sync events</p>
-                                <button class="connect-btn" data-provider="google">
-                                    ${this.externalCalendars.google ? 'Reconnect' : 'Connect'} Google Calendar
-                                </button>
-                                ${this.externalCalendars.google ? '<button class="disconnect-btn" data-provider="google">Disconnect</button>' : ''}
-                            </div>
-                            
-                            <div class="integration-item">
-                                <h5>Microsoft Outlook</h5>
-                                <p>Connect your Outlook Calendar to sync events</p>
-                                <button class="connect-btn" data-provider="outlook">
-                                    ${this.externalCalendars.outlook ? 'Reconnect' : 'Connect'} Outlook Calendar
-                                </button>
-                                ${this.externalCalendars.outlook ? '<button class="disconnect-btn" data-provider="outlook">Disconnect</button>' : ''}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    
-                    <div class="settings-section">
-                        <h4>Sync Settings</h4>
-                        <div class="setting-group">
-                            <label><input type="checkbox" ${this.getSyncSetting('autoSync') ? 'checked' : ''}> Auto-sync every 15 minutes</label>
-                            <label><input type="checkbox" ${this.getSyncSetting('syncPastEvents') ? 'checked' : ''}> Sync past events (30 days)</label>
-                            <label><input type="checkbox" ${this.getSyncSetting('syncFutureEvents') ? 'checked' : ''}> Sync future events (90 days)</label>
-                        </div>
-                        <button class="sync-now-btn">Sync Now</button>
                     </div>
                     
                     <div class="settings-section">
                         <h4>Data Management</h4>
                         <div class="setting-group">
-                            <p>⚠️ This will permanently delete all calendar events and data</p>
-                            <button class="clear-all-btn" style="background: #dc3545; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer;">Clear All Events</button>
+                            <p class="warning-text">⚠️ This will permanently delete all calendar events and data</p>
+                            <button class="clear-all-btn">
+                                <span class="btn-icon">🗑️</span>
+                                Clear All Events
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1095,33 +1076,20 @@ class CalendarTile {
             }
         });
         
-        // View mode change
-        modal.querySelectorAll('input[name="defaultView"]').forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                this.changeViewMode(e.target.value);
-                this.saveViewMode(e.target.value);
-            });
-        });
-        
-        // Connect buttons
-        modal.querySelectorAll('.connect-btn').forEach(btn => {
+        // View mode buttons
+        modal.querySelectorAll('.view-mode-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const provider = e.target.dataset.provider;
-                this.connectExternalCalendar(provider);
+                // Remove active class from all buttons
+                modal.querySelectorAll('.view-mode-btn').forEach(b => b.classList.remove('active'));
+                
+                // Add active class to clicked button
+                btn.classList.add('active');
+                
+                // Change view mode
+                const viewMode = btn.dataset.view;
+                this.changeViewMode(viewMode);
+                this.saveViewMode(viewMode);
             });
-        });
-        
-        // Disconnect buttons
-        modal.querySelectorAll('.disconnect-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const provider = e.target.dataset.provider;
-                this.disconnectExternalCalendar(provider);
-            });
-        });
-        
-        // Sync now button
-        modal.querySelector('.sync-now-btn').addEventListener('click', () => {
-            this.syncAllCalendars();
         });
         
         // Clear all events button
