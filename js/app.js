@@ -1322,6 +1322,9 @@ class SmartDisplayHub {
         dashboard.style.gridAutoRows = 'unset';
         dashboard.classList.add('fixed-grid');
         
+        // Remove any existing blank tiles first
+        dashboard.querySelectorAll('.blank-tile').forEach(tile => tile.remove());
+        
         // Move existing tiles to match the configuration
         const allTiles = dashboard.querySelectorAll('.tile');
         allTiles.forEach(tile => {
@@ -1346,6 +1349,13 @@ class SmartDisplayHub {
             } else {
                 // Hide tiles not in configuration
                 tile.style.display = 'none';
+            }
+        });
+        
+        // Create blank tiles for the configuration
+        config.layout.forEach(savedTile => {
+            if (savedTile.type === 'blank') {
+                this.createBlankTile(savedTile);
             }
         });
         
@@ -3079,8 +3089,9 @@ class SmartDisplayHub {
         try {
             console.log('Loading configuration:', config.name);
             
-            // Just reposition existing tiles based on saved layout
+            // Switch to fixed grid layout to prevent auto-scaling
             const dashboard = document.getElementById('dashboard');
+            dashboard.classList.add('fixed-grid');
             
             // Remove any existing blank tiles first
             dashboard.querySelectorAll('.blank-tile').forEach(tile => tile.remove());
