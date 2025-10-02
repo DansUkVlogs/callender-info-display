@@ -1428,6 +1428,11 @@ class SmartDisplayHub {
     }
 
     addRemoveButton(tile) {
+        if (!tile) {
+            console.error('addRemoveButton called with undefined tile');
+            return;
+        }
+        
         // Don't add remove button if one already exists
         if (tile.querySelector('.tile-remove-btn')) return;
         
@@ -1481,6 +1486,11 @@ class SmartDisplayHub {
     }
 
     removeTile(tile) {
+        if (!tile) {
+            console.error('removeTile called with undefined tile');
+            return;
+        }
+        
         const tileType = tile.dataset.tileType;
         const tileName = tile.querySelector('h3')?.textContent || tileType;
         
