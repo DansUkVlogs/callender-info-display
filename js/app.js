@@ -2977,12 +2977,18 @@ class SmartDisplayHub {
             return;
         }
         
+        // Debug: Check raw localStorage content
+        const rawData = localStorage.getItem('layoutConfigurations');
+        console.log('Raw localStorage data for layoutConfigurations:', rawData);
+        
         // Get saved configurations from Layout Configurations
         const savedConfigs = JSON.parse(localStorage.getItem('layoutConfigurations') || '[]');
-        console.log('Saved configurations found:', savedConfigs);
+        console.log('Parsed saved configurations:', savedConfigs);
+        console.log('Number of configurations:', savedConfigs.length);
         
         // Clear and rebuild options
         select.innerHTML = '<option value="default">Default</option>';
+        console.log('Dropdown cleared, default option added');
         
         // Add each saved configuration
         savedConfigs.forEach((config, index) => {
@@ -2991,6 +2997,7 @@ class SmartDisplayHub {
             option.value = index.toString(); // Use index as value
             option.textContent = config.name;
             select.appendChild(option);
+            console.log('Option added to dropdown:', option.textContent, 'with value:', option.value);
         });
         
         // Set current startup layout
@@ -2998,6 +3005,7 @@ class SmartDisplayHub {
         select.value = currentStartupLayout;
         
         console.log('Dropdown populated with', savedConfigs.length, 'saved configurations');
+        console.log('Final dropdown HTML:', select.innerHTML);
     }
 
     setStartupLayout(layoutValue) {
