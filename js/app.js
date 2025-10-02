@@ -2838,7 +2838,7 @@ class SmartDisplayHub {
             console.log('Modal display after:', modal.style.display);
             
             // Set active theme button based on current theme
-            const currentTheme = this.getCurrentTheme();
+            const currentTheme = this.settings.theme || 'light';
             const themeButtons = document.querySelectorAll('.theme-btn');
             
             themeButtons.forEach(btn => {
