@@ -452,8 +452,14 @@ class SmartDisplayHub {
     }
 
     closeConfigManager() {
+        console.log('closeConfigManager() called');
         const modal = document.getElementById('configManagerModal');
-        modal.classList.add('hidden');
+        if (modal) {
+            modal.classList.add('hidden');
+            console.log('Config manager modal closed');
+        } else {
+            console.error('configManagerModal not found!');
+        }
     }
 
     // Layout Editor Core Functions
@@ -722,8 +728,20 @@ class SmartDisplayHub {
         const closeBtn = document.getElementById('closeConfigManager');
         const saveBtn = document.getElementById('saveConfig');
         
-        closeBtn.addEventListener('click', () => this.closeConfigManager());
-        saveBtn.addEventListener('click', () => this.saveCurrentConfiguration());
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                console.log('Config manager close button clicked');
+                this.closeConfigManager();
+            });
+        } else {
+            console.error('closeConfigManager button not found!');
+        }
+        
+        if (saveBtn) {
+            saveBtn.addEventListener('click', () => this.saveCurrentConfiguration());
+        } else {
+            console.error('saveConfig button not found!');
+        }
     }
 
     placeTile() {
