@@ -119,6 +119,16 @@ class CalendarTile {
             console.log('=== END CHANGE EVENT ===');
         });
         
+        // DIAGNOSTIC: Add click listeners to all radio buttons to see what's being clicked
+        const allRadios = calendarView.querySelectorAll('input[type="radio"][name="calendar-view"]');
+        allRadios.forEach(radio => {
+            radio.addEventListener('click', (e) => {
+                console.log('🖱️ RADIO CLICK:', e.target.id, 'data-view:', e.target.dataset.view);
+                console.log('🖱️ Will be checked:', e.target.checked);
+                console.log('🖱️ Event prevented?', e.defaultPrevented);
+            }, true); // Use capture phase to catch early
+        });
+        
         this.radioListenersSetup = true;
         
         // DIAGNOSTIC: Watch for any DOM mutations that might affect radio buttons
@@ -130,6 +140,12 @@ class CalendarTile {
                     console.log('Old value:', mutation.oldValue);
                     console.log('New value:', mutation.target.checked);
                     console.log('Stack trace:', new Error().stack);
+                    
+                    // Special focus on Month radio being checked
+                    if (mutation.target.id === 'view-month' && mutation.target.checked) {
+                        console.log('🔥🔥🔥 MONTH RADIO WAS JUST CHECKED! This is the problem!');
+                        console.log('Full stack trace:', new Error().stack);
+                    }
                 } else if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
                     Array.from(mutation.addedNodes).forEach(node => {
                         if (node.nodeType === 1 && node.querySelector && node.querySelector('input[name="calendar-view"]')) {
@@ -149,6 +165,23 @@ class CalendarTile {
             attributeOldValue: true,
             attributeFilter: ['checked']
         });
+        
+        // DIAGNOSTIC: Override radio button checked setters to catch direct property changes
+        const monthRadio = document.getElementById('view-month');
+        if (monthRadio) {
+            const originalCheckedDescriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'checked');
+            Object.defineProperty(monthRadio, 'checked', {
+                get: function() {
+                    return originalCheckedDescriptor.get.call(this);
+                },
+                set: function(value) {
+                    console.log('🔥🔥🔥 MONTH RADIO.CHECKED SETTER CALLED!');
+                    console.log('Setting checked to:', value);
+                    console.log('Stack trace:', new Error().stack);
+                    return originalCheckedDescriptor.set.call(this, value);
+                }
+            });
+        }
     }
 
     render() {
@@ -1289,11 +1322,18 @@ class CalendarTile {
             }, 50);
         } else {
             // Just update radio state if render was called for other reasons
+            console.log('🚨🚨🚨 ELSE BRANCH TRIGGERED - oldMode === newMode!');
+            console.log('🚨 This will RESET all radio buttons to match:', newMode);
+            console.log('🚨 oldMode:', oldMode, 'newMode:', newMode);
+            
             const viewModes = document.querySelector('.calendar-view-modes');
             if (viewModes) {
                 const radios = viewModes.querySelectorAll('input[type="radio"]');
+                console.log('🚨 About to reset', radios.length, 'radio buttons');
                 radios.forEach(radio => {
-                    radio.checked = radio.dataset.view === newMode;
+                    const willBeChecked = radio.dataset.view === newMode;
+                    console.log(`🚨 Setting ${radio.id} checked = ${willBeChecked} (data-view: ${radio.dataset.view})`);
+                    radio.checked = willBeChecked;
                 });
             }
         }
