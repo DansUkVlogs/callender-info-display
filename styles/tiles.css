@@ -322,11 +322,11 @@
 
 /* Labels as buttons */
 .calendar-view-modes label {
+    flex: 1;
     border-radius: 16px;
     line-height: 32px;
     padding: 0 12px;
     text-align: center;
-    width: var(--button-width);
     color: var(--label-color);
     cursor: pointer;
     user-select: none;
@@ -356,7 +356,7 @@
     -webkit-transition: left 0.3s ease-in-out !important;
     -moz-transition: left 0.3s ease-in-out !important;
     -o-transition: left 0.3s ease-in-out !important;
-    width: var(--button-width);
+    width: calc(25% - 3px) !important;
     z-index: 1 !important;
     box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
 }
