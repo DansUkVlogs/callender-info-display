@@ -53,10 +53,38 @@ class CalendarTile {
 
         // Handle radio button changes for view mode
         calendarView.addEventListener('change', (e) => {
+            console.log('Change event triggered:', e.target);
             if (e.target.type === 'radio' && e.target.name === 'calendar-view') {
+                console.log('Radio changed to:', e.target.dataset.view);
                 const viewMode = e.target.dataset.view;
                 this.changeViewMode(viewMode);
             }
+        });
+
+        // Also handle label clicks directly as backup
+        calendarView.addEventListener('click', (e) => {
+            // Handle view mode label clicks
+            if (e.target.tagName === 'LABEL' && e.target.closest('.calendar-view-modes')) {
+                const radioId = e.target.getAttribute('for');
+                const radio = document.getElementById(radioId);
+                if (radio) {
+                    console.log('Label clicked, triggering radio:', radioId);
+                    radio.checked = true;
+                    const viewMode = radio.dataset.view;
+                    this.changeViewMode(viewMode);
+                }
+                return;
+            }
+            
+            // Handle navigation buttons
+            if (e.target.classList.contains('calendar-nav')) {
+                const direction = e.target.dataset.direction;
+                this.navigate(direction);
+                return;
+            }
+            
+            // Handle other calendar clicks
+            this.handleViewSpecificClick(e);
         });
 
         // Add double-click handler for opening event modal
@@ -1127,18 +1155,27 @@ class CalendarTile {
 
     // View Mode Management
     changeViewMode(newMode) {
+        console.log('changeViewMode called with:', newMode);
+        const oldMode = this.viewMode;
         this.viewMode = newMode;
         
-        // Update radio button selection
-        const viewModes = document.querySelector('.calendar-view-modes');
-        if (viewModes) {
-            const radios = viewModes.querySelectorAll('input[type="radio"]');
-            radios.forEach(radio => {
-                radio.checked = radio.dataset.view === newMode;
-            });
-        }
+        // Save the mode to localStorage
+        this.saveViewMode(newMode);
         
-        this.render();
+        // Only re-render if the mode actually changed and it affects the calendar content
+        if (oldMode !== newMode) {
+            console.log('View mode changed from', oldMode, 'to', newMode, '- re-rendering calendar');
+            this.render();
+        } else {
+            // Just update radio state if render was called for other reasons
+            const viewModes = document.querySelector('.calendar-view-modes');
+            if (viewModes) {
+                const radios = viewModes.querySelectorAll('input[type="radio"]');
+                radios.forEach(radio => {
+                    radio.checked = radio.dataset.view === newMode;
+                });
+            }
+        }
     }
 
     saveViewMode(mode) {

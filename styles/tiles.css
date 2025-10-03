@@ -326,6 +326,9 @@
     font-size: 0.8rem;
     font-weight: 500;
     transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .calendar-view-modes label:hover {
