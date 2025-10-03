@@ -74,28 +74,15 @@ class CalendarTile {
         
         console.log('Setting up radio listeners...');
         
-        // Handle radio button changes for view mode
+        // Handle radio button changes for view mode (single event handler)
         calendarView.addEventListener('change', (e) => {
             console.log('Change event triggered:', e.target);
             if (e.target.type === 'radio' && e.target.name === 'calendar-view') {
-                console.log('Radio changed to:', e.target.dataset.view);
+                console.log('Radio changed to:', e.target.dataset.view, '- checked:', e.target.checked);
                 const viewMode = e.target.dataset.view;
-                this.changeViewMode(viewMode);
-            }
-        });
-
-        // Also handle label clicks directly as backup
-        calendarView.addEventListener('click', (e) => {
-            if (e.target.tagName === 'LABEL' && e.target.closest('.calendar-view-modes')) {
-                const radioId = e.target.getAttribute('for');
-                const radio = document.getElementById(radioId);
-                if (radio) {
-                    console.log('Label clicked, triggering radio:', radioId);
-                    radio.checked = true;
-                    const viewMode = radio.dataset.view;
+                if (e.target.checked) {
                     this.changeViewMode(viewMode);
                 }
-                return;
             }
         });
     }
@@ -1209,22 +1196,12 @@ class CalendarTile {
         
         // Only re-render if the mode actually changed and it affects the calendar content
         if (oldMode !== newMode) {
-            console.log('View mode changed from', oldMode, 'to', newMode, '- updating radio state');
+            console.log('View mode changed from', oldMode, 'to', newMode, '- radio already set by user');
             
-            // Simply update the radio states - CSS will handle the animation
-            const viewModes = document.querySelector('.calendar-view-modes');
-            if (viewModes) {
-                const radios = viewModes.querySelectorAll('input[type="radio"]');
-                
-                // Update radio states
-                radios.forEach(radio => {
-                    radio.checked = radio.dataset.view === newMode;
-                });
-                
-                console.log('Radio states updated, CSS animation should trigger');
-            }
+            // Don't interfere with radio states - user interaction already set them correctly
+            // CSS animation will trigger automatically from the :checked state
             
-            // Render new content immediately (no timeout to avoid radio state reset)
+            // Render new content immediately 
             console.log('Rendering new calendar content immediately');
             this.renderCalendarContent();
         } else {
