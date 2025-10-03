@@ -344,44 +344,51 @@
 }
 
 /* Sliding background bubble */
-.calendar-view-modes .background {
-    background-color: var(--bubble-color);
+#calendarView .calendar-view-modes .background {
+    background-color: var(--bubble-color) !important;
+    border: 2px solid red !important; /* Debug: make it visible */
     border-radius: 16px;
     height: 32px;
-    position: absolute;
-    left: 3px;
+    position: absolute !important;
+    left: 3px !important;
     top: 3px;
     transition: left 0.3s ease-in-out !important;
     -webkit-transition: left 0.3s ease-in-out !important;
     -moz-transition: left 0.3s ease-in-out !important;
     -o-transition: left 0.3s ease-in-out !important;
     width: var(--button-width);
-    z-index: 1;
+    z-index: 1 !important;
     box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
 }
 
 /* Bubble positioning based on selected radio */
-.calendar-view-modes input#view-month:checked ~ .background {
+#calendarView .calendar-view-modes input#view-month:checked ~ .background {
     left: 3px !important;
 }
-.calendar-view-modes input#view-week:checked ~ .background {
+#calendarView .calendar-view-modes input#view-week:checked ~ .background {
     left: calc(25% + 3px) !important;
 }
-.calendar-view-modes input#view-workweek:checked ~ .background {
+#calendarView .calendar-view-modes input#view-workweek:checked ~ .background {
     left: calc(50% + 3px) !important;
 }
-.calendar-view-modes input#view-3day:checked ~ .background {
+#calendarView .calendar-view-modes input#view-3day:checked ~ .background {
     left: calc(75% + 3px) !important;
 }
 
 /* Active label color (white when bubble is behind) */
-.calendar-view-modes input#view-month:checked + label,
-.calendar-view-modes input#view-week:checked + label,
-.calendar-view-modes input#view-workweek:checked + label,
-.calendar-view-modes input#view-3day:checked + label {
-    color: var(--label-active-color);
-    font-weight: 600;
+#calendarView .calendar-view-modes input#view-month:checked + label,
+#calendarView .calendar-view-modes input#view-week:checked + label,
+#calendarView .calendar-view-modes input#view-workweek:checked + label,
+#calendarView .calendar-view-modes input#view-3day:checked + label {
+    color: var(--label-active-color) !important;
+    font-weight: 600 !important;
 }
+
+/* Debug: Show which radio is checked with background colors */
+#calendarView .calendar-view-modes input#view-month:checked + label { background-color: rgba(255,0,0,0.2) !important; }
+#calendarView .calendar-view-modes input#view-week:checked + label { background-color: rgba(0,255,0,0.2) !important; }
+#calendarView .calendar-view-modes input#view-workweek:checked + label { background-color: rgba(0,0,255,0.2) !important; }
+#calendarView .calendar-view-modes input#view-3day:checked + label { background-color: rgba(255,255,0,0.2) !important; }
 
 /* Calendar Buttons */
 .new-event-btn,

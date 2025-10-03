@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .test-segmented {
+            margin: 50px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            background: #f8f9fa;
+            width: 400px;
+        }
+
+        .test-container {
+            display: flex;
+            padding: 3px;
+            position: relative;
+        }
+
+        .test-segmented input[type="radio"] {
+            display: none;
+        }
+
+        .test-segmented label {
+            flex: 1;
+            border-radius: 16px;
+            line-height: 32px;
+            padding: 0 12px;
+            text-align: center;
+            color: #666;
+            cursor: pointer;
+            z-index: 3;
+            position: relative;
+            font-size: 0.8rem;
+        }
+
+        .test-segmented .bubble {
+            background-color: #007BFF;
+            border-radius: 16px;
+            height: 32px;
+            position: absolute;
+            left: 3px;
+            top: 3px;
+            transition: left 0.3s ease-in-out;
+            width: calc(25% - 3px);
+            z-index: 1;
+        }
+
+        /* Positioning */
+        .test-segmented input#test-month:checked ~ .bubble {
+            left: 3px;
+        }
+        .test-segmented input#test-week:checked ~ .bubble {
+            left: calc(25% + 3px);
+        }
+        .test-segmented input#test-workweek:checked ~ .bubble {
+            left: calc(50% + 3px);
+        }
+        .test-segmented input#test-3day:checked ~ .bubble {
+            left: calc(75% + 3px);
+        }
+
+        /* Active label color */
+        .test-segmented input:checked + label {
+            color: white;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <h2>Test Segmented Control</h2>
+    
+    <div class="test-segmented">
+        <div class="test-container">
+            <input type="radio" id="test-month" name="test-view" checked data-view="month" />
+            <label for="test-month">Month</label>
+
+            <input type="radio" id="test-week" name="test-view" data-view="week" />
+            <label for="test-week">Week</label>
+
+            <input type="radio" id="test-workweek" name="test-view" data-view="workweek" />
+            <label for="test-workweek">Work Week</label>
+
+            <input type="radio" id="test-3day" name="test-view" data-view="3day" />
+            <label for="test-3day">3 Day</label>
+
+            <div class="bubble"></div>
+        </div>
+    </div>
+
+    <p>Click the labels above to test the animation. If this works, we know the CSS is correct.</p>
+
+    <script>
+        // Test logging
+        document.addEventListener('change', (e) => {
+            if (e.target.type === 'radio' && e.target.name === 'test-view') {
+                console.log('Test radio changed to:', e.target.dataset.view);
+            }
+        });
+    </script>
+</body>
+</html>
