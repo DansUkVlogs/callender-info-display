@@ -69,6 +69,12 @@ class CalendarTile {
     }
 
     setupRadioListeners() {
+        // Prevent duplicate event listeners
+        if (this.radioListenersSetup) {
+            console.log('Radio listeners already set up, skipping...');
+            return;
+        }
+        
         // Set up radio button event listeners after HTML is rendered
         const calendarView = document.getElementById('calendarView');
         
@@ -85,6 +91,8 @@ class CalendarTile {
                 }
             }
         });
+        
+        this.radioListenersSetup = true;
     }
 
     render() {
@@ -172,7 +180,7 @@ class CalendarTile {
         } else {
             // Fallback to full render if structure is unexpected
             this.render();
-            this.setupRadioListeners();
+            // Note: setupRadioListeners() already called in init(), don't call again
         }
     }
 
