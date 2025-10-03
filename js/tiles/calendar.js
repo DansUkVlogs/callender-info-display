@@ -46,11 +46,16 @@ class CalendarTile {
             if (e.target.classList.contains('calendar-nav')) {
                 const direction = e.target.dataset.direction;
                 this.navigate(direction);
-            } else if (e.target.classList.contains('view-mode-btn')) {
-                const viewMode = e.target.dataset.view;
-                this.changeViewMode(viewMode);
             } else {
                 this.handleViewSpecificClick(e);
+            }
+        });
+
+        // Handle radio button changes for view mode
+        calendarView.addEventListener('change', (e) => {
+            if (e.target.type === 'radio' && e.target.name === 'calendar-view') {
+                const viewMode = e.target.dataset.view;
+                this.changeViewMode(viewMode);
             }
         });
 
@@ -58,6 +63,8 @@ class CalendarTile {
         calendarView.addEventListener('dblclick', (e) => {
             this.handleViewSpecificDoubleClick(e);
         });
+
+
     }
 
     render() {
@@ -70,11 +77,22 @@ class CalendarTile {
         };
         
         const viewModeButtons = `
-            <div class="calendar-view-modes" data-active="${getActiveIndex(this.viewMode)}">
-                <button class="view-mode-btn ${this.viewMode === 'month' ? 'active' : ''}" data-view="month">Month</button>
-                <button class="view-mode-btn ${this.viewMode === 'week' ? 'active' : ''}" data-view="week">Week</button>
-                <button class="view-mode-btn ${this.viewMode === 'workweek' ? 'active' : ''}" data-view="workweek">Work Week</button>
-                <button class="view-mode-btn ${this.viewMode === '3day' ? 'active' : ''}" data-view="3day">3 Day</button>
+            <div class="calendar-view-modes">
+                <div class="view-modes-container">
+                    <input type="radio" id="view-month" name="calendar-view" ${this.viewMode === 'month' ? 'checked' : ''} data-view="month" />
+                    <label for="view-month">Month</label>
+
+                    <input type="radio" id="view-week" name="calendar-view" ${this.viewMode === 'week' ? 'checked' : ''} data-view="week" />
+                    <label for="view-week">Week</label>
+
+                    <input type="radio" id="view-workweek" name="calendar-view" ${this.viewMode === 'workweek' ? 'checked' : ''} data-view="workweek" />
+                    <label for="view-workweek">Work Week</label>
+
+                    <input type="radio" id="view-3day" name="calendar-view" ${this.viewMode === '3day' ? 'checked' : ''} data-view="3day" />
+                    <label for="view-3day">3 Day</label>
+
+                    <div class="slider-background"></div>
+                </div>
             </div>
         `;
         
@@ -1111,20 +1129,12 @@ class CalendarTile {
     changeViewMode(newMode) {
         this.viewMode = newMode;
         
-        // Update slider position for animation
+        // Update radio button selection
         const viewModes = document.querySelector('.calendar-view-modes');
         if (viewModes) {
-            const modes = ['month', 'week', 'workweek', '3day'];
-            const activeIndex = modes.indexOf(newMode) + 1;
-            viewModes.setAttribute('data-active', activeIndex);
-            
-            // Update button states
-            const buttons = viewModes.querySelectorAll('.view-mode-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.view === newMode) {
-                    btn.classList.add('active');
-                }
+            const radios = viewModes.querySelectorAll('input[type="radio"]');
+            radios.forEach(radio => {
+                radio.checked = radio.dataset.view === newMode;
             });
         }
         
