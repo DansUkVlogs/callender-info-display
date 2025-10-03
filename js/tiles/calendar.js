@@ -1215,16 +1215,36 @@ class CalendarTile {
             const viewModes = document.querySelector('.calendar-view-modes');
             if (viewModes) {
                 const radios = viewModes.querySelectorAll('input[type="radio"]');
+                const sliderBackground = viewModes.querySelector('.slider-background');
+                
+                // Clear all checked states first
                 radios.forEach(radio => {
-                    radio.checked = radio.dataset.view === newMode;
+                    radio.checked = false;
                 });
+                
+                // Force a reflow to ensure DOM update
+                if (sliderBackground) {
+                    sliderBackground.offsetWidth; // Force reflow
+                }
+                
+                // Set the new checked state
+                const newRadio = document.getElementById(`view-${newMode}`);
+                if (newRadio) {
+                    newRadio.checked = true;
+                    console.log('Set radio checked:', newRadio.id);
+                    
+                    // Force another reflow to trigger CSS animation
+                    if (sliderBackground) {
+                        sliderBackground.offsetWidth;
+                    }
+                }
             }
             
             // Wait for the animation to complete (300ms) then render new content
             setTimeout(() => {
                 console.log('Animation complete, rendering new calendar content');
                 this.renderCalendarContent();
-            }, 300);
+            }, 350);
         } else {
             // Just update radio state if render was called for other reasons
             const viewModes = document.querySelector('.calendar-view-modes');
