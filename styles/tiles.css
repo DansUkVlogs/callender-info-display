@@ -295,6 +295,7 @@
 .calendar-view-modes {
     --button-size: 1.5;
     --button-width: 25%;
+    --button-offset: 1.5px;
     --transition-duration: 0.3s;
     --bubble-color: var(--accent-color);
     --container-border: var(--border-color);
@@ -345,7 +346,12 @@
     border-radius: calc(1rem * var(--button-size));
     height: calc(2rem * var(--button-size));
     position: absolute;
-    transition: left var(--transition-duration) ease-in-out;
+    left: calc(1px * var(--button-size)); /* Initial position for month */
+    top: calc(1px * var(--button-size));
+    transition: left 0.3s ease-in-out !important;
+    -webkit-transition: left 0.3s ease-in-out !important;
+    -moz-transition: left 0.3s ease-in-out !important;
+    -o-transition: left 0.3s ease-in-out !important;
     width: var(--button-width);
     z-index: 1;
     box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
@@ -353,16 +359,16 @@
 
 /* Bubble positioning based on selected radio */
 .calendar-view-modes input#view-month:checked ~ .background {
-    left: calc(1px * var(--button-size));
+    left: var(--button-offset) !important;
 }
 .calendar-view-modes input#view-week:checked ~ .background {
-    left: calc(var(--button-width) * 1 + (1px * var(--button-size)));
+    left: calc(25% + var(--button-offset)) !important;
 }
 .calendar-view-modes input#view-workweek:checked ~ .background {
-    left: calc(var(--button-width) * 2 + (1px * var(--button-size)));
+    left: calc(50% + var(--button-offset)) !important;
 }
 .calendar-view-modes input#view-3day:checked ~ .background {
-    left: calc(var(--button-width) * 3 + (1px * var(--button-size)));
+    left: calc(75% + var(--button-offset)) !important;
 }
 
 /* Active label color (white when bubble is behind) */

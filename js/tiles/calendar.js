@@ -1209,40 +1209,24 @@ class CalendarTile {
         
         // Only re-render if the mode actually changed and it affects the calendar content
         if (oldMode !== newMode) {
-            console.log('View mode changed from', oldMode, 'to', newMode, '- starting animation');
+            console.log('View mode changed from', oldMode, 'to', newMode, '- updating radio state');
             
-            // First update the radio states to trigger the CSS animation
+            // Simply update the radio states - CSS will handle the animation
             const viewModes = document.querySelector('.calendar-view-modes');
             if (viewModes) {
                 const radios = viewModes.querySelectorAll('input[type="radio"]');
-                const background = viewModes.querySelector('.background');
                 
-                // Clear all checked states first
+                // Update radio states
                 radios.forEach(radio => {
-                    radio.checked = false;
+                    radio.checked = radio.dataset.view === newMode;
                 });
                 
-                // Force a reflow to ensure DOM update
-                if (background) {
-                    background.offsetWidth; // Force reflow
-                }
-                
-                // Set the new checked state
-                const newRadio = document.getElementById(`view-${newMode}`);
-                if (newRadio) {
-                    newRadio.checked = true;
-                    console.log('Set radio checked:', newRadio.id);
-                    
-                    // Force another reflow to trigger CSS animation
-                    if (background) {
-                        background.offsetWidth;
-                    }
-                }
+                console.log('Radio states updated, CSS animation should trigger');
             }
             
-            // Wait for the animation to complete (300ms) then render new content
+            // Wait for animation then render new content  
             setTimeout(() => {
-                console.log('Animation complete, rendering new calendar content');
+                console.log('Rendering new calendar content');
                 this.renderCalendarContent();
             }, 350);
         } else {
