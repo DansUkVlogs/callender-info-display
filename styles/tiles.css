@@ -291,77 +291,66 @@
 }
 
 /* Calendar View Mode Buttons */
-/* Calendar View Modes - Segmented Control */
-.calendar-view-modes {
-    --button-size: 1.5;
-    --button-width: 25%;
-    --button-offset: 1.5px;
-    --transition-duration: 0.3s;
-    --bubble-color: var(--accent-color);
-    --container-border: var(--border-color);
-    --label-color: var(--text-secondary);
-    --label-active-color: white;
-    
-    margin-bottom: 0.75rem;
-    border: 1px solid var(--container-border);
-    border-radius: 20px;
-    background: var(--bg-accent);
+/* Calendar View Modes - Segmented Control - EXACT COPY FROM WORKING TEST */
+#calendarView .calendar-view-modes {
+    margin: 0 0 0.75rem 0 !important;
+    border: 1px solid #ccc !important;
+    border-radius: 20px !important;
+    background: #f8f9fa !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 
-.calendar-view-modes .view-modes-container {
-    display: flex;
-    padding: calc(1px * var(--button-size));
-    position: relative;
-    z-index: 2;
+#calendarView .calendar-view-modes .view-modes-container {
+    display: flex !important;
+    padding: 3px !important;
+    position: relative !important;
+    box-sizing: border-box !important;
 }
 
-/* Hide radio inputs */
-.calendar-view-modes input[type="radio"] {
-    display: none;
+#calendarView .calendar-view-modes input[type="radio"] {
+    display: none !important;
+    position: static !important;
+    opacity: 1 !important;
+    width: auto !important;
+    height: auto !important;
 }
 
-/* Labels as buttons */
-.calendar-view-modes label {
-    flex: 1;
-    border-radius: 16px;
-    line-height: 32px;
-    padding: 0 12px;
-    text-align: center;
-    color: var(--label-color);
-    cursor: pointer;
-    user-select: none;
-    z-index: 3;
-    position: relative;
-    font-size: 0.8rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+#calendarView .calendar-view-modes label {
+    flex: 1 !important;
+    border-radius: 16px !important;
+    line-height: 32px !important;
+    padding: 0 12px !important;
+    text-align: center !important;
+    color: #666 !important;
+    cursor: pointer !important;
+    z-index: 3 !important;
+    position: relative !important;
+    font-size: 0.8rem !important;
+    user-select: none !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    width: auto !important;
+    display: block !important;
 }
 
-.calendar-view-modes label:hover {
-    color: var(--text-primary);
-}
-
-/* Sliding background bubble */
 #calendarView .calendar-view-modes .background {
-    background-color: var(--bubble-color) !important;
-    border: 2px solid red !important; /* Debug: make it visible */
-    border-radius: 16px;
-    height: 32px;
+    background-color: #007BFF !important;
+    border-radius: 16px !important;
+    height: 32px !important;
     position: absolute !important;
     left: 3px !important;
-    top: 3px;
+    top: 3px !important;
     transition: left 0.3s ease-in-out !important;
-    -webkit-transition: left 0.3s ease-in-out !important;
-    -moz-transition: left 0.3s ease-in-out !important;
-    -o-transition: left 0.3s ease-in-out !important;
     width: calc(25% - 3px) !important;
     z-index: 1 !important;
-    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+    border: 2px solid red !important; /* Debug visibility */
+    box-sizing: border-box !important;
 }
 
-/* Bubble positioning based on selected radio */
+/* Positioning - EXACT COPY FROM WORKING TEST */
 #calendarView .calendar-view-modes input#view-month:checked ~ .background {
     left: 3px !important;
 }
@@ -375,20 +364,17 @@
     left: calc(75% + 3px) !important;
 }
 
-/* Active label color (white when bubble is behind) */
-#calendarView .calendar-view-modes input#view-month:checked + label,
-#calendarView .calendar-view-modes input#view-week:checked + label,
-#calendarView .calendar-view-modes input#view-workweek:checked + label,
-#calendarView .calendar-view-modes input#view-3day:checked + label {
-    color: var(--label-active-color) !important;
+/* Active label color - EXACT COPY FROM WORKING TEST */
+#calendarView .calendar-view-modes input:checked + label {
+    color: white !important;
     font-weight: 600 !important;
 }
 
-/* Debug: Show which radio is checked with background colors */
-#calendarView .calendar-view-modes input#view-month:checked + label { background-color: rgba(255,0,0,0.2) !important; }
-#calendarView .calendar-view-modes input#view-week:checked + label { background-color: rgba(0,255,0,0.2) !important; }
-#calendarView .calendar-view-modes input#view-workweek:checked + label { background-color: rgba(0,0,255,0.2) !important; }
-#calendarView .calendar-view-modes input#view-3day:checked + label { background-color: rgba(255,255,0,0.2) !important; }
+/* Debug backgrounds */
+#calendarView .calendar-view-modes input#view-month:checked + label { background-color: rgba(255,0,0,0.3) !important; }
+#calendarView .calendar-view-modes input#view-week:checked + label { background-color: rgba(0,255,0,0.3) !important; }
+#calendarView .calendar-view-modes input#view-workweek:checked + label { background-color: rgba(0,0,255,0.3) !important; }
+#calendarView .calendar-view-modes input#view-3day:checked + label { background-color: rgba(255,255,0,0.3) !important; }
 
 /* Calendar Buttons */
 .new-event-btn,
