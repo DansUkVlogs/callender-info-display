@@ -112,11 +112,24 @@ class CalendarTile {
         
         // DIAGNOSTIC: Add click listeners to all radio buttons to see what's being clicked
         const allRadios = calendarView.querySelectorAll('input[type="radio"][name="calendar-view"]');
+        console.log('🔍 Found', allRadios.length, 'radio buttons to attach listeners to');
+        allRadios.forEach((radio, index) => {
+            console.log(`🔍 Radio ${index}: ${radio.id} (${radio.dataset.view})`);
+        });
+        
         allRadios.forEach(radio => {
             radio.addEventListener('click', (e) => {
                 console.log('🖱️ RADIO CLICK:', e.target.id, 'data-view:', e.target.dataset.view);
                 console.log('🖱️ Will be checked:', e.target.checked);
                 console.log('🖱️ Event prevented?', e.defaultPrevented);
+                
+                // IMMEDIATE check - what happens right after click?
+                setTimeout(() => {
+                    console.log('🚀 IMMEDIATE: Radio checked status 1ms after click:', e.target.checked);
+                    if (!e.target.checked) {
+                        console.log('🚨 CRITICAL: Radio button was IMMEDIATELY unchecked! Something is preventing the click!');
+                    }
+                }, 1);
                 
                 // Check what happens immediately after click
                 setTimeout(() => {
@@ -144,9 +157,36 @@ class CalendarTile {
                     if (e.target.checked) {
                         const changeEvent = new Event('change', { bubbles: true });
                         e.target.dispatchEvent(changeEvent);
+                    } else {
+                        console.log('🚨 Radio button was UNCHECKED! This is the bug - something is unchecking it!');
+                        // Force check it and trigger change
+                        console.log('🔧 FORCE CHECKING the radio button...');
+                        e.target.checked = true;
+                        const changeEvent = new Event('change', { bubbles: true });
+                        e.target.dispatchEvent(changeEvent);
                     }
                 }, 200);
             }, true); // Use capture phase to catch early
+            
+            // BACKUP: Add a manual override for this radio button
+            radio.addEventListener('mousedown', (e) => {
+                console.log('🖱️ MOUSEDOWN on', e.target.id);
+                setTimeout(() => {
+                    console.log('🔧 MANUAL OVERRIDE: Force checking', e.target.id, 'and unchecking others');
+                    // Manually set radio states
+                    allRadios.forEach(r => {
+                        r.checked = (r === e.target);
+                        console.log(`🔧 Set ${r.id} checked = ${r.checked}`);
+                    });
+                    
+                    // Manually trigger change event
+                    if (e.target.checked) {
+                        console.log('🔧 Manually dispatching change event');
+                        const changeEvent = new Event('change', { bubbles: true });
+                        e.target.dispatchEvent(changeEvent);
+                    }
+                }, 5);
+            });
         });
         
         this.radioListenersSetup = true;
@@ -1288,9 +1328,9 @@ class CalendarTile {
                 // Change view mode
                 const viewMode = btn.dataset.view;
                 this.changeViewMode(viewMode);
-                console.log("1291 " + viewMode + " " + this.viewMode.viewMode);
+                console.log("1291 " + viewMode + " " + this.viewMode);
                 this.saveViewMode(viewMode);
-                console.log("1293 " + viewMode + " " + this.viewMode.viewMode);
+                console.log("1293 " + viewMode + " " + this.viewMode);
             });
         });
         
