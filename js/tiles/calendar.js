@@ -149,6 +149,46 @@ class CalendarTile {
         calendarView.innerHTML = viewModeButtons + content;
     }
 
+    renderCalendarContent() {
+        // Only update the calendar content, not the segmented control
+        const calendarView = document.getElementById('calendarView');
+        
+        let content = '';
+        
+        switch (this.viewMode) {
+            case 'month':
+                content = this.renderMonthView();
+                break;
+            case 'week':
+                content = this.renderWeekView();
+                break;
+            case 'workweek':
+                content = this.renderWorkWeekView();
+                break;
+            case '3day':
+                content = this.render3DayView();
+                break;
+        }
+        
+        // Find the existing calendar content and replace only that part
+        const existingViewModes = calendarView.querySelector('.calendar-view-modes');
+        if (existingViewModes) {
+            // Remove everything after the view modes
+            let nextSibling = existingViewModes.nextSibling;
+            while (nextSibling) {
+                const toRemove = nextSibling;
+                nextSibling = nextSibling.nextSibling;
+                calendarView.removeChild(toRemove);
+            }
+            // Add the new content
+            calendarView.insertAdjacentHTML('beforeend', content);
+        } else {
+            // Fallback to full render if structure is unexpected
+            this.render();
+            this.setupRadioListeners();
+        }
+    }
+
     getMonthName(month) {
         const months = [
             'January', 'February', 'March', 'April', 'May', 'June',
@@ -1169,10 +1209,22 @@ class CalendarTile {
         
         // Only re-render if the mode actually changed and it affects the calendar content
         if (oldMode !== newMode) {
-            console.log('View mode changed from', oldMode, 'to', newMode, '- re-rendering calendar');
-            this.render();
-            // Re-setup radio listeners since render() replaces the HTML
-            this.setupRadioListeners();
+            console.log('View mode changed from', oldMode, 'to', newMode, '- starting animation');
+            
+            // First update the radio states to trigger the CSS animation
+            const viewModes = document.querySelector('.calendar-view-modes');
+            if (viewModes) {
+                const radios = viewModes.querySelectorAll('input[type="radio"]');
+                radios.forEach(radio => {
+                    radio.checked = radio.dataset.view === newMode;
+                });
+            }
+            
+            // Wait for the animation to complete (300ms) then render new content
+            setTimeout(() => {
+                console.log('Animation complete, rendering new calendar content');
+                this.renderCalendarContent();
+            }, 300);
         } else {
             // Just update radio state if render was called for other reasons
             const viewModes = document.querySelector('.calendar-view-modes');
