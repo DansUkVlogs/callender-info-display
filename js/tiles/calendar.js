@@ -11,6 +11,7 @@ class CalendarTile {
     init() {
         this.render();
         this.setupEventListeners();
+        this.setupRadioListeners(); // Set up radio listeners AFTER render
         
         // Listen for global updates
         window.addEventListener('tileUpdate', () => {
@@ -51,6 +52,28 @@ class CalendarTile {
             }
         });
 
+        // Navigation buttons will be added dynamically
+        calendarView.addEventListener('click', (e) => {
+            if (e.target.classList.contains('calendar-nav')) {
+                const direction = e.target.dataset.direction;
+                this.navigate(direction);
+            } else {
+                this.handleViewSpecificClick(e);
+            }
+        });
+
+        // Add double-click handler for opening event modal
+        calendarView.addEventListener('dblclick', (e) => {
+            this.handleViewSpecificDoubleClick(e);
+        });
+    }
+
+    setupRadioListeners() {
+        // Set up radio button event listeners after HTML is rendered
+        const calendarView = document.getElementById('calendarView');
+        
+        console.log('Setting up radio listeners...');
+        
         // Handle radio button changes for view mode
         calendarView.addEventListener('change', (e) => {
             console.log('Change event triggered:', e.target);
@@ -63,7 +86,6 @@ class CalendarTile {
 
         // Also handle label clicks directly as backup
         calendarView.addEventListener('click', (e) => {
-            // Handle view mode label clicks
             if (e.target.tagName === 'LABEL' && e.target.closest('.calendar-view-modes')) {
                 const radioId = e.target.getAttribute('for');
                 const radio = document.getElementById(radioId);
@@ -75,24 +97,7 @@ class CalendarTile {
                 }
                 return;
             }
-            
-            // Handle navigation buttons
-            if (e.target.classList.contains('calendar-nav')) {
-                const direction = e.target.dataset.direction;
-                this.navigate(direction);
-                return;
-            }
-            
-            // Handle other calendar clicks
-            this.handleViewSpecificClick(e);
         });
-
-        // Add double-click handler for opening event modal
-        calendarView.addEventListener('dblclick', (e) => {
-            this.handleViewSpecificDoubleClick(e);
-        });
-
-
     }
 
     render() {
@@ -1166,6 +1171,8 @@ class CalendarTile {
         if (oldMode !== newMode) {
             console.log('View mode changed from', oldMode, 'to', newMode, '- re-rendering calendar');
             this.render();
+            // Re-setup radio listeners since render() replaces the HTML
+            this.setupRadioListeners();
         } else {
             // Just update radio state if render was called for other reasons
             const viewModes = document.querySelector('.calendar-view-modes');
