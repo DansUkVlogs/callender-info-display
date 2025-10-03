@@ -311,6 +311,7 @@
     transition: all 0.2s ease;
     font-size: 0.8rem;
     font-weight: 500;
+    height: 500px;
 }
 
 .view-mode-btn:hover {
