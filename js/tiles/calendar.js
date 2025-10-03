@@ -93,6 +93,7 @@ class CalendarTile {
                     allRadios.forEach(r => console.log(`  ${r.id}: ${r.checked}`));
                     
                     this.changeViewMode(viewMode);
+                    console.log("96 " + viewMode + " " + this.viewMode.viewMode);
                     
                     // DIAGNOSTIC: Check all radio states after changeViewMode  
                     setTimeout(() => {
@@ -1287,7 +1288,9 @@ class CalendarTile {
                 // Change view mode
                 const viewMode = btn.dataset.view;
                 this.changeViewMode(viewMode);
+                console.log("1291 " + viewMode + " " + this.viewMode.viewMode);
                 this.saveViewMode(viewMode);
+                console.log("1293 " + viewMode + " " + this.viewMode.viewMode);
             });
         });
         
@@ -1303,6 +1306,7 @@ class CalendarTile {
 
     // View Mode Management
     changeViewMode(newMode) {
+        console.log("1309 " + newMode);
         console.log('🎯 changeViewMode called with:', newMode);
         console.log('🎯 Current viewMode before change:', this.viewMode);
         console.log('🎯 WHO CALLED changeViewMode? Stack trace:');
