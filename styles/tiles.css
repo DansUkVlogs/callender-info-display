@@ -293,48 +293,46 @@
 /* Calendar View Mode Buttons */
 /* Calendar View Modes - Segmented Control */
 .calendar-view-modes {
+    --button-size: 1.5;
     --button-width: 25%;
-    --button-gap: 3px;
     --transition-duration: 0.3s;
+    --bubble-color: var(--accent-color);
+    --container-border: var(--border-color);
+    --label-color: var(--text-secondary);
+    --label-active-color: white;
     
     margin-bottom: 0.75rem;
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
+    border: 1px solid var(--container-border);
+    border-radius: calc(1rem * var(--button-size));
     background: var(--bg-accent);
 }
 
 .calendar-view-modes .view-modes-container {
     display: flex;
-    padding: 3px;
+    padding: calc(1px * var(--button-size));
     position: relative;
+    z-index: 2;
 }
 
 /* Hide radio inputs */
 .calendar-view-modes input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
+    display: none;
 }
 
 /* Labels as buttons */
 .calendar-view-modes label {
-    flex: 1;
-    border-radius: 18px;
-    line-height: 32px;
-    padding: 0 12px;
+    border-radius: calc(1rem * var(--button-size));
+    line-height: calc(2rem * var(--button-size));
+    padding: 0 calc(0.5rem * var(--button-size));
     text-align: center;
-    color: var(--text-secondary);
+    width: var(--button-width);
+    color: var(--label-color);
     cursor: pointer;
     user-select: none;
     z-index: 3;
     position: relative;
     font-size: 0.8rem;
     font-weight: 500;
-    transition: color var(--transition-duration) ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .calendar-view-modes label:hover {
@@ -342,31 +340,29 @@
 }
 
 /* Sliding background bubble */
-.calendar-view-modes .slider-background {
-    background-color: var(--accent-color);
-    border-radius: 16px;
-    height: 32px;
+.calendar-view-modes .background {
+    background-color: var(--bubble-color);
+    border-radius: calc(1rem * var(--button-size));
+    height: calc(2rem * var(--button-size));
     position: absolute;
-    top: 3px;
-    left: 3px;
-    width: calc(var(--button-width) - var(--button-gap));
+    transition: left var(--transition-duration) ease-in-out;
+    width: var(--button-width);
     z-index: 1;
     box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
-    transition: left var(--transition-duration) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Bubble positioning based on selected radio */
-.calendar-view-modes input#view-month:checked ~ .slider-background {
-    left: 3px;
+.calendar-view-modes input#view-month:checked ~ .background {
+    left: calc(1px * var(--button-size));
 }
-.calendar-view-modes input#view-week:checked ~ .slider-background {
-    left: calc(var(--button-width) * 1 + 3px);
+.calendar-view-modes input#view-week:checked ~ .background {
+    left: calc(var(--button-width) * 1 + (1px * var(--button-size)));
 }
-.calendar-view-modes input#view-workweek:checked ~ .slider-background {
-    left: calc(var(--button-width) * 2 + 3px);
+.calendar-view-modes input#view-workweek:checked ~ .background {
+    left: calc(var(--button-width) * 2 + (1px * var(--button-size)));
 }
-.calendar-view-modes input#view-3day:checked ~ .slider-background {
-    left: calc(var(--button-width) * 3 + 3px);
+.calendar-view-modes input#view-3day:checked ~ .background {
+    left: calc(var(--button-width) * 3 + (1px * var(--button-size)));
 }
 
 /* Active label color (white when bubble is behind) */
@@ -374,7 +370,7 @@
 .calendar-view-modes input#view-week:checked + label,
 .calendar-view-modes input#view-workweek:checked + label,
 .calendar-view-modes input#view-3day:checked + label {
-    color: white;
+    color: var(--label-active-color);
     font-weight: 600;
 }
 

@@ -124,7 +124,7 @@ class CalendarTile {
                     <input type="radio" id="view-3day" name="calendar-view" ${this.viewMode === '3day' ? 'checked' : ''} data-view="3day" />
                     <label for="view-3day">3 Day</label>
 
-                    <div class="slider-background"></div>
+                    <div class="background"></div>
                 </div>
             </div>
         `;
@@ -1215,7 +1215,7 @@ class CalendarTile {
             const viewModes = document.querySelector('.calendar-view-modes');
             if (viewModes) {
                 const radios = viewModes.querySelectorAll('input[type="radio"]');
-                const sliderBackground = viewModes.querySelector('.slider-background');
+                const background = viewModes.querySelector('.background');
                 
                 // Clear all checked states first
                 radios.forEach(radio => {
@@ -1223,8 +1223,8 @@ class CalendarTile {
                 });
                 
                 // Force a reflow to ensure DOM update
-                if (sliderBackground) {
-                    sliderBackground.offsetWidth; // Force reflow
+                if (background) {
+                    background.offsetWidth; // Force reflow
                 }
                 
                 // Set the new checked state
@@ -1234,8 +1234,8 @@ class CalendarTile {
                     console.log('Set radio checked:', newRadio.id);
                     
                     // Force another reflow to trigger CSS animation
-                    if (sliderBackground) {
-                        sliderBackground.offsetWidth;
+                    if (background) {
+                        background.offsetWidth;
                     }
                 }
             }
