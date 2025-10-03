@@ -52,16 +52,6 @@ class CalendarTile {
             }
         });
 
-        // Navigation buttons will be added dynamically
-        calendarView.addEventListener('click', (e) => {
-            if (e.target.classList.contains('calendar-nav')) {
-                const direction = e.target.dataset.direction;
-                this.navigate(direction);
-            } else {
-                this.handleViewSpecificClick(e);
-            }
-        });
-
         // Add double-click handler for opening event modal
         calendarView.addEventListener('dblclick', (e) => {
             this.handleViewSpecificDoubleClick(e);
@@ -126,6 +116,35 @@ class CalendarTile {
                 console.log('🖱️ RADIO CLICK:', e.target.id, 'data-view:', e.target.dataset.view);
                 console.log('🖱️ Will be checked:', e.target.checked);
                 console.log('🖱️ Event prevented?', e.defaultPrevented);
+                
+                // Check what happens immediately after click
+                setTimeout(() => {
+                    console.log('🕐 5ms after click - still checked?', e.target.checked);
+                    const allStates = Array.from(document.querySelectorAll('input[name="calendar-view"]'))
+                        .map(r => `${r.id}:${r.checked}`).join(', ');
+                    console.log('🕐 5ms after click - all radio states:', allStates);
+                }, 5);
+                
+                setTimeout(() => {
+                    console.log('🕐 50ms after click - still checked?', e.target.checked);
+                    const allStates = Array.from(document.querySelectorAll('input[name="calendar-view"]'))
+                        .map(r => `${r.id}:${r.checked}`).join(', ');
+                    console.log('🕐 50ms after click - all radio states:', allStates);
+                }, 50);
+                
+                setTimeout(() => {
+                    console.log('🕐 200ms after click - still checked?', e.target.checked);
+                    const allStates = Array.from(document.querySelectorAll('input[name="calendar-view"]'))
+                        .map(r => `${r.id}:${r.checked}`).join(', ');
+                    console.log('🕐 200ms after click - all radio states:', allStates);
+                    
+                    // Check if change event will fire
+                    console.log('🔔 Manually triggering change event to see if it works...');
+                    if (e.target.checked) {
+                        const changeEvent = new Event('change', { bubbles: true });
+                        e.target.dispatchEvent(changeEvent);
+                    }
+                }, 200);
             }, true); // Use capture phase to catch early
         });
         
@@ -1286,6 +1305,8 @@ class CalendarTile {
     changeViewMode(newMode) {
         console.log('🎯 changeViewMode called with:', newMode);
         console.log('🎯 Current viewMode before change:', this.viewMode);
+        console.log('🎯 WHO CALLED changeViewMode? Stack trace:');
+        console.log(new Error().stack.split('\n').slice(1, 6).join('\n'));
         
         // DIAGNOSTIC: Check what's about to happen to radio buttons
         const allRadios = document.querySelectorAll('input[name="calendar-view"]');
