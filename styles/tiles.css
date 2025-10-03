@@ -304,7 +304,7 @@
     
     margin-bottom: 0.75rem;
     border: 1px solid var(--container-border);
-    border-radius: calc(1rem * var(--button-size));
+    border-radius: 20px;
     background: var(--bg-accent);
 }
 
@@ -322,9 +322,9 @@
 
 /* Labels as buttons */
 .calendar-view-modes label {
-    border-radius: calc(1rem * var(--button-size));
-    line-height: calc(2rem * var(--button-size));
-    padding: 0 calc(0.5rem * var(--button-size));
+    border-radius: 16px;
+    line-height: 32px;
+    padding: 0 12px;
     text-align: center;
     width: var(--button-width);
     color: var(--label-color);
@@ -334,6 +334,9 @@
     position: relative;
     font-size: 0.8rem;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .calendar-view-modes label:hover {
@@ -343,11 +346,11 @@
 /* Sliding background bubble */
 .calendar-view-modes .background {
     background-color: var(--bubble-color);
-    border-radius: calc(1rem * var(--button-size));
-    height: calc(2rem * var(--button-size));
+    border-radius: 16px;
+    height: 32px;
     position: absolute;
-    left: calc(1px * var(--button-size)); /* Initial position for month */
-    top: calc(1px * var(--button-size));
+    left: 3px;
+    top: 3px;
     transition: left 0.3s ease-in-out !important;
     -webkit-transition: left 0.3s ease-in-out !important;
     -moz-transition: left 0.3s ease-in-out !important;
@@ -359,16 +362,16 @@
 
 /* Bubble positioning based on selected radio */
 .calendar-view-modes input#view-month:checked ~ .background {
-    left: var(--button-offset) !important;
+    left: 3px !important;
 }
 .calendar-view-modes input#view-week:checked ~ .background {
-    left: calc(25% + var(--button-offset)) !important;
+    left: calc(25% + 3px) !important;
 }
 .calendar-view-modes input#view-workweek:checked ~ .background {
-    left: calc(50% + var(--button-offset)) !important;
+    left: calc(50% + 3px) !important;
 }
 .calendar-view-modes input#view-3day:checked ~ .background {
-    left: calc(75% + var(--button-offset)) !important;
+    left: calc(75% + 3px) !important;
 }
 
 /* Active label color (white when bubble is behind) */
