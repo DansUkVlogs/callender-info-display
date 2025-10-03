@@ -63,9 +63,14 @@ class CalendarTile {
     render() {
         const calendarView = document.getElementById('calendarView');
         
-        // Add view mode buttons
+        // Add view mode buttons with slider animation
+        const getActiveIndex = (mode) => {
+            const modes = ['month', 'week', 'workweek', '3day'];
+            return modes.indexOf(mode) + 1;
+        };
+        
         const viewModeButtons = `
-            <div class="calendar-view-modes">
+            <div class="calendar-view-modes" data-active="${getActiveIndex(this.viewMode)}">
                 <button class="view-mode-btn ${this.viewMode === 'month' ? 'active' : ''}" data-view="month">Month</button>
                 <button class="view-mode-btn ${this.viewMode === 'week' ? 'active' : ''}" data-view="week">Week</button>
                 <button class="view-mode-btn ${this.viewMode === 'workweek' ? 'active' : ''}" data-view="workweek">Work Week</button>
@@ -1105,6 +1110,24 @@ class CalendarTile {
     // View Mode Management
     changeViewMode(newMode) {
         this.viewMode = newMode;
+        
+        // Update slider position for animation
+        const viewModes = document.querySelector('.calendar-view-modes');
+        if (viewModes) {
+            const modes = ['month', 'week', 'workweek', '3day'];
+            const activeIndex = modes.indexOf(newMode) + 1;
+            viewModes.setAttribute('data-active', activeIndex);
+            
+            // Update button states
+            const buttons = viewModes.querySelectorAll('.view-mode-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.view === newMode) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
         this.render();
     }
 

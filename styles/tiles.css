@@ -292,34 +292,73 @@
 
 /* Calendar View Mode Buttons */
 .calendar-view-modes {
+    position: relative;
     display: flex;
-    gap: 0.25rem;
     margin-bottom: 0.75rem;
-    padding: 0.25rem;
+    padding: 0.15rem;
     background: var(--bg-accent);
-    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    height: 2rem;
+    overflow: hidden;
 }
 
+/* Sliding highlight background */
+.calendar-view-modes::before {
+    content: '';
+    position: absolute;
+    top: 0.15rem;
+    left: 0.15rem;
+    width: calc(25% - 0.1rem);
+    height: calc(100% - 0.3rem);
+    background: var(--accent-color);
+    border-radius: 4px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
+    transform: translateX(0);
+}
+
+/* Sliding animation positions */
+.calendar-view-modes[data-active="1"]::before { transform: translateX(0); }
+.calendar-view-modes[data-active="2"]::before { transform: translateX(100%); }
+.calendar-view-modes[data-active="3"]::before { transform: translateX(200%); }
+.calendar-view-modes[data-active="4"]::before { transform: translateX(300%); }
+
 .view-mode-btn {
+    position: relative;
     flex: 1;
-    padding: 0.1rem 0.5rem;
+    padding: 0;
     border: none;
     background: transparent;
     color: var(--text-secondary);
-    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.8rem;
+    transition: color 0.3s ease;
+    font-size: 0.75rem;
     font-weight: 500;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+}
+
+/* Vertical divider lines */
+.view-mode-btn:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 25%;
+    width: 1px;
+    height: 50%;
+    background: var(--border-color);
+    opacity: 0.5;
 }
 
 .view-mode-btn:hover {
-    background: var(--bg-hover);
     color: var(--text-primary);
 }
 
 .view-mode-btn.active {
-    background: var(--accent-color);
     color: white;
     font-weight: 600;
 }
@@ -726,7 +765,6 @@
     transition: all 0.3s ease;
     font-family: inherit;
     text-align: center;
-    min-height: 50px;
 }
 
 .view-mode-btn:hover {
