@@ -1224,11 +1224,9 @@ class CalendarTile {
                 console.log('Radio states updated, CSS animation should trigger');
             }
             
-            // Wait for animation then render new content  
-            setTimeout(() => {
-                console.log('Rendering new calendar content');
-                this.renderCalendarContent();
-            }, 350);
+            // Render new content immediately (no timeout to avoid radio state reset)
+            console.log('Rendering new calendar content immediately');
+            this.renderCalendarContent();
         } else {
             // Just update radio state if render was called for other reasons
             const viewModes = document.querySelector('.calendar-view-modes');
