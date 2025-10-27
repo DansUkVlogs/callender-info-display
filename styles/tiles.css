@@ -326,7 +326,7 @@
     line-height: 32px !important;
     padding: 0 10px !important; /* slightly reduced padding to help centering */
     text-align: center !important;
-    color: #666 !important;
+    color: darkblue !important;
     cursor: pointer !important;
     z-index: 3 !important;
     position: relative !important;
@@ -344,7 +344,7 @@
 
 /* Selection pill / sliding background for the segmented control */
 #calendarView .calendar-view-modes .background {
-    background-color: var(--accent-color, #8b5cf6) !important;
+    background-color: #8b5cf6 !important;
     border-radius: 16px !important;
     height: 32px !important;
     position: absolute !important;
