@@ -214,9 +214,15 @@ class DailyEventsTile {
     }
 }
 
-// Initialize when DOM is loaded
+// Export the class to the global scope so the main app can instantiate it by name
+window.DailyEventsTile = DailyEventsTile;
+
+// NOTE: instantiation is handled by the main app. If you need a standalone instance
+// for debugging outside of app.js, uncomment the block below.
+/*
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('dailyEventsTile')) {
         window.dailyEventsTileInstance = new DailyEventsTile();
     }
 });
+*/
