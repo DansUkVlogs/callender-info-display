@@ -340,8 +340,9 @@
     justify-content: center !important;
 }
 
+/* Selection pill / sliding background for the segmented control */
 #calendarView .calendar-view-modes .background {
-    background-color: #007BFF !important;
+    background-color: var(--accent-color, #8b5cf6) !important;
     border-radius: 16px !important;
     height: 32px !important;
     position: absolute !important;
@@ -350,17 +351,19 @@
     transition: transform 0.25s cubic-bezier(.22,.9,.24,1) !important;
     width: auto !important;
     z-index: 1 !important;
-    border: 2px solid red !important; /* Debug visibility */
     box-sizing: border-box !important;
+    /* Removed debug border */
 }
 
 /* Positioning - EXACT COPY FROM WORKING TEST */
 /* JS moves the background using transform; old :checked rules removed */
 
 /* Active label color - EXACT COPY FROM WORKING TEST */
+/* Active button text must be readable against the pill */
 #calendarView .calendar-view-modes .view-mode-btn.active {
-    color: white !important;
-    font-weight: 600 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.25) !important;
 }
 
 /* Debug backgrounds */
