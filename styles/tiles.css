@@ -306,6 +306,7 @@
     padding: 3px !important;
     position: relative !important;
     box-sizing: border-box !important;
+    align-items: center !important; /* vertically center labels with the background */
 }
 
 #calendarView .calendar-view-modes input[type="radio"] {
@@ -319,8 +320,9 @@
 #calendarView .calendar-view-modes label {
     flex: 1 !important;
     border-radius: 16px !important;
+    height: 32px !important; /* force same height as the background bubble */
     line-height: 32px !important;
-    padding: 0 12px !important;
+    padding: 0 10px !important; /* slightly reduced padding to help centering */
     text-align: center !important;
     color: #666 !important;
     cursor: pointer !important;
@@ -332,8 +334,10 @@
     margin: 0 !important;
     border: none !important;
     background: transparent !important;
-    width: auto !important;
-    display: block !important;
+    width: 25% !important; /* make each label occupy its quarter so click area aligns with background */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 #calendarView .calendar-view-modes .background {
