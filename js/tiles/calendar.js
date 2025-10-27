@@ -185,6 +185,36 @@ class CalendarTile {
         }
     }
 
+    // Update the view-mode buttons UI (central helper so other methods can call it)
+    updateViewModeUI(newMode) {
+        const calendarView = document.getElementById('calendarView');
+        if (!calendarView) return;
+        const container = calendarView.querySelector('.view-modes-container');
+        if (!container) return;
+
+        const buttons = Array.from(container.querySelectorAll('button[data-view]'));
+        const background = container.querySelector('.background');
+
+        // Toggle active class on buttons
+        buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.view === newMode));
+
+        // Position the sliding background under the active button
+        if (background && buttons.length > 0) {
+            const activeBtn = buttons.find(b => b.dataset.view === newMode) || buttons[0];
+            try {
+                const rect = activeBtn.getBoundingClientRect();
+                const parentRect = container.getBoundingClientRect();
+                const left = rect.left - parentRect.left;
+                background.style.width = rect.width + 'px';
+                background.style.transform = `translateX(${left}px)`;
+            } catch (e) {
+                // Defensive: if measuring fails, clear inline styles
+                background.style.width = '';
+                background.style.transform = '';
+            }
+        }
+    }
+
     getMonthName(month) {
         const months = [
             'January', 'February', 'March', 'April', 'May', 'June',
@@ -1199,15 +1229,15 @@ class CalendarTile {
     // View Mode Management
     changeViewMode(newMode) {
         console.log("1309 " + newMode);
-        console.log('🎯 changeViewMode called with:', newMode);
-        console.log('🎯 Current viewMode before change:', this.viewMode);
-        console.log('🎯 WHO CALLED changeViewMode? Stack trace:');
-        console.log(new Error().stack.split('\n').slice(1, 6).join('\n'));
-        
-        // DIAGNOSTIC: Check what's about to happen to radio buttons
-        const allRadios = document.querySelectorAll('input[name="calendar-view"]');
-        console.log('📻 Radio states at START of changeViewMode:');
-        allRadios.forEach(r => console.log(`  ${r.id}: ${r.checked} (data-view: ${r.dataset.view})`));
+    console.log('🎯 changeViewMode called with:', newMode);
+    console.log('🎯 Current viewMode before change:', this.viewMode);
+    console.log('🎯 WHO CALLED changeViewMode? Stack trace:');
+    console.log(new Error().stack.split('\n').slice(1, 6).join('\n'));
+
+    // DIAGNOSTIC (button-based): Check view-mode buttons at start
+    const allBtnsStart = document.querySelectorAll('.view-mode-btn');
+    console.log('� View-mode buttons at START of changeViewMode:');
+    allBtnsStart.forEach(b => console.log(`  ${b.dataset.view}: active=${b.classList.contains('active')}`));
         
         const oldMode = this.viewMode;
         this.viewMode = newMode;
@@ -1222,37 +1252,26 @@ class CalendarTile {
             // Don't interfere with radio states - user interaction already set them correctly
             // CSS animation will trigger automatically from the :checked state
             
-            // DIAGNOSTIC: Check radio states before renderCalendarContent
-            const allRadiosBefore = document.querySelectorAll('input[name="calendar-view"]');
-            console.log('📻 Radio states BEFORE renderCalendarContent:');
-            allRadiosBefore.forEach(r => console.log(`  ${r.id}: ${r.checked}`));
+            // DIAGNOSTIC (button-based): Check view-mode buttons before renderCalendarContent
+            const allBtnsBefore = document.querySelectorAll('.view-mode-btn');
+            console.log('� View-mode buttons BEFORE renderCalendarContent:');
+            allBtnsBefore.forEach(b => console.log(`  ${b.dataset.view}: active=${b.classList.contains('active')}`));
             
             // Render new content immediately 
             console.log('🔥 About to call renderCalendarContent');
             this.renderCalendarContent();
             
-            // DIAGNOSTIC: Check radio states after renderCalendarContent
+            // DIAGNOSTIC (button-based): Check view-mode buttons after renderCalendarContent
             setTimeout(() => {
-                const allRadiosAfter = document.querySelectorAll('input[name="calendar-view"]');
-                console.log('📻 Radio states AFTER renderCalendarContent:');
-                allRadiosAfter.forEach(r => console.log(`  ${r.id}: ${r.checked}`));
+                const allBtnsAfter = document.querySelectorAll('.view-mode-btn');
+                console.log('� View-mode buttons AFTER renderCalendarContent:');
+                allBtnsAfter.forEach(b => console.log(`  ${b.dataset.view}: active=${b.classList.contains('active')}`));
             }, 50);
         } else {
             // Just update radio state if render was called for other reasons
-            console.log('🚨🚨🚨 ELSE BRANCH TRIGGERED - oldMode === newMode!');
-            console.log('🚨 This will RESET all radio buttons to match:', newMode);
-            console.log('🚨 oldMode:', oldMode, 'newMode:', newMode);
-            
-            const viewModes = document.querySelector('.calendar-view-modes');
-            if (viewModes) {
-                const radios = viewModes.querySelectorAll('input[type="radio"]');
-                console.log('🚨 About to reset', radios.length, 'radio buttons');
-                radios.forEach(radio => {
-                    const willBeChecked = radio.dataset.view === newMode;
-                    console.log(`🚨 Setting ${radio.id} checked = ${willBeChecked} (data-view: ${radio.dataset.view})`);
-                    radio.checked = willBeChecked;
-                });
-            }
+            console.log('ℹ️ ELSE BRANCH: view did not change; updating button UI to match current mode');
+            // Update the button UI and sliding background to reflect the mode deterministically
+            this.updateViewModeUI(newMode);
         }
     }
 
