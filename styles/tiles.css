@@ -2352,6 +2352,9 @@
     /* Reduce general paddings and font sizes slightly for tablet widths */
     .tile { padding: 0.75rem; }
 
+    /* Prevent tiles from clipping overflow on tablet — allow internal scrollbars and wrapping */
+    .tile { overflow: visible; min-height: auto; }
+
     /* Calendar: allow horizontal scrolling instead of clipping */
     .calendar-weekdays,
     .calendar-grid {
@@ -2385,7 +2388,7 @@
     #calendarView .calendar-view-modes .background { height: 30px !important; top: 2px !important; }
 
     /* Timer: make buttons smaller and allow them to wrap */
-    .timer-btn { min-width: 56px; padding: 0.45rem 0.35rem; font-size: 0.72rem; }
+    .timer-btn { min-width: 56px; padding: 0.45rem 0.35rem; font-size: 0.72rem; flex: 1 1 56px; }
     .timer-presets { grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
     .preset-timer { padding: 0.6rem 0.45rem; font-size: 0.75rem; width: 100%; }
 }
