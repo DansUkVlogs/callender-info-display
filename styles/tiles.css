@@ -361,7 +361,7 @@
 /* Active label color - EXACT COPY FROM WORKING TEST */
 /* Active button text must be readable against the pill */
 #calendarView .calendar-view-modes .view-mode-btn.active {
-    color: #ffffff !important;
+    color: darkblue !important;
     font-weight: 700 !important;
     text-shadow: 0 1px 2px rgba(0,0,0,0.25) !important;
 }
