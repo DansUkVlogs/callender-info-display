@@ -59,189 +59,48 @@ class CalendarTile {
     }
 
     setupRadioListeners() {
-        // Prevent duplicate event listeners
+        // Replace radio-based selector with JS-driven button selector to avoid radio quirks
         if (this.radioListenersSetup) {
-            console.log('Radio listeners already set up, skipping...');
             return;
         }
-        
-        // Set up radio button event listeners after HTML is rendered
+
         const calendarView = document.getElementById('calendarView');
-        
-        console.log('Setting up radio listeners...');
-        
-        // Handle radio button changes for view mode (single event handler)
-        calendarView.addEventListener('change', (e) => {
-            console.log('=== CHANGE EVENT ===');
-            console.log('Target:', e.target);
-            console.log('Type:', e.target.type);
-            console.log('Name:', e.target.name);
-            console.log('ID:', e.target.id);
-            console.log('Checked:', e.target.checked);
-            console.log('Dataset view:', e.target.dataset.view);
-            
-            if (e.target.type === 'radio' && e.target.name === 'calendar-view') {
-                console.log('✅ Radio validation passed');
-                const viewMode = e.target.dataset.view;
-                if (e.target.checked) {
-                    console.log('🔥 About to call changeViewMode with:', viewMode);
-                    console.log('Current this.viewMode before:', this.viewMode);
-                    
-                    // DIAGNOSTIC: Check all radio states before changeViewMode
-                    const allRadios = document.querySelectorAll('input[name="calendar-view"]');
-                    console.log('📻 All radio states BEFORE changeViewMode:');
-                    allRadios.forEach(r => console.log(`  ${r.id}: ${r.checked}`));
-                    
-                    this.changeViewMode(viewMode);
-                    console.log("96 " + viewMode + " " + this.viewMode.viewMode);
-                    
-                    // DIAGNOSTIC: Check all radio states after changeViewMode  
-                    setTimeout(() => {
-                        const allRadiosAfter = document.querySelectorAll('input[name="calendar-view"]');
-                        console.log('📻 All radio states AFTER changeViewMode:');
-                        allRadiosAfter.forEach(r => console.log(`  ${r.id}: ${r.checked}`));
-                    }, 100);
-                } else {
-                    console.log('❌ Radio not checked, ignoring');
-                }
-            } else {
-                console.log('❌ Radio validation failed');
+        if (!calendarView) return;
+
+        const container = calendarView.querySelector('.view-modes-container');
+        if (!container) return;
+
+        const buttons = Array.from(container.querySelectorAll('button[data-view]'));
+        const background = container.querySelector('.background');
+
+        const setActive = (view) => {
+            buttons.forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
+            // move background to match active button
+            const active = buttons.find(b => b.dataset.view === view) || buttons[0];
+            if (active && background) {
+                const rect = active.getBoundingClientRect();
+                const parentRect = container.getBoundingClientRect();
+                const left = rect.left - parentRect.left + container.scrollLeft;
+                background.style.width = rect.width + 'px';
+                background.style.transform = `translateX(${left}px)`;
             }
-            console.log('=== END CHANGE EVENT ===');
-        });
-        
-        // DIAGNOSTIC: Add click listeners to all radio buttons to see what's being clicked
-        const allRadios = calendarView.querySelectorAll('input[type="radio"][name="calendar-view"]');
-        console.log('🔍 Found', allRadios.length, 'radio buttons to attach listeners to');
-        allRadios.forEach((radio, index) => {
-            console.log(`🔍 Radio ${index}: ${radio.id} (${radio.dataset.view})`);
-        });
-        
-        allRadios.forEach(radio => {
-            radio.addEventListener('click', (e) => {
-                console.log('🖱️ RADIO CLICK:', e.target.id, 'data-view:', e.target.dataset.view);
-                console.log('🖱️ Will be checked:', e.target.checked);
-                console.log('🖱️ Event prevented?', e.defaultPrevented);
-                
-                // IMMEDIATE check - what happens right after click?
-                setTimeout(() => {
-                    console.log('🚀 IMMEDIATE: Radio checked status 1ms after click:', e.target.checked);
-                    if (!e.target.checked) {
-                        console.log('🚨 CRITICAL: Radio button was IMMEDIATELY unchecked! Something is preventing the click!');
-                    }
-                }, 1);
-                
-                // Check what happens immediately after click
-                setTimeout(() => {
-                    console.log('🕐 5ms after click - still checked?', e.target.checked);
-                    const allStates = Array.from(document.querySelectorAll('input[name="calendar-view"]'))
-                        .map(r => `${r.id}:${r.checked}`).join(', ');
-                    console.log('🕐 5ms after click - all radio states:', allStates);
-                }, 5);
-                
-                setTimeout(() => {
-                    console.log('🕐 50ms after click - still checked?', e.target.checked);
-                    const allStates = Array.from(document.querySelectorAll('input[name="calendar-view"]'))
-                        .map(r => `${r.id}:${r.checked}`).join(', ');
-                    console.log('🕐 50ms after click - all radio states:', allStates);
-                }, 50);
-                
-                setTimeout(() => {
-                    console.log('🕐 200ms after click - still checked?', e.target.checked);
-                    const allStates = Array.from(document.querySelectorAll('input[name="calendar-view"]'))
-                        .map(r => `${r.id}:${r.checked}`).join(', ');
-                    console.log('🕐 200ms after click - all radio states:', allStates);
-                    
-                    // Check if change event will fire
-                    console.log('🔔 Manually triggering change event to see if it works...');
-                    if (e.target.checked) {
-                        const changeEvent = new Event('change', { bubbles: true });
-                        e.target.dispatchEvent(changeEvent);
-                    } else {
-                        console.log('🚨 Radio button was UNCHECKED! This is the bug - something is unchecking it!');
-                        // Force check it and trigger change
-                        console.log('🔧 FORCE CHECKING the radio button...');
-                        e.target.checked = true;
-                        const changeEvent = new Event('change', { bubbles: true });
-                        e.target.dispatchEvent(changeEvent);
-                    }
-                }, 200);
-            }, true); // Use capture phase to catch early
-            
-            // BACKUP: Add a manual override for this radio button
-            radio.addEventListener('mousedown', (e) => {
-                console.log('🖱️ MOUSEDOWN on', e.target.id);
-                setTimeout(() => {
-                    console.log('🔧 MANUAL OVERRIDE: Force checking', e.target.id, 'and unchecking others');
-                    // Manually set radio states
-                    allRadios.forEach(r => {
-                        r.checked = (r === e.target);
-                        console.log(`🔧 Set ${r.id} checked = ${r.checked}`);
-                    });
-                    
-                    // Manually trigger change event
-                    if (e.target.checked) {
-                        console.log('🔧 Manually dispatching change event');
-                        const changeEvent = new Event('change', { bubbles: true });
-                        e.target.dispatchEvent(changeEvent);
-                    }
-                }, 5);
+        };
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetView = btn.dataset.view;
+                // update UI immediately
+                setActive(targetView);
+                // call view change logic
+                this.changeViewMode(targetView);
             });
         });
-        
+
+        // ensure initial position
+        setTimeout(() => setActive(this.viewMode || (buttons[0] && buttons[0].dataset.view)), 0);
+
+        // store flag
         this.radioListenersSetup = true;
-        
-        // DIAGNOSTIC: Watch for any DOM mutations that might affect radio buttons
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'checked') {
-                    console.log('🚨 MUTATION OBSERVER: Radio checked attribute changed!');
-                    console.log('Target:', mutation.target.id);
-                    console.log('Old value:', mutation.oldValue);
-                    console.log('New value:', mutation.target.checked);
-                    console.log('Stack trace:', new Error().stack);
-                    
-                    // Special focus on Month radio being checked
-                    if (mutation.target.id === 'view-month' && mutation.target.checked) {
-                        console.log('🔥🔥🔥 MONTH RADIO WAS JUST CHECKED! This is the problem!');
-                        console.log('Full stack trace:', new Error().stack);
-                    }
-                } else if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                    Array.from(mutation.addedNodes).forEach(node => {
-                        if (node.nodeType === 1 && node.querySelector && node.querySelector('input[name="calendar-view"]')) {
-                            console.log('🚨 MUTATION OBSERVER: Calendar view controls were re-added to DOM!');
-                            console.log('Added node:', node);
-                        }
-                    });
-                }
-            });
-        });
-        
-        // Watch the calendar view container for changes
-        observer.observe(calendarView, {
-            childList: true,
-            subtree: true,
-            attributes: true,
-            attributeOldValue: true,
-            attributeFilter: ['checked']
-        });
-        
-        // DIAGNOSTIC: Override radio button checked setters to catch direct property changes
-        const monthRadio = document.getElementById('view-month');
-        if (monthRadio) {
-            const originalCheckedDescriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'checked');
-            Object.defineProperty(monthRadio, 'checked', {
-                get: function() {
-                    return originalCheckedDescriptor.get.call(this);
-                },
-                set: function(value) {
-                    console.log('🔥🔥🔥 MONTH RADIO.CHECKED SETTER CALLED!');
-                    console.log('Setting checked to:', value);
-                    console.log('Stack trace:', new Error().stack);
-                    return originalCheckedDescriptor.set.call(this, value);
-                }
-            });
-        }
     }
 
     render() {
@@ -256,17 +115,10 @@ class CalendarTile {
         const viewModeButtons = `
             <div class="calendar-view-modes">
                 <div class="view-modes-container">
-                    <input type="radio" id="view-month" name="calendar-view" ${this.viewMode === 'month' ? 'checked' : ''} data-view="month" />
-                    <label for="view-month">Month</label>
-
-                    <input type="radio" id="view-week" name="calendar-view" ${this.viewMode === 'week' ? 'checked' : ''} data-view="week" />
-                    <label for="view-week">Week</label>
-
-                    <input type="radio" id="view-workweek" name="calendar-view" ${this.viewMode === 'workweek' ? 'checked' : ''} data-view="workweek" />
-                    <label for="view-workweek">Work Week</label>
-
-                    <input type="radio" id="view-3day" name="calendar-view" ${this.viewMode === '3day' ? 'checked' : ''} data-view="3day" />
-                    <label for="view-3day">3 Day</label>
+                    <button type="button" class="view-mode-btn" data-view="month">Month</button>
+                    <button type="button" class="view-mode-btn" data-view="week">Week</button>
+                    <button type="button" class="view-mode-btn" data-view="workweek">Work Week</button>
+                    <button type="button" class="view-mode-btn" data-view="3day">3 Day</button>
 
                     <div class="background"></div>
                 </div>
