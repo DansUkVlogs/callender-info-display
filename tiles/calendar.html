@@ -7,13 +7,33 @@
   <link rel="stylesheet" href="../styles/calendar-tile.css" />
 </head>
 <body>
-  <div class="calendar-container" id="calendar-tile" data-events='[]'>
-    <div style="padding:20px;text-align:center;">
-      <h2 style="margin:0 0 8px;">Calendar — coming soon</h2>
-      <p style="margin:0;color:#666">We're rebuilding this tile. Open the main app when it's ready.</p>
-    </div>
+  <div class="calendar-container" id="calendar-tile" data-events='[]' style="height:520px;">
+    <!-- Calendar will be rendered here by the module. -->
   </div>
 
-  <script type="module" src="../js/tiles/calendar-tile.js"></script>
+  <script type="module">
+    import '../js/tiles/calendar.js';
+
+    // Wait for DOM ready then initialize the responsive CalendarTile
+    document.addEventListener('DOMContentLoaded', () => {
+      const root = document.getElementById('calendar-tile');
+      if (!root) return;
+      // Provide options if needed: { view: 'month' }
+      try {
+        if (window.CalendarTile && typeof window.CalendarTile.init === 'function') {
+          window.CalendarTile.init(root, { view: 'month' });
+        } else if (typeof CalendarTile !== 'undefined') {
+          CalendarTile.init(root, { view: 'month' });
+        } else {
+          // fallback: try the standalone debug module if present
+          import('../js/tiles/calendar-tile.js').then(m => {
+            if (m.initCalendarTile) m.initCalendarTile(root);
+          }).catch(() => {});
+        }
+      } catch (e) {
+        console.error('Failed to initialize CalendarTile', e);
+      }
+    });
+  </script>
 </body>
 </html>
