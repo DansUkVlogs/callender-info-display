@@ -227,7 +227,7 @@ class CalendarTile {
         const dayHeight = Math.floor((available - totalGaps) / rows);
 
         // set CSS variable used by grid-auto-rows and explicitly set gridAutoRows
-        const heightValue = Math.max(28, dayHeight) + 'px';
+    const heightValue = Math.max(18, dayHeight) + 'px';
         this.gridEl.style.setProperty('--day-height', heightValue);
         this.gridEl.style.gridAutoRows = heightValue;
     }
