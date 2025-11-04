@@ -1,3 +1,38 @@
+// Calendar Tile — placeholder
+// The full calendar implementation was removed and replaced with a lightweight placeholder
+// to make it clear we're reworking this tile. This keeps external calls safe while
+// preventing the previous calendar logic from executing.
+
+class CalendarTile {
+    constructor(container) {
+        // Accept either a container element or try common IDs used by the app
+        this.container = container || document.getElementById('calendarView') || document.getElementById('calendar-tile') || document.querySelector('#calendarTile');
+        this.render();
+    }
+
+    render() {
+        if (!this.container) return;
+        this.container.innerHTML = `
+            <div class="calendar-coming-soon" style="padding:16px;text-align:center;">
+                <h3 style="margin:0 0 8px;">Calendar — coming soon</h3>
+                <p style="margin:0;color:#666">We're rebuilding this tile. Stay tuned — the calendar will return soon.</p>
+            </div>
+        `;
+    }
+
+    // No-op methods left for compatibility
+    update(){ /* intentionally empty */ }
+    navigate(){ /* intentionally empty */ }
+    showCalendarSettings(){ /* intentionally empty */ }
+    clearAllEvents(){ /* intentionally empty */ }
+
+    static init(container){
+        return new CalendarTile(container);
+    }
+}
+
+// Keep a stable global reference (some parts of the app may access this)
+window.CalendarTile = CalendarTile;
 // Calendar Tile
 class CalendarTile {
     constructor() {
