@@ -82,10 +82,21 @@ self.addEventListener('fetch', (event) => {
                 return response || fetch(event.request);
             })
             .catch(() => {
-                // If both cache and network fail, return offline page
+                // If both cache and network fail, return offline page for documents
                 if (event.request.destination === 'document') {
                     return caches.match('/index.html');
                 }
+
+                // For non-document requests, return a generic 503 JSON response so
+                // the promise resolves to a valid Response (avoids "Failed to convert value to 'Response'" errors).
+                return new Response(JSON.stringify({
+                    error: 'Offline',
+                    message: 'Resource unavailable while offline'
+                }), {
+                    status: 503,
+                    statusText: 'Service Unavailable',
+                    headers: { 'Content-Type': 'application/json' }
+                });
             })
     );
 });
