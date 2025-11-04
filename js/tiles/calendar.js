@@ -121,34 +121,37 @@ class CalendarTile {
         // header title
         this.titleEl.textContent = this.date.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
 
-        // weekday headers
+        // weekday headers (render outside of the grid so grid contains only day cells)
         const weekdayNames = [];
-        for (let i=0;i<7;i++) weekdayNames.push(new Date(1970,0,4+i).toLocaleDateString(undefined,{weekday:'short'}));
+        for (let i = 0; i < 7; i++) weekdayNames.push(new Date(1970, 0, 4 + i).toLocaleDateString(undefined, { weekday: 'short' }));
 
-        // build grid HTML
-        let html = '';
-        html += '<div class="week-header">';
-        weekdayNames.forEach(n => { html += `<div class="calendar-weekday">${n}</div>`; });
-        html += '</div>';
+        // remove any existing week-header
+        const existingWeek = this.container.querySelector('.week-header');
+        if (existingWeek) existingWeek.remove();
 
-        // configure grid columns to 7
+        const weekHeaderEl = document.createElement('div');
+        weekHeaderEl.className = 'week-header';
+        weekdayNames.forEach(n => {
+            const el = document.createElement('div'); el.className = 'calendar-weekday'; el.textContent = n; weekHeaderEl.appendChild(el);
+        });
+        // insert week header before the grid
+        this.gridEl.parentElement.insertBefore(weekHeaderEl, this.gridEl);
+
+        // configure grid columns to 7 and clear grid
         this.gridEl.style.gridTemplateColumns = 'repeat(7,1fr)';
+        this.gridEl.innerHTML = '';
 
         days.forEach(day => {
             const isOutside = day.getMonth() !== month;
             const isToday = day.toDateString() === (new Date()).toDateString();
-            const dateHtml = `
-                <div class="calendar-day ${isOutside? 'outside':''} ${isToday? 'today':''}" data-date="${day.toISOString()}">
-                    <div class="date">${day.getDate()}</div>
-                    <div class="events"></div>
-                </div>`;
-            html += dateHtml;
+            const cell = document.createElement('div');
+            cell.className = 'calendar-day' + (isOutside ? ' outside' : '') + (isToday ? ' today' : '');
+            cell.dataset.date = day.toISOString();
+            const dateDiv = document.createElement('div'); dateDiv.className = 'date'; dateDiv.textContent = day.getDate();
+            const eventsDiv = document.createElement('div'); eventsDiv.className = 'events';
+            cell.appendChild(dateDiv); cell.appendChild(eventsDiv);
+            this.gridEl.appendChild(cell);
         });
-
-        this.gridEl.innerHTML = html;
-
-        // set grid rows so JS can compute height properly
-        this.gridEl.style.gridAutoRows = `calc((100% - 28px - 48px) / ${weeks})`;
         // footer
         this.footerEl.textContent = '';
     }
@@ -198,31 +201,35 @@ class CalendarTile {
         if (!this.container || !this.gridEl) return;
 
         // compute available height inside container for the grid
-        const rect = this.container.getBoundingClientRect();
-        const headerH = this.container.querySelector('.calendar-header')?.getBoundingClientRect().height || 48;
-        const footerH = this.container.querySelector('.calendar-footer')?.getBoundingClientRect().height || 24;
-        const gapTotal = 8; // small fudge for paddings/gaps
+    const rect = this.container.getBoundingClientRect();
+    const headerH = this.container.querySelector('.calendar-header')?.getBoundingClientRect().height || 48;
+    const weekHeaderH = this.container.querySelector('.week-header')?.getBoundingClientRect().height || 0;
+    const footerH = this.container.querySelector('.calendar-footer')?.getBoundingClientRect().height || 24;
+    const gapTotal = 8; // small fudge for paddings/gaps and container padding
 
-        const available = Math.max(80, rect.height - headerH - footerH - gapTotal);
+    const available = Math.max(48, rect.height - headerH - weekHeaderH - footerH - gapTotal);
 
         // determine number of visible rows in current grid
         const computedStyle = getComputedStyle(this.gridEl);
         const cols = (this.view === 'month') ? 7 : parseInt(this.gridEl.style.gridTemplateColumns?.match(/repeat\((\d+),/)?.[1] || this.gridEl.children.length || 7);
 
-        // rows for month view: count children after header (weekday header is not included in grid children)
+        // rows for month view: compute number of weeks we rendered
         let rows = 1;
         if (this.view === 'month') {
-            // calculate weeks between first and last grid day
-            const days = Array.from(this.gridEl.querySelectorAll('.calendar-day')).length;
-            rows = Math.ceil(days / 7) || 1;
+            const days = this.gridEl.querySelectorAll('.calendar-day').length;
+            rows = Math.max(1, Math.ceil(days / 7));
         } else {
             rows = 1; // for range views we show a single row
         }
 
-        const dayHeight = Math.floor((available - (rows - 1) * 4) / rows);
+        const rowGap = parseInt(getComputedStyle(this.gridEl).gap || 4, 10) || 4;
+        const totalGaps = Math.max(0, rows - 1) * rowGap;
+        const dayHeight = Math.floor((available - totalGaps) / rows);
 
-        // set CSS variable used by grid-auto-rows
-        this.gridEl.style.setProperty('--day-height', dayHeight + 'px');
+        // set CSS variable used by grid-auto-rows and explicitly set gridAutoRows
+        const heightValue = Math.max(28, dayHeight) + 'px';
+        this.gridEl.style.setProperty('--day-height', heightValue);
+        this.gridEl.style.gridAutoRows = heightValue;
     }
 }
 
